@@ -75,6 +75,7 @@ import ConfigPrecompiler          from "../main/config/utils/configPrecompiler";
 import BagExtensionProcessor      from '../main/bagExtension/bagExtensionProcessor';
 import FunctionInitEngine         from '../main/functionInit/functionInitEngine';
 import {ProcessType, processTypeSymbol} from '../main/constants/processType';
+import InjectionsManager                from '../main/injections/injectionsManager';
 import {startModeSymbol}                from './startMode';
 import createLogFileDownloader          from '../main/log/logFileHttpEndpoint';
 import StartDebugStopwatch              from '../main/utils/startDebugStopwatch';
@@ -253,6 +254,10 @@ class ZationWorker extends SCWorker
         debugStopwatch.stop(`The Worker with id ${this.id} has prepared the Channels.`);
 
         Bag._isReady();
+
+        debugStopwatch.start();
+        await InjectionsManager.get().processInjections();
+        debugStopwatch.stop(`The Worker with id ${this.id} processed the injections.`);
 
         debugStopwatch.start();
         await this.zc.event.beforeComponentInit(this.isLeader);

@@ -68,6 +68,8 @@ import Receiver                     from './lib/api/Receiver';
 import {ReceiverConfig}             from './lib/main/config/definitions/parts/receiverConfig';
 import {RawSocket}                  from './lib/main/sc/socket';
 import Packet                       from './lib/api/Packet';
+import Inject                       from './lib/api/injections/decorator/Inject';
+import Injectable                   from './lib/api/injections/Injectable';
 
 //Refresh bag instance export
 Bag._addReadyRefresher((bag) => exports.bag = bag);
@@ -78,6 +80,8 @@ export {
     Bag,
     bag,
     Router,
+    Inject,
+    Injectable,
     Register,
     $not,
     $optional,
