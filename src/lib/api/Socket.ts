@@ -371,7 +371,7 @@ export default class Socket<A extends object = any, TP extends object = any>
      */
     get tokenPayload(): Partial<TP> | undefined {
         if(!this._auth) return undefined;
-        return CloneUtils.deepClone(this.rawToken!.payload!);
+        return CloneUtils.deepClone(this.rawToken!.payload || {});
     }
 
     /**
@@ -379,7 +379,7 @@ export default class Socket<A extends object = any, TP extends object = any>
      * @throws AuthenticationRequiredError if this socket is not authenticated.
      */
     getTokenPayload(): Partial<TP> {
-        return CloneUtils.deepClone(this.getRawToken().payload!);
+        return CloneUtils.deepClone(this.getRawToken().payload || {});
     }
 
     // noinspection JSUnusedGlobalSymbols
