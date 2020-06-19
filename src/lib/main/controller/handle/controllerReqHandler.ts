@@ -78,11 +78,11 @@ export default class ControllerReqHandler
                 controllerIdentifier = request.c;
             }
 
-            request.a = ApiLevelUtils.parseRequestApiLevel(request.a);
+            const packetApiLevel = ApiLevelUtils.parsePacketApiLevel(request.a);
 
             //throws if not exists or api level is incompatible
             const cInstance = this.controllerPrepare.get(controllerIdentifier,
-                (request.a || socket.connectionApiLevel || this.defaultApiLevel));
+                (packetApiLevel || socket.connectionApiLevel || this.defaultApiLevel));
 
             if(isValidationCheckRequest(request)) {
                 const checks = Array.isArray(request.v) ? request.v : [];
@@ -117,7 +117,7 @@ export default class ControllerReqHandler
 
                 //check access to controller
                 if(await tokenStateCheck(socket)) {
-                    const packet = Packet.createFromControllerRequest(request);
+                    const packet = new Packet((request as ControllerStandardReq).d,packetApiLevel);
                     let input: object;
                     try {
                         input = await inputConsume((request as ControllerStandardReq).d);

@@ -44,10 +44,10 @@ export default class ApiLevelUtils
     }
 
     /**
-     * Parses the request API level.
+     * Parses the packet API level.
      * @param apiLevel
      */
-    static parseRequestApiLevel(apiLevel: any): number | undefined {
+    static parsePacketApiLevel(apiLevel: any): number | undefined {
         return typeof apiLevel === 'number' ? Math.floor(apiLevel) : undefined
     }
 }

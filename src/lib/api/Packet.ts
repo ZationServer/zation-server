@@ -4,22 +4,11 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ControllerStandardReq} from '../main/controller/controllerDefinitions';
-import {ReceiverPackage}       from '../main/receiver/receiverDefinitions';
-
 export default class Packet<A extends object = any> {
 
     private readonly _data: any;
     private readonly _apiLevel?: number;
     private _attachment: Partial<A> = {};
-
-    static createFromControllerRequest(request: ControllerStandardReq): Packet {
-        return new Packet<any>(request.d,request.a);
-    }
-
-    static createFromReceiverPackage(pack: ReceiverPackage): Packet {
-        return new Packet<any>(pack.d,pack.a);
-    }
 
     constructor(data: any,apiLevel: any) {
         this._data = data;

@@ -50,7 +50,7 @@ export default class DataboxHandler
 
         //throws if not exists or api level is incompatible
         const db: DataboxCore = this.dbPrepare.get((request.d as string),
-            (ApiLevelUtils.parseRequestApiLevel(request.a) || socket.connectionApiLevel || this.defaultApiLevel));
+            (ApiLevelUtils.parsePacketApiLevel(request.a) || socket.connectionApiLevel || this.defaultApiLevel));
 
         if(socket.getDataboxes().length > this.socketDataboxLimit){
             const err: any = new Error(`Limit of Databoxes for this socket is reached.`);

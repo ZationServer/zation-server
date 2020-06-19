@@ -52,10 +52,10 @@ export default class ReceiverHandler
     private async _processPackage(pack: ReceiverPackage, socket: Socket) {
         if(checkValidReceiverPackage(pack)) {
 
-            pack.a = ApiLevelUtils.parseRequestApiLevel(pack.a);
+            const packetApiLevel = ApiLevelUtils.parsePacketApiLevel(pack.a);
 
             //throws if not exists or api level is incompatible
-            const rInstance = this.receiverPrepare.get(pack.r, (pack.a || socket.connectionApiLevel || this.defaultApiLevel));
+            const rInstance = this.receiverPrepare.get(pack.r, (packetApiLevel || socket.connectionApiLevel || this.defaultApiLevel));
 
             const {
                 systemAccessCheck,
@@ -74,7 +74,7 @@ export default class ReceiverHandler
 
             //check access to receiver
             if(await tokenStateCheck(socket)) {
-                const packet = Packet.createFromReceiverPackage(pack);
+                const packet = new Packet(pack.d,packetApiLevel);
                 let input: object;
                 try {
                     input = await inputConsume(pack.d);
