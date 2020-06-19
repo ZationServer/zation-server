@@ -17,7 +17,7 @@ export default class PingController extends Controller
         input: {}
     };
 
-    async handle(bag) {
+    async handle() {
        return true;
     }
 }

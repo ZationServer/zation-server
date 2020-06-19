@@ -11,6 +11,9 @@ import BackError          from "../../../../api/BackError";
 import Controller         from "../../../../api/Controller";
 import {MainBackErrors}   from "../../../zationBackErrors/mainBackErrors";
 import TokenUtils         from "../../../token/tokenUtils";
+import Socket             from '../../../../api/Socket';
+// noinspection ES6PreferShortImport
+import {bag}              from '../../../../api/Bag';
 
 export default class PanelAuthController extends Controller
 {
@@ -28,7 +31,7 @@ export default class PanelAuthController extends Controller
     };
 
 
-    async handle(bag,{username,password})
+    async handle(socket: Socket,{username,password})
     {
         if(bag.getZationConfig().mainConfig.usePanel) {
 
@@ -41,9 +44,8 @@ export default class PanelAuthController extends Controller
             const token = TokenUtils.generateToken(bag.getZationConfig().internalData.tokenClusterKey);
             token[nameof<RawZationToken>(s => s.panelAccess)] = true;
             token[nameof<RawZationToken>(s => s.onlyPanelToken)] = true;
-            bag.getRawSocket().setAuthToken(token);
-
-            await bag.setTokenVariable('ZATION-PANEL-USER-NAME',username);
+            await socket._setToken(token);
+            await socket.setTokenPayloadProp('ZATION-PANEL-USER-NAME',username);
         }
         else {
             throw new BackError(MainBackErrors.panelIsNotActivated);
