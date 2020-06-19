@@ -76,6 +76,7 @@ import BagExtensionProcessor      from '../main/bagExtension/bagExtensionProcess
 import FunctionInitEngine         from '../main/functionInit/functionInitEngine';
 import {ProcessType, processTypeSymbol} from '../main/constants/processType';
 import InjectionsManager                from '../main/injections/injectionsManager';
+import InitializerManager               from '../main/initializer/initializerManager';
 import {startModeSymbol}                from './startMode';
 import createLogFileDownloader          from '../main/log/logFileHttpEndpoint';
 import StartDebugStopwatch              from '../main/utils/startDebugStopwatch';
@@ -258,6 +259,10 @@ class ZationWorker extends SCWorker
         debugStopwatch.start();
         await InjectionsManager.get().processInjections();
         debugStopwatch.stop(`The Worker with id ${this.id} processed the injections.`);
+
+        debugStopwatch.start();
+        await InitializerManager.get().processInitializers();
+        debugStopwatch.stop(`The Worker with id ${this.id} processed the initializers.`);
 
         debugStopwatch.start();
         await this.zc.event.beforeComponentsInit(this.isLeader);

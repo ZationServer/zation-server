@@ -70,6 +70,7 @@ import {RawSocket}                  from './lib/main/sc/socket';
 import Packet                       from './lib/api/Packet';
 import Inject                       from './lib/api/injections/decorator/Inject';
 import Injectable                   from './lib/api/injections/Injectable';
+import Initializer                  from './lib/api/Initializer';
 
 //Refresh bag instance export
 Bag._addReadyRefresher((bag) => exports.bag = bag);
@@ -80,6 +81,7 @@ export {
     Bag,
     bag,
     Router,
+    Initializer,
     Inject,
     Injectable,
     Register,
