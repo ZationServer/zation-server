@@ -5,14 +5,17 @@ Copyright(c) Luca Scaringella
  */
 
 import Receiver         from '../../../../api/Receiver';
+// noinspection ES6PreferShortImport
 import {ReceiverConfig} from '../../../config/definitions/parts/receiverConfig';
 // noinspection ES6PreferShortImport
 import {$single}                  from '../../../../api/input/Single';
 import {createTokenCheckFunction} from '../../../access/accessOptions';
 import {RawZationToken}           from '../../../constants/internal';
-import Bag                        from '../../../../api/Bag';
+// noinspection ES6PreferShortImport
+import {bag}                      from '../../../../api/Bag';
 import {ScExchange}               from '../../../sc/scServer';
 import {INTERNAL_PANEL_CH}        from '../../../internalChannels/internalChannelEngine';
+// noinspection ES6PreferShortImport
 import {$optional}                from '../../../../api/input/Optional';
 
 export default class PanelReceiver extends Receiver
@@ -26,11 +29,11 @@ export default class PanelReceiver extends Receiver
 
     private exchange: ScExchange;
 
-    initialize(bag: Bag): Promise<void> | void {
+    initialize(): Promise<void> | void {
         this.exchange = bag.getWorker().scServer.exchange;
     }
 
-    handle(bag,firstPing: boolean) {
+    handle(_,firstPing: boolean) {
         this.exchange.publish(INTERNAL_PANEL_CH,firstPing);
     }
 }
