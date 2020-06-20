@@ -44,8 +44,8 @@ export default class PanelAuthController extends Controller
             const token = TokenUtils.generateToken(bag.getZationConfig().internalData.tokenClusterKey);
             token[nameof<RawZationToken>(s => s.panelAccess)] = true;
             token[nameof<RawZationToken>(s => s.onlyPanelToken)] = true;
+            token[nameof<RawZationToken>(s => s.payload)] = {['ZATION-PANEL-USER-NAME']: username};
             await socket._setToken(token);
-            await socket.setTokenPayloadProp('ZATION-PANEL-USER-NAME',username);
         }
         else {
             throw new BackError(MainBackErrors.panelIsNotActivated);
