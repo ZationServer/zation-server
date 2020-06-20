@@ -605,9 +605,14 @@ class ZationWorker extends SCWorker
                 next(e,true);
             }
 
-            const zationAuthMid = await MiddlewareUtils.checkMiddleware
-            (middleware.authenticate,true,new ZationToken(token));
-            zationAuthMid === true ? next(): next(MiddlewareUtils.processBlockedResult(zationAuthMid));
+            if(token.onlyPanelToken) {
+                next();
+            }
+            else {
+                const zationAuthMid = await MiddlewareUtils.checkMiddleware
+                (middleware.authenticate,true,new ZationToken(token));
+                zationAuthMid === true ? next(): next(MiddlewareUtils.processBlockedResult(zationAuthMid));
+            }
         });
     }
 
