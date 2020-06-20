@@ -30,8 +30,8 @@ export default class RawSocketUpgradeFactory
         rawSocket[nameof<RawSocket>(s => s.tid)] = Date.now() + rawSocket.id;
 
         const socket = new Socket(rawSocket,this.authConfig);
-        socket._addBeforeTokenUpdateHandler((token, newToken) =>
-            this.worker.updateSocketTokenMaps(token,newToken,socket));
+        socket._onTokenUpdate((oldToken, newToken) =>
+            this.worker.updateSocketTokenMaps(oldToken,newToken,socket));
 
         rawSocket[nameof<RawSocket>(s => s._socket)] = socket;
     }

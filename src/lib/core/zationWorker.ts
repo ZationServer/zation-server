@@ -1134,13 +1134,13 @@ class ZationWorker extends SCWorker
 
     /**
      * Update the socket token maps.
-     * @param token
+     * @param oldToken
      * @param newToken
      * @param socket
      */
-    updateSocketTokenMaps(token: RawZationToken | null, newToken: RawZationToken | null, socket: Socket) {
+    updateSocketTokenMaps(oldToken: RawZationToken | null, newToken: RawZationToken | null, socket: Socket) {
         if(newToken != null) {
-            if(token == null) {
+            if(oldToken == null) {
                 //new authenticated remove from default and map to the other maps
                 //that requires a token.
                 this.defaultUserGroupSet.remove(socket);
@@ -1162,8 +1162,8 @@ class ZationWorker extends SCWorker
             else {
                 //updated authentication
                 //check for changes and update map
-                if(newToken.authUserGroup !== token.authUserGroup) {
-                    this.mapAuthUserGroupToSc.unMap(token.authUserGroup,socket);
+                if(newToken.authUserGroup !== oldToken.authUserGroup) {
+                    this.mapAuthUserGroupToSc.unMap(oldToken.authUserGroup,socket);
                     if(newToken.authUserGroup !== undefined){
                         this.mapAuthUserGroupToSc.map(newToken.authUserGroup,socket);
                     }
@@ -1171,15 +1171,15 @@ class ZationWorker extends SCWorker
                 //token id can not be changed.
 
                 //Only one '=' (userId can be a number or string)
-                if(newToken.userId != token.userId){
-                    if(token.userId !== undefined){
-                        this.mapUserIdToSc.unMap(token.userId.toString(),socket);
+                if(newToken.userId != oldToken.userId){
+                    if(oldToken.userId !== undefined){
+                        this.mapUserIdToSc.unMap(oldToken.userId.toString(),socket);
                     }
                     if(newToken.userId !== undefined){
                         this.mapUserIdToSc.map(newToken.userId.toString(),socket);
                     }
                 }
-                if(newToken.onlyPanelToken !== token.onlyPanelToken) {
+                if(newToken.onlyPanelToken !== oldToken.onlyPanelToken) {
                     if(typeof newToken.onlyPanelToken === 'boolean' && newToken.onlyPanelToken){
                         this.panelUserSet.add(socket);
                     }
@@ -1192,10 +1192,10 @@ class ZationWorker extends SCWorker
         else {
             //add to default group
             this.defaultUserGroupSet.add(socket);
-            if(token != null) {
+            if(oldToken != null) {
                 //Deauthenticated remove from other mappings that requires a token
                 //if the old token was a token.
-                this.worker.unmapSocketToken(token,socket);
+                this.worker.unmapSocketToken(oldToken,socket);
             }
         }
     }
