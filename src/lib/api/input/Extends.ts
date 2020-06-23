@@ -4,13 +4,14 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {Model}                   from '../../main/config/definitions/parts/inputConfig';
+import {Model, ModelConfig} from '../../main/config/definitions/parts/inputConfig';
 import {modelPrototypeSymbol}    from '../../main/constants/model';
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {resolveModelConfigTranslatable} from '../configTranslatable/modelConfigTranslatable';
 import {updateModel}                    from '../../main/models/modelUpdater';
 import {isClassObjectModel}             from './decorator/ObjectModel';
 import ConfigBuildError                 from '../../main/config/manager/configBuildError';
+import {AnyReadonly}                    from '../../main/utils/typeUtils';
 
 /**
  * This function can be used to let a value model extends another
@@ -32,7 +33,7 @@ import ConfigBuildError                 from '../../main/config/manager/configBu
  * @param subModel
  * @param superModel
  */
-export function $extends<S extends Model>(subModel: S | Model,superModel: Model): S {
+export function $extends<S extends Model | ModelConfig>(subModel: S | Model,superModel: Model): S extends ModelConfig ? S : AnyReadonly {
     if(isClassObjectModel(subModel) || isClassObjectModel(superModel)){
         throw new ConfigBuildError('The $extends function can not be used with class object models. Please use the es6 class extends keyword.')
     }
@@ -41,5 +42,5 @@ export function $extends<S extends Model>(subModel: S | Model,superModel: Model)
 
     return updateModel(subModel,(resolvedModel) => {
         resolvedModel[modelPrototypeSymbol] = superModel;
-    },false) as S;
+    },false) as S extends ModelConfig ? S : AnyReadonly;
 }

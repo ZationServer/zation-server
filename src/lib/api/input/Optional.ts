@@ -7,6 +7,7 @@ Copyright(c) Luca Scaringella
 import {Model, ModelConfig}                      from '../../main/config/definitions/parts/inputConfig';
 import {modelDefaultSymbol, modelOptionalSymbol} from '../../main/constants/model';
 import {updateModel}                             from '../../main/models/modelUpdater';
+import {AnyReadonly}                             from '../../main/utils/typeUtils';
 
 function changeOptionalOfResolvedModel(model: ModelConfig, value: boolean, defaultValue?: any) {
     let options;
@@ -36,7 +37,7 @@ function changeOptionalOfResolvedModel(model: ModelConfig, value: boolean, defau
  * Define a default value that will be used
  * if the input had not provided the value.
  */
-export function $optional<T extends Model>(model: T | ModelConfig,defaultValue?: any): T {
+export function $optional<T extends Model | ModelConfig>(model: T,defaultValue?: any): T extends ModelConfig ? T : AnyReadonly {
     return updateModel(model,(resolvedModel) =>
-        changeOptionalOfResolvedModel(resolvedModel,true,defaultValue),true) as T;
+        changeOptionalOfResolvedModel(resolvedModel,true,defaultValue),true) as T extends ModelConfig ? T : AnyReadonly;
 }
