@@ -7,11 +7,11 @@ Copyright(c) Luca Scaringella
 import {ArrayModel, Model, ModelConfig}       from '../config/definitions/parts/inputConfig';
 import {modelNameSymbol}                      from '../constants/model';
 import {setUniqueModelId}                     from './modelId';
-import {DeepReadonly}                         from '../utils/typeUtils';
+import {AnyReadonly}                          from '../utils/typeUtils';
 
 const reusableModelSymbol = Symbol();
 
-export function createReusableModel(model: ModelConfig, name?: string): DeepReadonly<ModelConfig> {
+export function createReusableModel(model: ModelConfig, name?: string): AnyReadonly {
     let createdModel: ModelConfig = {};
 
     if(Array.isArray(model)) {
@@ -33,10 +33,10 @@ export function createReusableModel(model: ModelConfig, name?: string): DeepRead
         });
     }
     setUniqueModelId(createdModel);
-    
+
     createdModel[reusableModelSymbol] = true;
 
-    return createdModel;
+    return createdModel as AnyReadonly;
 }
 
 export function isReusableModel(value: any): value is Model {

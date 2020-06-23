@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import {ModelConfig}             from '../../main/config/definitions/parts/inputConfig';
 import {createReusableModel}     from '../../main/models/reusableModelCreator';
-import {DeepReadonly}            from '../../main/utils/typeUtils';
+import {AnyReadonly}             from '../../main/utils/typeUtils';
 
 /**
  * This function creates several reusable models.
@@ -32,12 +32,11 @@ import {DeepReadonly}            from '../../main/utils/typeUtils';
  *    }
  * });
  */
-export function $models<T extends Record<string,ModelConfig>>(models: T | Record<string,ModelConfig>): DeepReadonly<T> {
+export function $models<T extends Record<string,ModelConfig>>(models: T): {readonly [k in keyof T]: AnyReadonly} {
     for(const k in models){
         if(models.hasOwnProperty(k)){
-            // @ts-ignore
             models[k] = createReusableModel(models[k],k) as any;
         }
     }
-    return models as DeepReadonly<T>;
+    return models as unknown as {readonly [k in keyof T]: AnyReadonly};
 }

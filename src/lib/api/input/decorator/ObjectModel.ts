@@ -5,13 +5,13 @@ Copyright(c) Luca Scaringella
  */
 
 import {isModelConfigTranslatable, resolveModelConfigTranslatable, updateModelConfigTranslatable} from '../../configTranslatable/modelConfigTranslatable';
-import {ObjectModel as ObjectModelConfig}                         from "../../../main/config/definitions/parts/inputConfig";
-import CloneUtils                                                 from "../../../main/utils/cloneUtils";
+import CloneUtils                                                         from "../../../main/utils/cloneUtils";
 import {InDecoratorMem, inDM_ConstructorMethodsSymbol, inDM_ModelsSymbol} from "./InDecoratorMem";
 import {createReusableModel}                                              from '../../../main/models/reusableModelCreator';
 // noinspection TypeScriptPreferShortImport
 import {$extends}                                                         from '../Extends';
 import {bag}                                                              from '../../Bag';
+import {AnyReadonly}                                                      from '../../../main/utils/typeUtils';
 
 export const classObjectModelSymbol = Symbol();
 
@@ -60,19 +60,19 @@ export const ObjectModel = (name?: string) => {
         const models = prototype.hasOwnProperty(inDM_ModelsSymbol) && typeof prototype[inDM_ModelsSymbol] === 'object' ?
             prototype[inDM_ModelsSymbol]!: {};
 
-        const objectModel: ObjectModelConfig = createReusableModel({
+        const objectModel: AnyReadonly = createReusableModel({
             properties: models,
             baseConstruct: async function() {
-                Object.setPrototypeOf(this,Reflect.construct(target,[bag]));
+                Object.setPrototypeOf(this, Reflect.construct(target, [bag]));
             },
             construct: async function() {
                 const promises: Promise<void>[] = [];
-                for(let i = 0; i < constructorMethodsLength; i++){
-                    promises.push(constructorMethods[i].call(this,bag));
+                for (let i = 0; i < constructorMethodsLength; i++) {
+                    promises.push(constructorMethods[i].call(this, bag));
                 }
                 await Promise.all(promises);
             }
-        },typeof name === 'string' ? name: target.name) as ObjectModelConfig;
+        }, typeof name === 'string' ? name : target.name);
 
         //extends
         const proto = Object.getPrototypeOf(target);

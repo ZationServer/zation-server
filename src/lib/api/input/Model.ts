@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import {ModelConfig}         from '../../main/config/definitions/parts/inputConfig';
 import {createReusableModel} from '../../main/models/reusableModelCreator';
-import {DeepReadonly}        from '../../main/utils/typeUtils';
+import {AnyReadonly}         from '../../main/utils/typeUtils';
 
 /**
  * This function creates a reusable model.
@@ -21,6 +21,6 @@ import {DeepReadonly}        from '../../main/utils/typeUtils';
  * @param model
  * @param name
  */
-export function $model<T extends ModelConfig>(model: T | ModelConfig,name?: string): DeepReadonly<T> {
-    return createReusableModel(model,name) as DeepReadonly<T>;
+export function $model<T extends ModelConfig>(model: T | ModelConfig,name?: string): AnyReadonly {
+    return createReusableModel(model,name) as AnyReadonly;
 }

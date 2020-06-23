@@ -6,9 +6,8 @@ Copyright(c) Luca Scaringella
 
 import {Model}                   from '../../main/config/definitions/parts/inputConfig';
 import {modelPrototypeSymbol}    from '../../main/constants/model';
-// noinspection TypeScriptPreferShortImport
+// noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {resolveModelConfigTranslatable} from '../configTranslatable/modelConfigTranslatable';
-import {DeepReadonly}                   from '../../main/utils/typeUtils';
 import {updateModel}                    from '../../main/models/modelUpdater';
 import {isClassObjectModel}             from './decorator/ObjectModel';
 import ConfigBuildError                 from '../../main/config/manager/configBuildError';
@@ -33,7 +32,7 @@ import ConfigBuildError                 from '../../main/config/manager/configBu
  * @param subModel
  * @param superModel
  */
-export function $extends<S extends Model>(subModel: S | Model,superModel: Model): DeepReadonly<S> {
+export function $extends<S extends Model>(subModel: S | Model,superModel: Model): S {
     if(isClassObjectModel(subModel) || isClassObjectModel(superModel)){
         throw new ConfigBuildError('The $extends function can not be used with class object models. Please use the es6 class extends keyword.')
     }
@@ -42,5 +41,5 @@ export function $extends<S extends Model>(subModel: S | Model,superModel: Model)
 
     return updateModel(subModel,(resolvedModel) => {
         resolvedModel[modelPrototypeSymbol] = superModel;
-    },false) as DeepReadonly<S>;
+    },false) as S;
 }

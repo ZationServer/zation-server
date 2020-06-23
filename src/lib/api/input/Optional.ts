@@ -6,7 +6,6 @@ Copyright(c) Luca Scaringella
 
 import {Model, ModelConfig}                      from '../../main/config/definitions/parts/inputConfig';
 import {modelDefaultSymbol, modelOptionalSymbol} from '../../main/constants/model';
-import {DeepReadonly}                            from '../../main/utils/typeUtils';
 import {updateModel}                             from '../../main/models/modelUpdater';
 
 function changeOptionalOfResolvedModel(model: ModelConfig, value: boolean, defaultValue?: any) {
@@ -37,7 +36,7 @@ function changeOptionalOfResolvedModel(model: ModelConfig, value: boolean, defau
  * Define a default value that will be used
  * if the input had not provided the value.
  */
-export function $optional<T extends Model>(model: T | ModelConfig,defaultValue?: any): DeepReadonly<T> {
+export function $optional<T extends Model>(model: T | ModelConfig,defaultValue?: any): T {
     return updateModel(model,(resolvedModel) =>
-        changeOptionalOfResolvedModel(resolvedModel,true,defaultValue),true) as DeepReadonly<T>;
+        changeOptionalOfResolvedModel(resolvedModel,true,defaultValue),true) as T;
 }
