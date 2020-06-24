@@ -186,7 +186,7 @@ export default class ConfigPrecompiler
         });
 
         if(Array.isArray(directModel)){
-            this.modelPrecompile(directModel);
+            this.modelPrecompile(directModel[0]);
 
             if(!model.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
                 Object.defineProperty(model,nameof<ModelPreparationMem>(s => s._process),{
