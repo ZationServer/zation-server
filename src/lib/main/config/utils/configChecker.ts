@@ -19,9 +19,9 @@ import {ValidationTypeRecord}                from '../../constants/validationTyp
 import Iterator                              from '../../utils/iterator';
 import ObjectUtils                           from '../../utils/objectUtils';
 import ConfigLoader                          from '../manager/configLoader';
-import {isModelConfigTranslatable, modelConfigTranslateSymbol, resolveModelConfigTranslatable} from '../../../api/configTranslatable/modelConfigTranslatable';
-import {modelNameSymbol, modelOptionalSymbol, modelPrototypeSymbol}                            from '../../constants/model';
-import {AnyOfModel, ArrayModel, InputConfig, Model, ObjectModel, ParamInput, ValueModel} from '../definitions/parts/inputConfig';
+import {isModelTranslatable, modelTranslateSymbol, resolveIfModelTranslatable} from '../../../api/configTranslatable/modelTranslatable';
+import {modelPrototypeSymbol}                                                  from '../../constants/model';
+import {AnyModelTranslatable, AnyOfModel, InputConfig, Model, ObjectModel, ParamInput, ValueModel} from '../definitions/parts/inputConfig';
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig}               from '../definitions/parts/controllerConfig';
 // noinspection ES6PreferShortImport
@@ -32,9 +32,7 @@ import {AuthAccessConfig}               from '../definitions/parts/accessConfigs
 import DbConfigUtils                           from '../../databox/dbConfigUtils';
 import {getNotableValue}                       from '../../../api/Notable';
 import ErrorBag                                from '../../error/errorBag';
-import {modelIdSymbol}                         from '../../models/modelId';
 import {inputConfigTranslateSymbol, isInputConfigTranslatable} from '../../../api/configTranslatable/inputConfigTranslatable';
-import {isReusableModel}                                       from '../../models/reusableModelCreator';
 import {processAnyOfKey}                                       from '../../models/anyOfModelUtils';
 import AuthController                                          from '../../../api/AuthController';
 import {AnyDataboxClass}                                       from '../../../api/databox/AnyDataboxClass';
@@ -48,6 +46,8 @@ import Receiver, {ReceiverClass}                               from '../../../ap
 import {ReceiverConfig}                                        from '../definitions/parts/receiverConfig';
 import ComponentUtils                                          from '../../component/componentUtils';
 import {isDefaultImpl}                                         from '../../utils/defaultImplUtils';
+import {explicitModelNameSymbol, isExplicitModel}              from '../../models/explicitModel';
+import {isOptionalModel, unwrapIfOptionalModel}                from '../../models/optionalModel';
 
 export interface ModelCheckedMem {
     _checked: boolean
@@ -60,7 +60,6 @@ export default class ConfigChecker
 
     private authControllerIdentifier: string;
     private validAccessValues: any[];
-    private checkedModelIds: number[] = [];
 
     private componentes: ComponentClass[] = [];
 
@@ -214,8 +213,8 @@ export default class ConfigChecker
     }
 
     private checkObjectModel(obj: ObjectModel, target: Target, rememberCache: Model[], inheritanceCheck: boolean = true, skipTargetPathAdd: boolean = false, skipProps: string[] = []) {
-        if(!skipTargetPathAdd && typeof obj[modelNameSymbol] === 'string'){
-            target = target.addPath(`(${obj[modelNameSymbol]})`);
+        if(!skipTargetPathAdd && typeof obj[explicitModelNameSymbol] === 'string'){
+            target = target.addPath(`(${obj[explicitModelNameSymbol]})`);
         }
 
         const prototype = typeof obj.prototype === 'object' ? obj.prototype: {};
@@ -246,17 +245,7 @@ export default class ConfigChecker
     private static isValueModel(obj: any): obj is ValueModel {
         return typeof obj === 'object' &&
             obj[nameof<ObjectModel>(s => s.properties)] === undefined &&
-            obj[nameof<ArrayModel>(s => s.array)] === undefined &&
             obj[nameof<AnyOfModel>(s => s.anyOf)] === undefined;
-    }
-
-    // @ts-ignore
-    // noinspection JSUnusedLocalSymbols
-    private static isArrayModel(arr: any): boolean {
-        return Array.isArray(arr) || (
-            typeof arr === 'object' &&
-            typeof arr[nameof<ArrayModel>(s => s.array)] === 'object'
-        );
     }
 
     /**
@@ -282,10 +271,10 @@ export default class ConfigChecker
         const prototype = model[modelPrototypeSymbol];
         const prototypeType = typeof prototype;
         if(prototypeType === 'object' || prototypeType === 'function') {
-            const resModel = resolveModelConfigTranslatable(prototype);
+            const resModel = resolveIfModelTranslatable(prototype);
 
-            target = target.addPath(`extends=>${typeof resModel[modelNameSymbol] === 'string' ? 
-                resModel[modelNameSymbol] : 'Anonymous'}`);
+            target = target.addPath(`extends=>${typeof resModel[explicitModelNameSymbol] === 'string' ? 
+                resModel[explicitModelNameSymbol] : 'Anonymous'}`);
 
             if(inheritanceRemCache.includes(resModel) || resModel === baseModel){
                 this.ceb.addError(new ConfigError(ConfigNames.App,`${target.toString()} creates a circular object model inheritance.`));
@@ -636,8 +625,8 @@ export default class ConfigChecker
             if(isInputConfigTranslatable(input)){
                 input = input[inputConfigTranslateSymbol]();
             }
-            else if(isModelConfigTranslatable(input)){
-                input = input[modelConfigTranslateSymbol]();
+            else if(isModelTranslatable(input)){
+                input = input[modelTranslateSymbol]();
             }
 
             if(Array.isArray(input)){
@@ -649,7 +638,7 @@ export default class ConfigChecker
                         `${target.toString()} to define a single input model the array must have exactly one item.`));
                 }
             }
-            else if(isReusableModel(input)){
+            else if(isOptionalModel(input) || isExplicitModel(input)){
                 this.checkSingleInput(input,target);
             }
             else {
@@ -684,11 +673,11 @@ export default class ConfigChecker
     private checkOptionalRecommendation(keys: string[], input: ParamInput, target: Target) {
         let wasLastOptional = false;
         for (let i = keys.length - 1; i >= 0; i--) {
-            if (input[keys[i]][modelOptionalSymbol] !== undefined && input[keys[i]][modelOptionalSymbol]) {
+            if (isOptionalModel(input[keys[i]])) {
                 if ((keys.length - 1) !== i && !wasLastOptional) {
                     Logger.consoleLogConfigWarning(
                         ConfigNames.App,
-                        `${target.toString()} input: '${keys[i]}', It is recommended to set the optional parameters at the first input level at the end.`
+                        `${target.toString()} input: '${keys[i]}', It is recommended to set the optional parameters in a parm based input at the end.`
                     );
                     break;
                 }
@@ -699,7 +688,7 @@ export default class ConfigChecker
         }
     }
 
-    private checkArrayShortCut(value, target: Target, rememberCache: Model[]) {
+    private checkArrayModel(value, target: Target, rememberCache: Model[]) {
         if (value.length === 0) {
             this.ceb.addError(new ConfigError(ConfigNames.App,
                 `${target.toString()} you have to specify an array body.`));
@@ -707,16 +696,14 @@ export default class ConfigChecker
             this.checkModel(value[0], target.addPath('ArrayItem'), rememberCache);
         } else if (value.length === 2) {
             if (typeof value[1] !== 'object') {
-                const targetArrayElement2 = target.setExtraInfo('Array Shortcut Element 2');
+                const targetArrayElement2 = target.setExtraInfo('ArraySettings');
                 this.ceb.addError(new ConfigError(ConfigNames.App,
-                    `${targetArrayElement2.toString()} the second shortcut item should be from type object and can specify rules for the array. Given typ is: '${typeof value[1]}'`));
-            } else {
-                this.checkOptionalArrayWarning(value[1],target);
+                    `${targetArrayElement2.toString()} the second element should be from type object and can specify settings for the array model. Given typ is: '${typeof value[1]}'`));
             }
             this.checkModel(value[0], target.addPath('ArrayItem'), rememberCache);
         } else {
             this.ceb.addError(new ConfigError(ConfigNames.App,
-                `${target.toString()} invalid shortcut length: '${value.length}', 2 values are valid. First, specify the body and second to specify rules.`));
+                `${target.toString()} invalid array model length: '${value.length}', 2 values are valid. First, specify the body and second to specify settings.`));
         }
     }
 
@@ -728,8 +715,10 @@ export default class ConfigChecker
      * @param target
      * @param rememberCache
      */
-    private checkModel(value: Model, target: Target, rememberCache: Model[] = []) {
-        value = resolveModelConfigTranslatable(value);
+    private checkModel(value: Model | AnyModelTranslatable, target: Target, rememberCache: Model[] = []) {
+        value = resolveIfModelTranslatable(value);
+        const isOptional = isOptionalModel(value);
+        value = unwrapIfOptionalModel(value);
 
         if(typeof value === 'object'){
             //check circle dependencies
@@ -745,32 +734,24 @@ export default class ConfigChecker
                 writable: false
             });
 
-            const modelId = value[modelIdSymbol];
-            if(modelId !== undefined){
-                if(this.checkedModelIds.includes(modelId)) return;
-                this.checkedModelIds.push(modelId);
-            }
-
             if(Array.isArray(value)){
                 //model array shortcut
                 rememberCache.push(value);
-                this.checkArrayShortCut(value, target, rememberCache);
+                this.checkArrayModel(value, target, rememberCache);
             }
             else {
-                this.checkOptionalArrayWarning(value,target);
+                if(isOptional && target.getLastPath() === 'ArrayItem') {
+                    Logger.consoleLogConfigWarning(
+                        ConfigNames.App,
+                        `${target.toString()} An optional model in an array is useless.`
+                    );
+                }
                 //check input
                 if (value.hasOwnProperty(nameof<ObjectModel>(s => s.properties))) {
                     //is object model
                     rememberCache.push(value);
                     this.checkObjectModel(value as ObjectModel, target, rememberCache);
-                } else if (value.hasOwnProperty(nameof<ArrayModel>(s => s.array))) {
-                    //is array model
-                    rememberCache.push(value);
-                    if (typeof value[nameof<ArrayModel>(s => s.array)] === 'object') {
-                        const inArray = value[nameof<ArrayModel>(s => s.array)];
-                        this.checkModel(inArray,target.addPath('ArrayItem'),rememberCache);
-                    }
-                } else if(value.hasOwnProperty(nameof<AnyOfModel>(s => s.anyOf))) {
+                }  else if(value.hasOwnProperty(nameof<AnyOfModel>(s => s.anyOf))) {
                     //is any of model modifier
                     rememberCache.push(value);
                     const anyOf = value[nameof<AnyOfModel>(s => s.anyOf)];
@@ -791,33 +772,13 @@ export default class ConfigChecker
                 }
                 else {
                     //is value model
-                    this.checkValueModel(value,target);
+                    this.checkValueModel(value as ValueModel,target);
                 }
             }
         }
         else {
             this.ceb.addError(new ConfigError(ConfigNames.App,
-                `${target.toString()} wrong type. Use a variable which references to a model, an object to define an anonymous model or an array shortcut.`));
-        }
-    }
-
-    // noinspection JSMethodCanBeStatic
-    checkOptionalArrayWarning(value: object | boolean,target: Target)
-    {
-        if (
-            target.getLastPath() === 'ArrayItem' && (
-                (typeof value === 'boolean' && value) ||
-                (
-                    typeof value === 'object' &&
-                    typeof value[modelOptionalSymbol] === 'boolean' && target[modelOptionalSymbol]
-                )
-            )
-        )
-        {
-            Logger.consoleLogConfigWarning(
-                ConfigNames.App,
-                `${target.toString()} Optional param in an array is useless.`
-            );
+                `${target.toString()} wrong type. An object was expected that represents an explicit or implicit model.`));
         }
     }
 
@@ -882,8 +843,8 @@ export default class ConfigChecker
 
     private checkValueModel(model: ValueModel, target: Target, inheritanceCheck: boolean = true)
     {
-        target = target.addPath(`(${typeof model[modelNameSymbol] === 'string' ? 
-            model[modelNameSymbol] : 'Anonymous'})`);
+        target = target.addPath(`(${typeof model[explicitModelNameSymbol] === 'string' ? 
+            model[explicitModelNameSymbol] : 'Anonymous'})`);
 
         if(inheritanceCheck){
             if(this.checkAndProcessValueModelInheritance(target,model,model)){
@@ -909,10 +870,10 @@ export default class ConfigChecker
         const prototype = model[modelPrototypeSymbol];
         const prototypeType = typeof prototype;
         if(prototypeType === 'object' || prototypeType === 'function') {
-            const resModel = resolveModelConfigTranslatable(prototype);
+            const resModel = unwrapIfOptionalModel(resolveIfModelTranslatable(prototype));
 
-            target = target.addPath(`extends=>${typeof resModel[modelNameSymbol] === 'string' ?
-                resModel[modelNameSymbol] : 'Anonymous'}`);
+            target = target.addPath(`extends=>${typeof resModel[explicitModelNameSymbol] === 'string' ?
+                resModel[explicitModelNameSymbol] : 'Anonymous'}`);
 
             if(inheritanceRemCache.includes(resModel) || resModel === baseModel){
                 this.ceb.addError(new ConfigError(ConfigNames.App,`${target.toString()} creates a circular value model inheritance.`));

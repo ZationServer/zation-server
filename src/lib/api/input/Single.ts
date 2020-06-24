@@ -4,12 +4,13 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {Model, ModelConfig} from '../../main/config/definitions/parts/inputConfig';
+import {AnyModelTranslatable, Model} from '../../main/config/definitions/parts/inputConfig';
 
 /**
- * Marks a disposable model as a single input model.
+ * Marks model or ModelTranslatable as a single input.
+ * Notice that it is not necessary to mark explicit models as a single input.
  * @param model
  */
-export function $single<T extends Model | ModelConfig>(model: T): [T] {
+export function $single<T extends Model | AnyModelTranslatable>(model: T): [T] {
     return [model];
 }

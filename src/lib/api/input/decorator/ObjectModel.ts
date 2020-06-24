@@ -4,14 +4,13 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {isModelConfigTranslatable, resolveModelConfigTranslatable, updateModelConfigTranslatable} from '../../configTranslatable/modelConfigTranslatable';
+import {isModelTranslatable, resolveIfModelTranslatable, updateModelTranslatable} from '../../configTranslatable/modelTranslatable';
 import CloneUtils                                                         from "../../../main/utils/cloneUtils";
 import {InDecoratorMem, inDM_ConstructorMethodsSymbol, inDM_ModelsSymbol} from "./InDecoratorMem";
-import {createReusableModel}                                              from '../../../main/models/reusableModelCreator';
 // noinspection TypeScriptPreferShortImport
 import {$extends}                                                         from '../Extends';
 import {bag}                                                              from '../../Bag';
-import {AnyReadonly}                                                      from '../../../main/utils/typeUtils';
+import {$model}                                                           from '../Model';
 
 export const classObjectModelSymbol = Symbol();
 
@@ -28,13 +27,12 @@ export function isClassObjectModel(value: any): boolean {
  * That means you can use the class in the input configuration directly.
  * The constructor of the class will be called with the Bag but notice
  * that the input data is not available in the real class constructor.
- * But you can declare other methods and declare them as a constructor
- * with the constructor method decorator.
+ * But you can mark other methods as a constructor with the constructor method decorator.
  * That will give you the possibility to use the input data and create async constructors.
  * You also can add normal methods or properties to the class.
- * You can use these later because the prototype of
+ * You can use them later because the prototype of
  * the input will be set to a new instance of this class.
- * It's also possible to extend another class that is marked as another object model.
+ * It's also possible to extend another class that is marked as an object model.
  * That means the sub-model will inherit all properties,
  * with the possibility to overwrite them.
  * Also, the super-model constructor-decorator-functions will be called before
@@ -60,7 +58,7 @@ export const ObjectModel = (name?: string) => {
         const models = prototype.hasOwnProperty(inDM_ModelsSymbol) && typeof prototype[inDM_ModelsSymbol] === 'object' ?
             prototype[inDM_ModelsSymbol]!: {};
 
-        const objectModel: AnyReadonly = createReusableModel({
+        const objectModel = $model({
             properties: models,
             baseConstruct: async function() {
                 Object.setPrototypeOf(this, Reflect.construct(target, [bag]));
@@ -72,14 +70,14 @@ export const ObjectModel = (name?: string) => {
                 }
                 await Promise.all(promises);
             }
-        }, typeof name === 'string' ? name : target.name);
+        },typeof name === 'string' ? name : target.name)
 
         //extends
         const proto = Object.getPrototypeOf(target);
-        if(isModelConfigTranslatable(proto) || typeof proto !== 'function') {
-            $extends(objectModel,resolveModelConfigTranslatable(proto));
+        if(isModelTranslatable(proto) || typeof proto !== 'function') {
+            $extends(objectModel,resolveIfModelTranslatable(proto));
         }
 
-        updateModelConfigTranslatable(target,() => objectModel);
+        updateModelTranslatable(target,() => objectModel);
     }
 };

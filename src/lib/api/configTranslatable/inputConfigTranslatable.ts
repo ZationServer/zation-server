@@ -36,9 +36,7 @@ export const isInputConfigTranslatable = (obj: any): obj is InputConfigTranslata
  * In case of a InputConfigTranslatable object,
  * it will return the resolved input config otherwise, it returns the object self.
  */
-export function resolveInputConfigTranslatable(obj: InputConfigTranslatable | ParamInput | SingleModelInput): ParamInput | SingleModelInput {
-    if(isInputConfigTranslatable(obj)){
-        return obj[inputConfigTranslateSymbol]();
-    }
-    return obj as (ParamInput | SingleModelInput);
+export function resolveIfInputConfigTranslatable<T>(obj: T): T extends InputConfigTranslatable ? ParamInput | SingleModelInput : T {
+    if(isInputConfigTranslatable(obj)) return obj[inputConfigTranslateSymbol]() as any;
+    return obj as any;
 }

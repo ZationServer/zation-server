@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {AnyOfModel, ArrayModel, ObjectModel, ParamInput, SingleModelInput} from '../config/definitions/parts/inputConfig';
+import {AnyOfModel, ObjectModel, ParamInput, SingleModelInput} from '../config/definitions/parts/inputConfig';
 
 export default class InputUtils
 {
@@ -36,10 +36,10 @@ export default class InputUtils
                         tempConfig = tempConfig[nameof<AnyOfModel>(s => s.anyOf)];
                         continue;
                     }
-                    else if(tempConfig.hasOwnProperty(nameof<ArrayModel>(s => s.array))){
+                    else if(Array.isArray(tempConfig)){
                         if(k === 'type'){
                             //resolve array
-                            tempConfig = tempConfig[nameof<ArrayModel>(s => s.array)];
+                            tempConfig = tempConfig[0];
                             i++;
                             //param based already false.
                             continue;

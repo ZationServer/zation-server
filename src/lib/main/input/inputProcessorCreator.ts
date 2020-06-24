@@ -85,10 +85,11 @@ export default class InputProcessorCreator
      * Creates a closure to process a array model.
      * @param arrayModel
      */
-    static createArrayModelProcessor(arrayModel: ArrayModel & ModelPreparationMem): InputProcessFunction
+    static createArrayModelProcessor(arrayModel: ArrayModel): InputProcessFunction
     {
-        const arrayInputConfig = (arrayModel.array as Model & ModelPreparationMem);
-        const hasConvert = typeof arrayModel.convert === 'function';
+        const arrayInner = (arrayModel[0] as Model & ModelPreparationMem);
+        const arraySettings = arrayModel[1] || {};
+        const hasConvert = typeof arraySettings.convert === 'function';
 
         return async (srcObj, srcKey, currentPath, processInfo) => {
             const input = srcObj[srcKey];
@@ -100,7 +101,7 @@ export default class InputProcessorCreator
                     const promises: Promise<any>[] = [];
                     //input reference so we can return it normal
                     for(let i = 0; i < input.length; i++) {
-                        promises.push(arrayInputConfig._process
+                        promises.push(arrayInner._process
                         (input,i,(currentPath === '' ? `${i}`: `${currentPath}.${i}`),processInfo));
                     }
                     await Promise.all(promises);
@@ -112,7 +113,7 @@ export default class InputProcessorCreator
                         hasConvert)
                     {
                         processInfo.processTaskList.push(async () => {
-                            srcObj[srcKey] = await (arrayModel.convert as ConvertArrayFunction)(input);
+                            srcObj[srcKey] = await (arraySettings.convert as ConvertArrayFunction)(input);
                         });
                     }
                 }
@@ -136,7 +137,7 @@ export default class InputProcessorCreator
      * Creates a closure to process a anyOf model.
      * @param anyOfModel
      */
-    static createAnyOfModelProcessor(anyOfModel: AnyOfModel & ModelPreparationMem): InputProcessFunction
+    static createAnyOfModelProcessor(anyOfModel: AnyOfModel): InputProcessFunction
     {
         const anyOf = anyOfModel.anyOf;
         const breakIterator = Iterator.createBreakIterator(anyOf);
@@ -247,8 +248,8 @@ export default class InputProcessorCreator
                     {
                         //is this input optional?
                         //or is it really missing?
-                        const {defaultValue,isOptional} = (props[propName] as ModelPreparationMem)._optionalInfo;
-                        if(!isOptional){
+                        const {defaultValue,optional} = (props[propName] as ModelPreparationMem)._optionalInfo;
+                        if(!optional){
                             //oh its missing!
                             errorBag.addBackError(new BackError
                                 (
@@ -347,8 +348,8 @@ export default class InputProcessorCreator
                             ._process(input,paramName,(currentPath+paramName),processInfo));
                     }
                     else {
-                        const {defaultValue,isOptional} = (paramInputConfig[paramName] as ModelPreparationMem)._optionalInfo;
-                        if(!isOptional){
+                        const {defaultValue,optional} = (paramInputConfig[paramName] as ModelPreparationMem)._optionalInfo;
+                        if(!optional){
                             //ups something is missing
                             processInfo.errorBag.addBackError(new BackError(MainBackErrors.inputParamIsMissing,
                                 {
@@ -385,8 +386,8 @@ export default class InputProcessorCreator
                         })());
                     }
                     else {
-                        const {defaultValue,isOptional} = (paramInputConfig[paramName] as ModelPreparationMem)._optionalInfo;
-                        if(!isOptional){
+                        const {defaultValue,optional} = (paramInputConfig[paramName] as ModelPreparationMem)._optionalInfo;
+                        if(!optional){
                             //ups something is missing
                             processInfo.errorBag.addBackError(new BackError(MainBackErrors.inputParamIsMissing,
                                 {
@@ -429,8 +430,8 @@ export default class InputProcessorCreator
                     ._process(srcObj,srcKey,currentPath,processInfo);
             }
             else {
-                const {defaultValue,isOptional} = (modelDefinition as ModelPreparationMem)._optionalInfo;
-                if(!isOptional){
+                const {defaultValue,optional} = (modelDefinition as ModelPreparationMem)._optionalInfo;
+                if(!optional){
                     //ups missing
                     processInfo.errorBag.addBackError(new BackError(MainBackErrors.inputIsMissing));
                 }

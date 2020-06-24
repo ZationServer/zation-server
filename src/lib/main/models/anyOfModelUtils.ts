@@ -4,9 +4,9 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ModelConfig}     from '../config/definitions/parts/inputConfig';
-import {modelNameSymbol} from '../constants/model';
+import {ImplicitModel}                          from '../config/definitions/parts/inputConfig';
+import {ExplicitModel, explicitModelNameSymbol} from './explicitModel';
 
-export function processAnyOfKey(key: string,value: ModelConfig,isArray: boolean): string {
-    return isArray ? (typeof value[modelNameSymbol] === 'string' ? value[modelNameSymbol]: key) : key;
+export function processAnyOfKey(key: string, value: ExplicitModel | ImplicitModel, isArray: boolean): string {
+    return isArray ? (typeof value[explicitModelNameSymbol] === 'string' ? value[explicitModelNameSymbol]: key) : key;
 }

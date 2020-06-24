@@ -6,19 +6,17 @@ Copyright(c) Luca Scaringella
 
 import {
     AnyOfModel,
-    ArrayModel,
     InputConfig,
     ParamInput,
     ObjectModel,
     ValueModel,
-    SingleModelInput,
+    SingleModelInput, ImplicitModel, Model
 } from '../definitions/parts/inputConfig';
 import ObjectUtils        from "../../utils/objectUtils";
 import Iterator           from "../../utils/iterator";
 import {OtherLoadedConfigSet, OtherPrecompiledConfigSet} from "../manager/configSets";
 import InputProcessorCreator, {Processable}              from '../../input/inputProcessorCreator';
-import OptionalProcessor           from "../../input/optionalProcessor";
-import ZationConfig                from "../manager/zationConfig";
+import ZationConfig                                      from "../manager/zationConfig";
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig}                                     from "../definitions/parts/controllerConfig";
 import {ControllerClass}                                      from "../../../api/Controller";
@@ -29,9 +27,8 @@ import {PrecompiledEvents, Events}                            from '../definitio
 import FuncUtils                                              from '../../utils/funcUtils';
 import {PrecompiledMiddleware}                                from '../definitions/parts/middleware';
 import {modelPrototypeSymbol}                                 from '../../constants/model';
-import {isReusableModel}                                      from '../../models/reusableModelCreator';
 import {inputConfigTranslateSymbol, isInputConfigTranslatable}                                 from '../../../api/configTranslatable/inputConfigTranslatable';
-import {isModelConfigTranslatable, modelConfigTranslateSymbol, resolveModelConfigTranslatable} from '../../../api/configTranslatable/modelConfigTranslatable';
+import {isModelTranslatable, modelTranslateSymbol, resolveIfModelTranslatable}                 from '../../../api/configTranslatable/modelTranslatable';
 import {AnyFunction}                                                                           from '../../utils/typeUtils';
 import {setValueReplacer}                                                                      from '../../utils/valueReplacer';
 import {AnyDataboxClass}                                                                       from '../../../api/databox/AnyDataboxClass';
@@ -43,11 +40,19 @@ import {systemChannels}                                                         
 import {ReceiverConfig}                                                                        from '../definitions/parts/receiverConfig';
 import {systemReceivers}                                                                       from '../../receiver/systemReceivers/systemReceivers.config';
 import {ReceiverClass}                                                                         from '../../../api/Receiver';
+import {isOptionalModel, unwrapIfOptionalModel}                                                from '../../models/optionalModel';
+import {ExplicitModel, isExplicitModel}                                                        from '../../models/explicitModel';
 
 export interface ModelPreparationMem extends Processable{
-    _optionalInfo: {isOptional: boolean,defaultValue: any}
-    _pcStep1: boolean,
-    _pcStep2: boolean
+    _optionalInfo: {optional: boolean,defaultValue: any};
+    /**
+     * Pre compiled
+     */
+    _pc: boolean;
+    /**
+     * Resolved model translatable
+     */
+    _rmt: boolean;
 }
 
 export default class ConfigPrecompiler
@@ -160,221 +165,128 @@ export default class ConfigPrecompiler
         this.configs.appConfig.middleware = res;
     }
 
-    private precompileObjectProperties(obj: ObjectModel): void
+    private modelPrecompile(model: object): void
     {
-        const properties = obj.properties;
-        for(const propName in properties) {
-            if (properties.hasOwnProperty(propName)) {
-                this.modelPrecompileStep1(propName,properties);
-            }
-        }
-    }
+        if(model && (model as unknown as ModelPreparationMem)._pc){return;}
+        Object.defineProperty(model,nameof<ModelPreparationMem>(s => s._pc),{
+            value: true,
+            enumerable: false,
+            writable: false,
+            configurable: false
+        });
 
-    /**
-     * The first model pre-compile step that will pre-compile value models.
-     * Also, it will convert the array short syntax to an array model and
-     * resolve config translatable objects.
-     * @param key
-     * @param obj
-     */
-    private modelPrecompileStep1(key: string, obj: object): void
-    {
-        //set resolved model.
-        obj[key] = resolveModelConfigTranslatable(obj[key]) as ObjectModel;
+        const directModel = unwrapIfOptionalModel(model);
+        if(typeof directModel !== "object") return;
 
-        const nowValue = obj[key];
+        Object.defineProperty(model,nameof<ModelPreparationMem>(s => s._optionalInfo),{
+            value: this.processOptionalInfo(model,directModel),
+            enumerable: false,
+            writable: false,
+            configurable: false
+        });
 
-        if(Array.isArray(nowValue))
-        {
-            let inArray = {};
-            let needArrayPreCompile = false;
+        if(Array.isArray(directModel)){
+            this.modelPrecompile(directModel);
 
-            if(typeof nowValue[0] === 'object' || Array.isArray(nowValue[0])) {
-                inArray = nowValue[0];
-                needArrayPreCompile = true;
-            }
-
-            let arrayExtras = {};
-            if(nowValue.length === 2 && typeof nowValue[1] === 'object') {
-                arrayExtras = nowValue[1];
-            }
-
-            obj[key] = arrayExtras;
-            obj[key][nameof<ArrayModel>(s => s.array)] = inArray;
-
-            if(needArrayPreCompile) {
-                this.modelPrecompileStep1(nameof<ArrayModel>(s => s.array),obj[key]);
-            }
-        }
-        else if(typeof nowValue === "object")
-        {
-            if((nowValue as unknown as ModelPreparationMem)._pcStep1){
-                return;
-            }
-
-            if(nowValue.hasOwnProperty(nameof<ObjectModel>(s => s.properties))) {
-                //isObject
-                //check all properties of object.
-                this.precompileObjectProperties(nowValue);
-
-            }
-            else if(nowValue.hasOwnProperty(nameof<ArrayModel>(s => s.array))) {
-                //Array, check body.
-                this.modelPrecompileStep1(nameof<ArrayModel>(s => s.array),nowValue);
-            }
-            else if(nowValue.hasOwnProperty(nameof<AnyOfModel>(s => s.anyOf)))
-            {
-                //anyOf
-                Iterator.iterateSync((key,value,src) => {
-                    this.modelPrecompileStep1(key,src);
-                },nowValue[nameof<AnyOfModel>(s => s.anyOf)]);
-            }
-            else {
-                //value!
-                this.precompileValidationFunctions(nowValue);
-            }
-
-            Object.defineProperty(nowValue,nameof<ModelPreparationMem>(s => s._pcStep1),{
-                value: true,
-                enumerable: false,
-                writable: false,
-                configurable: false
-            });
-        }
-    }
-
-    /**
-     * The second model pre-compile that will resolve the object model and value model inheritance.
-     * That process needs to be done after pre-compile step one because
-     * all string links have to be resolved before duplicate them.
-     * Also, this step will create the underscore process closure for the runtime.
-     * @param value
-     */
-    private modelPrecompileStep2(value: any): void
-    {
-        if(typeof value === "object")
-        {
-            if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._optionalInfo))){
-                Object.defineProperty(value,nameof<ModelPreparationMem>(s => s._optionalInfo),{
-                    value: OptionalProcessor.process(value),
+            if(!model.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
+                Object.defineProperty(model,nameof<ModelPreparationMem>(s => s._process),{
+                    value: InputProcessorCreator.createArrayModelProcessor(directModel),
                     enumerable: false,
                     writable: false,
                     configurable: false
                 });
             }
-
-            if((value as ModelPreparationMem)._pcStep2){
-                return;
-            }
-
-            //check input
-            if(value.hasOwnProperty(nameof<ObjectModel>(s => s.properties)))
-            {
-                //check props
-                const props = value[nameof<ObjectModel>(s => s.properties)];
+        }
+        else {
+            if(directModel.hasOwnProperty(nameof<ObjectModel>(s => s.properties))) {
+                const props = directModel[nameof<ObjectModel>(s => s.properties)];
                 if(typeof props === 'object'){
                     for(const propName in props) {
                         if(props.hasOwnProperty(propName)) {
-                            this.modelPrecompileStep2(props[propName]);
+                            this.modelPrecompile(props[propName]);
                         }
                     }
                 }
 
-                //isObject
-                if(value[modelPrototypeSymbol] !== undefined)
+                if(directModel[modelPrototypeSymbol] !== undefined)
                 {
-                    //extends there
-                    //check super extends before this
-                    //lastExtend
-                    const superObj: ObjectModel = resolveModelConfigTranslatable(value[modelPrototypeSymbol]) as ObjectModel;
+                    //check super extends before
+                    const superModel = directModel[modelPrototypeSymbol];
+                    this.modelPrecompile(superModel);
 
-                    this.modelPrecompileStep2(superObj);
+                    const superDirectModel = unwrapIfOptionalModel(superModel) as ObjectModel;
 
-                    //extend Props
-                    const superProps = superObj.properties;
-                    ObjectUtils.mergeTwoObjects((value as ObjectModel).properties,superProps,false);
+                    //props
+                    const superProps = superDirectModel.properties || {};
+                    ObjectUtils.mergeTwoObjects((directModel as ObjectModel).properties,superProps,false);
 
-                    //check for prototype
-                    const superPrototype = superObj.prototype;
+                    //prototype
+                    const superPrototype = superDirectModel.prototype;
                     if(superPrototype){
-                        if(!value[nameof<ObjectModel>(s => s.prototype)]){
-                            value[nameof<ObjectModel>(s => s.prototype)] = superPrototype;
+                        if(!directModel[nameof<ObjectModel>(s => s.prototype)]){
+                            directModel[nameof<ObjectModel>(s => s.prototype)] = superPrototype;
                         }
                         else {
                             // flat clone.
-                            (value as ObjectModel).prototype = {...(value as ObjectModel).prototype};
-                            Object.setPrototypeOf(value[nameof<ObjectModel>(s => s.prototype)],superPrototype);
+                            (directModel as ObjectModel).prototype = {...(directModel as ObjectModel).prototype};
+                            Object.setPrototypeOf(directModel[nameof<ObjectModel>(s => s.prototype)],superPrototype);
                         }
                     }
 
-                    //extend construct
-                    const superConstruct = typeof superObj.construct === 'function' ? superObj.construct : async () => {};
-                    const currentConstruct = value[nameof<ObjectModel>(s => s.construct)];
-                    if(typeof currentConstruct === 'function') {
-                        value[nameof<ObjectModel>(s => s.construct)] = async function(){
-                            await superConstruct.call(this);
-                            await currentConstruct.call(this);
-                        };
-                    }
-                    else {
-                        value[nameof<ObjectModel>(s => s.construct)] = async function(){
-                            await superConstruct.call(this);
-                        };
+                    //construct
+                    const superConstruct = superDirectModel.construct;
+                    const currentConstruct = directModel[nameof<ObjectModel>(s => s.construct)];
+                    if(typeof superConstruct === 'function') {
+                        if(typeof currentConstruct === 'function'){
+                            directModel[nameof<ObjectModel>(s => s.construct)] = async function(){
+                                await superConstruct.call(this);
+                                await currentConstruct.call(this);
+                            };
+                        }
+                        else {
+                            directModel[nameof<ObjectModel>(s => s.construct)] = async function(){
+                                await superConstruct.call(this);
+                            };
+                        }
                     }
 
-                    //extend convert
-                    const superConvert =
-                        typeof superObj.convert === 'function' ? superObj.convert : async (obj) => {return obj;};
-                    const currentConvert = value[nameof<ObjectModel>(s => s.convert)];
-                    if(typeof currentConvert === 'function') {
-                        value[nameof<ObjectModel>(s => s.convert)] = async (obj) => {
-                            return currentConvert((await superConvert(obj)));
-                        };
-                    }
-                    else {
-                        value[nameof<ObjectModel>(s => s.convert)] = async (obj) => {
-                            return superConvert(obj);
-                        };
+                    //convert
+                    const superConvert = superDirectModel.convert;
+                    const currentConvert = directModel[nameof<ObjectModel>(s => s.convert)];
+                    if(typeof superConvert === 'function'){
+                        if(typeof currentConvert === 'function') {
+                            directModel[nameof<ObjectModel>(s => s.convert)] = async (obj) => {
+                                return currentConvert((await superConvert(obj)));
+                            };
+                        }
+                        else {
+                            directModel[nameof<ObjectModel>(s => s.convert)] = async (obj) => {
+                                return superConvert(obj);
+                            };
+                        }
                     }
 
                     //remove extension
-                    value[modelPrototypeSymbol] = undefined;
+                    directModel[modelPrototypeSymbol] = undefined;
                 }
 
-                if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
-                    Object.defineProperty(value,nameof<ModelPreparationMem>(s => s._process),{
-                        value: InputProcessorCreator.createObjectModelProcessor(value),
+                if(!model.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
+                    Object.defineProperty(model,nameof<ModelPreparationMem>(s => s._process),{
+                        value: InputProcessorCreator.createObjectModelProcessor(directModel as ObjectModel),
                         enumerable: false,
                         writable: false,
                         configurable: false
                     });
                 }
             }
-            else if(value.hasOwnProperty(nameof<ArrayModel>(s => s.array)))
-            {
-                //is array
-                const inArray = value[nameof<ArrayModel>(s => s.array)];
-                this.modelPrecompileStep2(inArray);
-
-                if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
-                    Object.defineProperty(value,nameof<ModelPreparationMem>(s => s._process),{
-                        value: InputProcessorCreator.createArrayModelProcessor(value),
-                        enumerable: false,
-                        writable: false,
-                        configurable: false
-                    });
-                }
-            }
-            else if(value.hasOwnProperty(nameof<AnyOfModel>(s => s.anyOf)))
-            {
-                //any of
+            else if(directModel.hasOwnProperty(nameof<AnyOfModel>(s => s.anyOf))) {
                 Iterator.iterateSync((key,value) => {
-                    this.modelPrecompileStep2(value);
-                },value[nameof<AnyOfModel>(s => s.anyOf)]);
+                    this.modelPrecompile(value);
+                },directModel[nameof<AnyOfModel>(s => s.anyOf)]);
 
-                if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
-                    Object.defineProperty(value,nameof<ModelPreparationMem>(s => s._process),{
-                        value: InputProcessorCreator.createAnyOfModelProcessor(value),
+                if(!model.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
+                    Object.defineProperty(model,nameof<ModelPreparationMem>(s => s._process),{
+                        value: InputProcessorCreator.createAnyOfModelProcessor(directModel as AnyOfModel),
                         enumerable: false,
                         writable: false,
                         configurable: false
@@ -382,38 +294,96 @@ export default class ConfigPrecompiler
                 }
             }
             else {
-                //value
-                this.precompileValueExtend(value,value);
+                this.precompileValueModelInheritance(directModel as ValueModel);
+                this.precompileValidationFunctions(directModel as ValueModel);
 
-                if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
-                    Object.defineProperty(value,nameof<ModelPreparationMem>(s => s._process),{
-                        value: InputProcessorCreator.createValueModelProcessor(value),
+                if(!model.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
+                    Object.defineProperty(model,nameof<ModelPreparationMem>(s => s._process),{
+                        value: InputProcessorCreator.createValueModelProcessor(directModel as ValueModel),
                         enumerable: false,
                         writable: false,
                         configurable: false
                     });
                 }
             }
-
-            Object.defineProperty(value,nameof<ModelPreparationMem>(s => s._pcStep2),{
-                value: true,
-                enumerable: false,
-                writable: false,
-                configurable: false
-            });
         }
     }
 
     /**
      * A function that will recursively resolve the inheritance of value models.
-     * @param mainValue
-     * @param exValueConfig
+     * @param model
      */
-    private precompileValueExtend(mainValue: ValueModel, exValueConfig: ValueModel) {
-        const proto = exValueConfig[modelPrototypeSymbol];
+    private precompileValueModelInheritance(model: ValueModel) {
+        const proto = unwrapIfOptionalModel(resolveIfModelTranslatable(model[modelPrototypeSymbol]));
         if(proto !== undefined) {
-            ObjectUtils.mergeTwoObjects(mainValue,proto);
-            return this.precompileValueExtend(mainValue,proto);
+            //first super
+            this.precompileValueModelInheritance(proto as ValueModel);
+            ObjectUtils.mergeTwoObjects(model,proto);
+            model[modelPrototypeSymbol] = undefined;
+        }
+    }
+
+    private processOptionalInfo(model: Model, directModel: ImplicitModel | ExplicitModel): {optional: boolean,defaultValue: any} {
+        //fallback
+        let optional = false;
+        let defaultValue = undefined;
+
+        if(isOptionalModel(model)){
+            optional = true;
+            defaultValue = model.default;
+        }
+        else if(directModel.hasOwnProperty(nameof<AnyOfModel>(s => s.anyOf))) {
+            Iterator.iterateSync((_, value) => {
+                if(isOptionalModel(value)){
+                    optional = true;
+                    defaultValue = value.default;
+                    //break;
+                    return true;
+                }
+            },directModel[nameof<AnyOfModel>(s => s.anyOf)]);
+        }
+        return {optional, defaultValue};
+    }
+
+    /**
+     * @param obj
+     * @param key
+     */
+    private resolveTranslatableModels(obj: object,key: string | number | symbol): void
+    {
+        const model = resolveIfModelTranslatable(obj[key]);
+        obj[key] = model;
+
+        if(model && (model as unknown as ModelPreparationMem)._rmt){return;}
+        Object.defineProperty(model,nameof<ModelPreparationMem>(s => s._rmt),{
+            value: true,
+            enumerable: false,
+            writable: false,
+            configurable: false
+        });
+
+        const directModel = unwrapIfOptionalModel(model);
+        if(typeof directModel !== 'object') return;
+        if(Array.isArray(directModel)) {
+           this.resolveTranslatableModels(directModel,0);
+        }
+        else {
+            if(directModel.hasOwnProperty(nameof<ObjectModel>(s => s.properties))) {
+                const properties = (directModel as ObjectModel).properties;
+                for(const propName in properties) {
+                    if (properties.hasOwnProperty(propName)) {
+                        this.resolveTranslatableModels(properties,propName);
+                    }
+                }
+            }
+            else if(directModel.hasOwnProperty(nameof<AnyOfModel>(s => s.anyOf))) {
+                Iterator.iterateSync((key,value,src) => {
+                    this.resolveTranslatableModels(src,key);
+                },directModel[nameof<AnyOfModel>(s => s.anyOf)]);
+            }
+            if(directModel[modelPrototypeSymbol]) {
+                this.resolveTranslatableModels(directModel,modelPrototypeSymbol);
+            }
         }
     }
 
@@ -525,10 +495,10 @@ export default class ConfigPrecompiler
             if(isInputConfigTranslatable(input)){
                 input = input[inputConfigTranslateSymbol]();
             }
-            else if(isModelConfigTranslatable(input)){
-                input = input[modelConfigTranslateSymbol]();
+            else if(isModelTranslatable(input)){
+                input = input[modelTranslateSymbol]();
             }
-            if(isReusableModel(input)){
+            if(isOptionalModel(input) || isExplicitModel(input)){
                 input = [input];
             }
             inputConfig.input = input as any;
@@ -545,9 +515,8 @@ export default class ConfigPrecompiler
     private precompileParamInput(paramInput: ParamInput): void {
         for(const inputName in paramInput) {
             if(paramInput.hasOwnProperty(inputName)) {
-                //resolve values,object,array links and resolve inheritance
-                this.modelPrecompileStep1(inputName,paramInput);
-                this.modelPrecompileStep2(paramInput[inputName]);
+                this.resolveTranslatableModels(paramInput,inputName);
+                this.modelPrecompile(paramInput[inputName]);
             }
         }
         if(!paramInput.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
@@ -561,8 +530,8 @@ export default class ConfigPrecompiler
     }
 
     private precompileSingleInput(singleModelInput: SingleModelInput): void {
-        this.modelPrecompileStep1('0',singleModelInput);
-        this.modelPrecompileStep2(singleModelInput[0]);
+        this.resolveTranslatableModels(singleModelInput,'0');
+        this.modelPrecompile(singleModelInput[0]);
         if(!singleModelInput.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
             Object.defineProperty(singleModelInput,nameof<ModelPreparationMem>(s => s._process),{
                 value: InputProcessorCreator.createSingleInputProcessor(singleModelInput),

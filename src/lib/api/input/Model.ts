@@ -4,23 +4,20 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ModelConfig}         from '../../main/config/definitions/parts/inputConfig';
-import {createReusableModel} from '../../main/models/reusableModelCreator';
-import {AnyReadonly}         from '../../main/utils/typeUtils';
+import {ImplicitModel}         from '../../main/config/definitions/parts/inputConfig';
+import {ExplicitModel, markAsExplicitModel, setExplicitModelName} from '../../main/models/explicitModel';
 
 /**
- * This function creates a reusable model.
- * The advantage against disposable models is that you
- * can reuse the model in different versions.
- * These versions differ by the optionality and the default value.
- * Zation will check all versions of the models like one model.
- * In addition, reusable models can have a name that will help
- * you to identify models in case of errors.
- * Another advantage is that you can use reusable models
- * directly in the input config as single model input.
+ * @description
+ * This function creates an explicit model.
+ * Explicit models can be directly used in the input config as single model input.
+ * You also can attach a name to an explicit model that
+ * will help to identify this model in case of errors.
  * @param model
  * @param name
  */
-export function $model<T extends ModelConfig>(model: T | ModelConfig,name?: string): AnyReadonly {
-    return createReusableModel(model,name) as AnyReadonly;
+export function $model<T extends ImplicitModel>(model: T, name?: string): ExplicitModel<T> {
+    markAsExplicitModel(model);
+    if(name){setExplicitModelName(model,name);}
+    return model;
 }

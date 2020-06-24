@@ -4,20 +4,21 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {Model, ModelConfig} from '../../main/config/definitions/parts/inputConfig';
-import {modelPrototypeSymbol}    from '../../main/constants/model';
+import {modelPrototypeSymbol}           from '../../main/constants/model';
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
-import {resolveModelConfigTranslatable} from '../configTranslatable/modelConfigTranslatable';
-import {updateModel}                    from '../../main/models/modelUpdater';
+import {AnyModelTranslatable, Model}    from '../../main/config/definitions/parts/inputConfig';
+import {resolveIfModelTranslatable}     from '../configTranslatable/modelTranslatable';
 import {isClassObjectModel}             from './decorator/ObjectModel';
 import ConfigBuildError                 from '../../main/config/manager/configBuildError';
 import {AnyReadonly}                    from '../../main/utils/typeUtils';
+import {unwrapIfOptionalModel}          from '../../main/models/optionalModel';
 
 /**
  * This function can be used to let a value model extends another
  * value model or to let an object model extends another object model.
  * Notice that this function cannot be used with class model objects.
- * Notice that the change will happen on the referenced value and not on a clone.
+ * Notice that this extend function will not return a new model and
+ * does change the model instance directly.
  *
  * Value models will inherit all the properties of another value model.
  * But it's able to overwrite properties.
@@ -33,14 +34,19 @@ import {AnyReadonly}                    from '../../main/utils/typeUtils';
  * @param subModel
  * @param superModel
  */
-export function $extends<S extends Model | ModelConfig>(subModel: S | Model,superModel: Model): S extends ModelConfig ? S : AnyReadonly {
+export function $extends<S extends Model | AnyModelTranslatable>(subModel: S | Model,superModel: Model): S extends Model ? S : AnyReadonly {
     if(isClassObjectModel(subModel) || isClassObjectModel(superModel)){
         throw new ConfigBuildError('The $extends function can not be used with class object models. Please use the es6 class extends keyword.')
     }
+    const tmpSubModel = subModel;
 
-    superModel = resolveModelConfigTranslatable(superModel);
+    subModel = unwrapIfOptionalModel(resolveIfModelTranslatable(subModel));
+    superModel = unwrapIfOptionalModel(resolveIfModelTranslatable(superModel));
 
-    return updateModel(subModel,(resolvedModel) => {
-        resolvedModel[modelPrototypeSymbol] = superModel;
-    },false) as S extends ModelConfig ? S : AnyReadonly;
+    if(Array.isArray(subModel)){
+        throw new ConfigBuildError('An array model can not extend another model.')
+    }
+    subModel[modelPrototypeSymbol] = superModel;
+
+    return tmpSubModel as any;
 }

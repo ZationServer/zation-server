@@ -4,18 +4,19 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import BackErrorBag from '../../../../api/BackErrorBag';
-// noinspection TypeScriptPreferShortImport
+import BackErrorBag          from '../../../../api/BackErrorBag';
+// noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ValidationType}      from '../../../constants/validationType.js';
 import {ValidationFunctions} from './validationFunctions';
-import {modelDefaultSymbol, modelOptionalSymbol} from '../../../constants/model';
-import {InputConfigTranslatable} from '../../../../api/configTranslatable/inputConfigTranslatable';
-import {ModelConfigTranslatable} from '../../../../api/configTranslatable/modelConfigTranslatable';
+import {InputConfigTranslatable}                 from '../../../../api/configTranslatable/inputConfigTranslatable';
+import {ModelTranslatable}                       from '../../../../api/configTranslatable/modelTranslatable';
+import {OptionalModel}                           from '../../../models/optionalModel';
+import {ExplicitModel}                           from '../../../models/explicitModel';
 
-export type ModelConfig = ValueModel | ObjectModel | ArrayModel | ArrayModelShortSyntax | AnyOfModel;
-export type Model = ModelConfig | AnyClass | AnyModelConfigTranslatable;
+export type ImplicitModel = ValueModel | ObjectModel | ArrayModel | AnyOfModel;
+export type Model = ExplicitModel | ImplicitModel | OptionalModel;
 
-export interface AnyOfModel extends ModelOptional
+export interface AnyOfModel
 {
     /**
      * With the anyOf model, you can wrap different models together.
@@ -46,7 +47,7 @@ export interface AnyOfModel extends ModelOptional
      * //Input path to second would be: 'userName'
      * ```
      */
-    anyOf: Record<string,Model> | Model[]
+    anyOf: Record<string,(Model | AnyModelTranslatable)> | (Model | AnyModelTranslatable)[]
 }
 
 export interface InputConfig {
@@ -124,21 +125,21 @@ export interface InputConfig {
     allowAnyInput?: boolean;
 }
 
-export type Input = ParamInput | SingleModelInput | AnyClass | AnyInputConfigTranslatable;
+export type Input = ParamInput | SingleModelInput | AnyInputConfigTranslatable | ExplicitModel | OptionalModel;
 
 export interface SingleModelInput {
-    [0]: Model;
+    [0]: (Model | AnyModelTranslatable);
 }
 
 export interface ParamInput {
-    [key: string]: Model;
+    [key: string]: (Model | AnyModelTranslatable);
 }
 
 export type ValidateFunction = (value: any, backErrorBag: BackErrorBag, path: string, type: string | undefined) => Promise<void> | void;
 export type ConvertValueFunction = (value: any) => Promise<any> | any;
 export type GetDateFunction = () => Promise<Date> | Date;
 
-export interface ValueModel extends ValidationFunctions, ModelOptional
+export interface ValueModel extends ValidationFunctions
 {
     /**
      * Set the allowed type of the value model.
@@ -232,28 +233,11 @@ export interface ValueModel extends ValidationFunctions, ModelOptional
     convertType?: boolean;
 }
 
-export interface ModelOptional {
-    /**
-     * @internal
-     * Specifies if this model is optional,
-     * so the input doesn't need to provide the data for it.
-     * @default false
-     */
-    [modelOptionalSymbol]?: boolean;
-    /**
-     * @internal
-     * Define a default value that will be used
-     * if the input had not provided the value.
-     * Only works when the model is optional (with the $optional function).
-     */
-    [modelDefaultSymbol]?: any
-}
-
-export type ObjectProperties = Record<string,Model>;
+export type ObjectProperties = Record<string,(Model | AnyModelTranslatable)>;
 export type ConvertObjectFunction = (obj: Record<string,any>) => Promise<any> | any;
 export type ConstructObjectFunction = (this: Record<string,any>) => Promise<void> | void;
 
-export interface ObjectModel extends ModelOptional
+export interface ObjectModel
 {
     /**
      * Specifies the properties of the object.
@@ -328,20 +312,9 @@ export interface ObjectModel extends ModelOptional
     morePropsAllowed?: boolean;
 }
 
-export interface ArrayModel extends ArraySettings
-{
-    /**
-     * Define the model of the items that the array can contain.
-     * This property is required to define an array model.
-     * @example
-     * array: 'name'
-     */
-    array: Model
-}
-
 export type ConvertArrayFunction = (array: any[]) => Promise<any> | any;
 
-export interface ArraySettings extends ModelOptional
+export interface ArraySettings
 {
     /**
      * MinLength defines the minimum length of the input array.
@@ -374,12 +347,12 @@ export interface ArraySettings extends ModelOptional
     convert?: ConvertArrayFunction
 }
 
-export interface ArrayModelShortSyntax extends Array<Model | ArraySettings | undefined>
+export interface ArrayModel extends Array<(Model | AnyModelTranslatable) | ArraySettings | undefined>
 {
     /**
      * Specifies the model of the items that the array can contain.
      */
-    0: Model
+    0: (Model | AnyModelTranslatable)
     /**
      * Define settings of the array model.
      * @default {}
@@ -393,10 +366,5 @@ export interface AnyClass {
     [key: string]: any;
 }
 
-export interface AnyInputConfigTranslatable extends InputConfigTranslatable {
-    [key: string]: any;
-}
-
-export interface AnyModelConfigTranslatable extends ModelConfigTranslatable {
-    [key: string]: any;
-}
+export type AnyInputConfigTranslatable = InputConfigTranslatable | AnyClass;
+export type AnyModelTranslatable = ModelTranslatable | AnyClass;

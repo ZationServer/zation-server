@@ -4,21 +4,15 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ModelConfig}             from '../../main/config/definitions/parts/inputConfig';
-import {createReusableModel}     from '../../main/models/reusableModelCreator';
-import {AnyReadonly}             from '../../main/utils/typeUtils';
+import {ImplicitModel}             from '../../main/config/definitions/parts/inputConfig';
+import {ExplicitModel, markAsExplicitModel, setExplicitModelName} from '../../main/models/explicitModel';
 
 /**
- * This function creates several reusable models.
- * The advantage against disposable models is that you
- * can reuse the model in different versions.
- * These versions differ by the optionality and the default value.
- * Zation will check all versions of the models like one model.
- * In addition, reusable models can have a name that will help
- * you to identify models in case of errors.
- * In this case, the key of each pair will be used as a model name.
- * Another advantage is that you can use reusable models
- * directly in the input config as single model input.
+ * @description
+ * This function creates several explicit models.
+ * Explicit models can be directly used in the input config as single model input.
+ * The key of each pair will be used as an explicit model name.
+ * This will help you to identify the models in case of errors.
  * @param models
  * @example
  * const formModels = $models({
@@ -32,11 +26,16 @@ import {AnyReadonly}             from '../../main/utils/typeUtils';
  *    }
  * });
  */
-export function $models<T extends Record<string,ModelConfig>>(models: T): {readonly [k in keyof T]: AnyReadonly} {
+export function $models<T extends Record<string,ImplicitModel>>(models: T): {readonly [k in keyof T]: ExplicitModel<T[k]>} {
+    const result: Record<string,ExplicitModel> = {};
+    let tmpModelConfig;
     for(const k in models){
         if(models.hasOwnProperty(k)){
-            models[k] = createReusableModel(models[k],k) as any;
+            tmpModelConfig = models[k];
+            markAsExplicitModel(tmpModelConfig);
+            setExplicitModelName(tmpModelConfig,k);
+            result[k] = tmpModelConfig;
         }
     }
-    return models as unknown as {readonly [k in keyof T]: AnyReadonly};
+    return result as {readonly [k in keyof T]: ExplicitModel<T[k]>};
 }
