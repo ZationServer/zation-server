@@ -96,8 +96,7 @@ export default class InputProcessorCreator
             const errorBag = processInfo.errorBag;
 
             if(Array.isArray(input)) {
-
-                if(ValidatorEngine.validateArray(input,arrayModel,currentPath,errorBag)) {
+                if(ValidatorEngine.validateArray(input,arraySettings,currentPath,errorBag)) {
                     const promises: Promise<any>[] = [];
                     //input reference so we can return it normal
                     for(let i = 0; i < input.length; i++) {
