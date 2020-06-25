@@ -32,35 +32,35 @@ const typeLibrary: Record<Exclude<ValidationType,'all'>,TypeValidator> = {
     object: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isObject(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeObject,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeObject,prepareErrorData));
         }
     },
 
     array: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isArray(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeArray,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeArray,prepareErrorData));
         }
     },
 
     string: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isString(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeString,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeString,prepareErrorData));
         }
     },
 
     char: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isChar(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeChar,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeChar,prepareErrorData));
         }
     },
 
     null: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isNull(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeNull,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeNull,prepareErrorData));
         }
     },
 
@@ -68,7 +68,7 @@ const typeLibrary: Record<Exclude<ValidationType,'all'>,TypeValidator> = {
     {
         if(!Number.isInteger(input)){
             if(!(!strictType && EasyValidator.isStringInt(input))) {
-                backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeInt,prepareErrorData));
+                backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeInt,prepareErrorData));
             }
         }
     },
@@ -77,7 +77,7 @@ const typeLibrary: Record<Exclude<ValidationType,'all'>,TypeValidator> = {
     {
         if(!EasyValidator.isFloat(input)) {
             if(!(!strictType && EasyValidator.isStringFloat(input))) {
-                backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeFloat,prepareErrorData));
+                backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeFloat,prepareErrorData));
             }
         }
     },
@@ -86,7 +86,7 @@ const typeLibrary: Record<Exclude<ValidationType,'all'>,TypeValidator> = {
     {
         if(!EasyValidator.isNumber(input)) {
             if(!(!strictType && EasyValidator.isStringNumber(input))) {
-                backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeNumber,prepareErrorData));
+                backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeNumber,prepareErrorData));
             }
         }
     },
@@ -94,14 +94,14 @@ const typeLibrary: Record<Exclude<ValidationType,'all'>,TypeValidator> = {
     date: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isDate(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeDate,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeDate,prepareErrorData));
         }
     },
 
     email: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isEmail(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeEmail,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeEmail,prepareErrorData));
         }
     },
 
@@ -109,7 +109,7 @@ const typeLibrary: Record<Exclude<ValidationType,'all'>,TypeValidator> = {
     {
         if(!EasyValidator.isBoolean(input)) {
             if(!(!strictType && (EasyValidator.isStringBoolean(input) || EasyValidator.isNumberBoolean(input)))) {
-                backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeBoolean,prepareErrorData));
+                backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeBoolean,prepareErrorData));
             }
         }
     },
@@ -117,168 +117,168 @@ const typeLibrary: Record<Exclude<ValidationType,'all'>,TypeValidator> = {
     sha512: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isSha512(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeSha512,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeSha512,prepareErrorData));
         }
     },
 
     sha256: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isSha256(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeSha256,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeSha256,prepareErrorData));
         }
     },
 
     sha384: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isSha384(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeSha384,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeSha384,prepareErrorData));
         }
     },
 
     sha1: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isSha1(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeSha1,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeSha1,prepareErrorData));
         }
     },
 
     md5: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isMd5(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeMd5,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeMd5,prepareErrorData));
         }
     },
 
     hexColor: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isHexColor(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeHexColor,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeHexColor,prepareErrorData));
         }
     },
 
     hexadecimal: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isHexadecimal(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeHexadecimal,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeHexadecimal,prepareErrorData));
         }
     },
 
     ip4: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isIP4(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeIp4,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeIp4,prepareErrorData));
         }
     },
 
     ip6: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isIP6(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeIp6,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeIp6,prepareErrorData));
         }
     },
 
     isbn10: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isISB10(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeIsbn10,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeIsbn10,prepareErrorData));
         }
     },
 
     isbn13: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isISB13(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeIsbn13,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeIsbn13,prepareErrorData));
         }
     },
 
     json: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isJSON(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeJson,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeJson,prepareErrorData));
         }
     },
 
     url: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isUrl(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeUrl,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeUrl,prepareErrorData));
         }
     },
 
     mimeType: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isMimeType(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeMimeType,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeMimeType,prepareErrorData));
         }
     },
 
     macAddress: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isMACAddress(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeMacAddress,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeMacAddress,prepareErrorData));
         }
     },
 
     mobileNumber: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isMobilePhone(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeMobileNumber,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeMobileNumber,prepareErrorData));
         }
     },
 
     uuid3: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isUUID3(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeUuid3,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeUuid3,prepareErrorData));
         }
     },
 
     uuid4: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isUUID4(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeUuid4,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeUuid4,prepareErrorData));
         }
     },
 
     uuid5: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isUUID5(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeUuid5,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeUuid5,prepareErrorData));
         }
     },
 
     base64: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isBase64(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeBase64,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeBase64,prepareErrorData));
         }
     },
 
     ascii: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isAscii(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeAscii,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeAscii,prepareErrorData));
         }
     },
 
     userId: (input, backErrorBag, prepareErrorData) =>
     {
         if(!(EasyValidator.isString(input) || EasyValidator.isNumber(input))) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeUserId,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeUserId,prepareErrorData));
         }
     },
 
     mongoId: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isMongoId(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeMongoId,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeMongoId,prepareErrorData));
         }
     },
 
     latLong: (input, backErrorBag, prepareErrorData) =>
     {
         if(!EasyValidator.isLatLong(input)) {
-            backErrorBag.addBackError(new BackError(ValidatorBackErrors.valueIsNotTypeLatLong,prepareErrorData));
+            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeLatLong,prepareErrorData));
         }
     }
 

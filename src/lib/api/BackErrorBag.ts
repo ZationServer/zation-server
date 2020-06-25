@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import BackErrorConstruct   from "../main/definitions/backErrorConstruct";
+import BackErrorConstruct        from "../main/definitions/backErrorConstruct";
 import BackError, {DryBackError} from './BackError';
 
 export default class BackErrorBag
@@ -14,17 +14,15 @@ export default class BackErrorBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Creates an BackErrorBag.
-     * Here you can collect BackErrors
-     * and throw them later all together.
-     * Then all errors are sent to the client.
+     * Creates a BackErrorBag.
+     * With this bag, you can collect BackErrors and throw them all together.
+     * The client will receive all errors in one package.
      * @example
      * new BackErrorBag(myError,myError2).throw();
-     * @param backError
+     * @param backErrors
      */
-    constructor(...backError: BackError[])
-    {
-        this.backErrors = backError;
+    constructor(...backErrors: BackError[]) {
+        this.backErrors = backErrors;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -42,31 +40,28 @@ export default class BackErrorBag
      * the info object could include what the length of the input is and
      * what the minimum length is.
      */
-    addNewBackError(backErrorConstruct: BackErrorConstruct = {}, info?: object | string): void
-    {
-        this.addBackError(new BackError(backErrorConstruct,info));
+    addNewBackError(backErrorConstruct: BackErrorConstruct = {}, info?: object | string): void {
+        this.add(new BackError(backErrorConstruct,info));
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns all BackErrors from the bag as an BackError array.
+     * Returns all BackErrors of the bag as a BackError array.
      */
-    getBackErrors(): BackError[]
-    {
+    getBackErrors(): BackError[] {
         return this.backErrors;
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Add all BackErrors of an other BackErrorBag to this bag.
-     * @param backErrorBag
+     * Adds all BackErrors of BackErrorBags to this bag.
+     * @param backErrorBags
      */
-    addFromBackErrorBag(...backErrorBag: BackErrorBag[]): void
-    {
-        for(let j = 0;  j < backErrorBag.length; j++) {
-            this.addBackError(...backErrorBag[j].getBackErrors());
+    addFromBackErrorBag(...backErrorBags: BackErrorBag[]): void {
+        for(let j = 0;  j < backErrorBags.length; j++) {
+            this.add(...backErrorBags[j].getBackErrors());
         }
     }
 
@@ -74,11 +69,10 @@ export default class BackErrorBag
     /**
      * @internal
      * @description
-     * This method is used internal!
+     * This method is used internal.
      * @param withDesc
      */
-    _dehydrate(withDesc: boolean): DryBackError[]
-    {
+    _dehydrate(withDesc: boolean): DryBackError[] {
         const obj: DryBackError[] = [];
         for(let i = 0; i < this.backErrors.length; i++) {
             obj.push(this.backErrors[i]._dehydrate(withDesc));
@@ -89,22 +83,19 @@ export default class BackErrorBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Add BackError/s to this bag.
-     * @param backError
+     * Adds BackErrors to this bag.
+     * @param backErrors
      */
-    addBackError(...backError: BackError[]): void
-    {
-        this.backErrors.push(...backError);
+    add(...backErrors: BackError[]): void {
+        this.backErrors.push(...backErrors);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Empty the bag.
-     * So all BackErrors in this bag will be removed.
+     * Empty the bag by removing all BackErrors.
      */
-    emptyBag(): void
-    {
+    empty(): void {
         this.backErrors = [];
     }
 
@@ -113,8 +104,7 @@ export default class BackErrorBag
      * @description
      * Throw this bag if it has at least one BackError.
      */
-    throwIfHasError(): void
-    {
+    throwIfHasError(): void {
         if(this.isNotEmpty()) {
             throw this;
         }
@@ -123,21 +113,18 @@ export default class BackErrorBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Throw this bag.
-     * Does not matter if the bag is empty or not.
+     * Throw this bag no matter if it's empty or not
      */
-    throw(): void
-    {
+    throw(): void {
         throw this;
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the count of BackErrors there are in the bag.
+     * Returns the count of BackErrors.
      */
-    getBackErrorCount(): number
-    {
+    get count(): number {
         return this.backErrors.length;
     }
 
@@ -145,10 +132,9 @@ export default class BackErrorBag
     /**
      * @description
      * Returns if the BackErrorBag is not empty.
-     * It means that the bag hast at least one BackError.
+     * It means that the bag has at least one BackError.
      */
-    isNotEmpty(): boolean
-    {
+    isNotEmpty(): boolean {
         return this.backErrors.length > 0;
     }
 
@@ -157,8 +143,7 @@ export default class BackErrorBag
      * @description
      * Returns if the BackErrorBag is empty.
      */
-    isEmpty(): boolean
-    {
+    isEmpty(): boolean {
         return this.backErrors.length === 0;
     }
 
@@ -167,8 +152,7 @@ export default class BackErrorBag
      * @description
      * Returns the complete information as a string.
      */
-    toString(): string
-    {
+    toString(): string {
         let text = `BackErrorBag-> ${this.backErrors.length} BackErrors  ->\n`;
         for(let i = 0; i < this.backErrors.length; i++)
         {
@@ -178,4 +162,3 @@ export default class BackErrorBag
     }
 
 }
-

@@ -129,7 +129,7 @@ export default class ControllerReqHandler
                             //create backErrorBag
                             const errorBag = new BackErrorBag();
                             if(err instanceof BackError){
-                                errorBag.addBackError(err);
+                                errorBag.add(err);
                             }
                             else{
                                 errorBag.addFromBackErrorBag(err);

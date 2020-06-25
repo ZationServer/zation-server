@@ -79,16 +79,16 @@ export default class ValidatorEngine
                     let typeTmp;
                     const errorBagTemp = new BackErrorBag();
                     for(let i = 0; i < type.length; i++) {
-                        const tempErrorCount = errorBagTemp.getBackErrorCount();
+                        const tempErrorCount = errorBagTemp.count;
                         ValidatorTypes[type[i]](input,errorBagTemp,preparedErrorData,strictType);
-                        if(tempErrorCount === errorBagTemp.getBackErrorCount()) {
+                        if(tempErrorCount === errorBagTemp.count) {
                             foundAValidTyp = true;
                             typeTmp = type[i];
                             break;
                         }
                     }
                     if(!foundAValidTyp) {
-                        errorBag.addBackError(new BackError(ValidatorBackErrors.noValidTypeWasFound,
+                        errorBag.add(new BackError(ValidatorBackErrors.noValidTypeWasFound,
                             {
                                 path: preparedErrorData.path,
                                 value: preparedErrorData.value,
@@ -123,7 +123,7 @@ export default class ValidatorEngine
             const length = arrayConfig.length;
             checks.push((input,errorBag,currentPath) =>  {
                 if(input.length !== length) {
-                    errorBag.addBackError(new BackError(ValidatorBackErrors.arrayNotMatchesWithLength,
+                    errorBag.add(new BackError(ValidatorBackErrors.arrayNotMatchesWithLength,
                         {
                             value: input,
                             path: currentPath,
@@ -137,7 +137,7 @@ export default class ValidatorEngine
             const minLength = arrayConfig.minLength;
             checks.push((input,errorBag,currentPath) => {
                 if(input.length < minLength) {
-                    errorBag.addBackError(new BackError(ValidatorBackErrors.arrayNotMatchesWithMinLength,
+                    errorBag.add(new BackError(ValidatorBackErrors.arrayNotMatchesWithMinLength,
                         {
                             value: input,
                             path: currentPath,
@@ -151,7 +151,7 @@ export default class ValidatorEngine
             const maxLength = arrayConfig.maxLength;
             checks.push((input,errorBag,currentPath) => {
                 if(input.length > maxLength) {
-                    errorBag.addBackError(new BackError(ValidatorBackErrors.arrayNotMatchesWithMaxLength,
+                    errorBag.add(new BackError(ValidatorBackErrors.arrayNotMatchesWithMaxLength,
                         {
                             value: input,
                             path: currentPath,
@@ -163,9 +163,9 @@ export default class ValidatorEngine
 
         const checksLength = checks.length;
         return (input, errorBag, currentPath) => {
-            const tmpErrCount = errorBag.getBackErrorCount();
+            const tmpErrCount = errorBag.count;
             for(let i = 0; i < checksLength; i++) checks[i](input, errorBag, currentPath);
-            return tmpErrCount === errorBag.getBackErrorCount();
+            return tmpErrCount === errorBag.count;
         }
     }
 }

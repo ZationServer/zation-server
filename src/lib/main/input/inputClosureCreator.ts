@@ -89,7 +89,7 @@ export default class InputClosureCreator
                         if(keyPath.length > 0){
                             specificConfig = InputUtils.getModelAtPath(keyPath,inputDefinition as any,(!singleInputModel));
                             if(specificConfig === undefined){
-                                errorBag.addBackError(new BackError(MainBackErrors.pathNotResolvable,
+                                errorBag.add(new BackError(MainBackErrors.pathNotResolvable,
                                     {
                                         path: keyPath,
                                         checkIndex: i
@@ -105,7 +105,7 @@ export default class InputClosureCreator
                         });
                     }
                     else {
-                        errorBag.addBackError(new BackError(MainBackErrors.invalidValidationCheckStructure,
+                        errorBag.add(new BackError(MainBackErrors.invalidValidationCheckStructure,
                             {
                                 checkIndex: i
                             }));

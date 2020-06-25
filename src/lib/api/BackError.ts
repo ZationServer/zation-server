@@ -132,7 +132,7 @@ export default class BackError extends Error
     /**
      * @internal
      * @description
-     * This method is used internal!
+     * This method is used internal.
      * @param withDesc
      */
     _dehydrate(withDesc: boolean = false): DryBackError {
@@ -161,8 +161,7 @@ export default class BackError extends Error
      * Returns the name of the BackError.
      * The name is a specific identifier.
      */
-    getName(): string
-    {
+    getName(): string {
         return this.name;
     }
 
@@ -173,8 +172,7 @@ export default class BackError extends Error
      * The name is a specific identifier.
      * @param name
      */
-    setName(name: string): void
-    {
+    setName(name: string): void {
         this.name = name;
     }
 
@@ -186,8 +184,7 @@ export default class BackError extends Error
      * As an example, the validation errors for a type would belong to the group typeErrors.
      * But for each error, the name is unique, for example, valueIsNotTypeString or valueIsNotTypeEmail.
      */
-    getGroup(): string | undefined
-    {
+    getGroup(): string | undefined {
         return this.group;
     }
 
@@ -200,8 +197,7 @@ export default class BackError extends Error
      * But for each error, the name is unique, for example, valueIsNotTypeString or valueIsNotTypeEmail.
      * @param group
      */
-    setGroup(group: string | undefined): void
-    {
+    setGroup(group: string | undefined): void {
         this.group = group;
     }
 
@@ -210,8 +206,7 @@ export default class BackError extends Error
      * @description
      * Returns the BackError description.
      */
-    getDescription(): string
-    {
+    getDescription(): string {
         return this.description;
     }
 
@@ -221,8 +216,7 @@ export default class BackError extends Error
      * Set the BackError description.
      * @param description
      */
-    setDescription(description: string): void
-    {
+    setDescription(description: string): void {
         this.description = description;
     }
 
@@ -235,8 +229,7 @@ export default class BackError extends Error
      * There some default types,
      * you can see them in the BackErrorBuilder.
      */
-    getType(): string
-    {
+    getType(): string {
         return this.type;
     }
 
@@ -250,8 +243,7 @@ export default class BackError extends Error
      * you can see them in the BackErrorBuilder.
      * @param type
      */
-    setType(type: string): void
-    {
+    setType(type: string): void {
         this.type = type;
     }
 
@@ -262,8 +254,7 @@ export default class BackError extends Error
      * A private BackError only sends its type and
      * whether it is from the zation system.
      */
-    isPrivate(): boolean
-    {
+    isPrivate(): boolean {
         return this.private;
     }
 
@@ -275,8 +266,7 @@ export default class BackError extends Error
      * whether it is from the zation system.
      * @param privateError
      */
-    setPrivate(privateError: boolean): void
-    {
+    setPrivate(privateError: boolean): void {
         this.private = privateError;
     }
 
@@ -289,8 +279,7 @@ export default class BackError extends Error
      * the info object could include what the length of the input is and
      * what the minimum length is.
      */
-    isSendInfo(): boolean
-    {
+    isSendInfo(): boolean {
         return this.sendInfo;
     }
 
@@ -304,8 +293,7 @@ export default class BackError extends Error
      * what the minimum length is.
      * @param sendInfo
      */
-    setSendInfo(sendInfo: boolean): void
-    {
+    setSendInfo(sendInfo: boolean): void {
         this.sendInfo = sendInfo;
     }
 
@@ -318,8 +306,7 @@ export default class BackError extends Error
      * the info object could include what the length of the input is and
      * what the minimum length is.
      */
-    getInfo(): Record<string,any>
-    {
+    getInfo(): Record<string,any> {
         return this.info;
     }
 
@@ -333,8 +320,7 @@ export default class BackError extends Error
      * what the minimum length is.
      * @param info
      */
-    setInfo(info: Record<string,any>): void
-    {
+    setInfo(info: Record<string,any>): void {
         this.info = info;
     }
 
@@ -345,8 +331,7 @@ export default class BackError extends Error
      * This indicates if this BackError is from the main zation system.
      * This is used in the system internal.
      */
-    isFromZationSystem(): boolean
-    {
+    isFromZationSystem(): boolean {
         return this.fromZationSystem;
     }
 
@@ -358,8 +343,7 @@ export default class BackError extends Error
      * This is used in the system internal.
      * @param fromZationSystem
      */
-    setFromZationSystem(fromZationSystem: boolean): void
-    {
+    setFromZationSystem(fromZationSystem: boolean): void {
         this.fromZationSystem = fromZationSystem;
     }
 
@@ -373,4 +357,3 @@ export default class BackError extends Error
        throw this;
     }
 }
-

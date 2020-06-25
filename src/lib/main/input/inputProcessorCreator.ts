@@ -58,11 +58,11 @@ export default class InputProcessorCreator
                 path: currentPath
             };
 
-            const currentErrorCount = errorBag.getBackErrorCount();
+            const currentErrorCount = errorBag.count;
 
             const selectedType = typeValidate(srcObj[srcKey],errorBag,preparedErrorData);
 
-            if(currentErrorCount === errorBag.getBackErrorCount() && convertType){
+            if(currentErrorCount === errorBag.count && convertType){
                 srcObj[srcKey] = ConvertEngine.convert(srcObj[srcKey],selectedType,strictType);
             }
 
@@ -120,7 +120,7 @@ export default class InputProcessorCreator
             }
             else {
                 //ups wrong input we can't processing it
-                errorBag.addBackError(new BackError
+                errorBag.add(new BackError
                     (
                         MainBackErrors.arrayWasExpected,
                         {
@@ -178,7 +178,7 @@ export default class InputProcessorCreator
 
             if(!found) {
                 processInfo.errorBag.addFromBackErrorBag(...tmpBackErrorBags);
-                processInfo.errorBag.addBackError(new BackError(
+                processInfo.errorBag.add(new BackError(
                     ValidatorBackErrors.noAnyOfMatch,
                     {
                         path: currentPath,
@@ -217,7 +217,7 @@ export default class InputProcessorCreator
                     for(const k in input) {
                         if(input.hasOwnProperty(k) && !props.hasOwnProperty(k)) {
                             //ups unknown key
-                            errorBag.addBackError(new BackError
+                            errorBag.add(new BackError
                                 (
                                     MainBackErrors.unknownObjectProperty, {
                                         path: currentpath === '' ? k: `${currentpath}.${k}`,
@@ -251,7 +251,7 @@ export default class InputProcessorCreator
                         const {defaultValue,optional} = (props[propName] as ModelPreparationMem)._optionalInfo;
                         if(!optional){
                             //oh its missing!
-                            errorBag.addBackError(new BackError
+                            errorBag.add(new BackError
                                 (
                                     MainBackErrors.objectPropertyIsMissing,
                                     {
@@ -301,7 +301,7 @@ export default class InputProcessorCreator
             else
             {
                 //ups wrong input we can't processing it
-                errorBag.addBackError(new BackError
+                errorBag.add(new BackError
                     (
                         MainBackErrors.objectWasExpected,
                         {
@@ -337,7 +337,7 @@ export default class InputProcessorCreator
                     srcObj[srcKey] = input;
                 }
                 else if(typeof input !== "object") {
-                    processInfo.errorBag.addBackError(new BackError(MainBackErrors.invalidInputTypeInParamBasedInput,{inputType: typeof input}));
+                    processInfo.errorBag.add(new BackError(MainBackErrors.invalidInputTypeInParamBasedInput,{inputType: typeof input}));
                     return;
                 }
 
@@ -351,7 +351,7 @@ export default class InputProcessorCreator
                         const {defaultValue,optional} = (paramInputConfig[paramName] as ModelPreparationMem)._optionalInfo;
                         if(!optional){
                             //ups something is missing
-                            processInfo.errorBag.addBackError(new BackError(MainBackErrors.inputParamIsMissing,
+                            processInfo.errorBag.add(new BackError(MainBackErrors.inputParamIsMissing,
                                 {
                                     paramName
                                 }));
@@ -365,7 +365,7 @@ export default class InputProcessorCreator
                 //check for unknown input properties
                 for(const inputName in input) {
                     if(input.hasOwnProperty(inputName) && !paramInputConfig.hasOwnProperty(inputName)){
-                        processInfo.errorBag.addBackError(new BackError(MainBackErrors.unknownInputParam,
+                        processInfo.errorBag.add(new BackError(MainBackErrors.unknownInputParam,
                             {
                                 paramName: inputName
                             }));
@@ -389,7 +389,7 @@ export default class InputProcessorCreator
                         const {defaultValue,optional} = (paramInputConfig[paramName] as ModelPreparationMem)._optionalInfo;
                         if(!optional){
                             //ups something is missing
-                            processInfo.errorBag.addBackError(new BackError(MainBackErrors.inputParamIsMissing,
+                            processInfo.errorBag.add(new BackError(MainBackErrors.inputParamIsMissing,
                                 {
                                     paramName: paramKeys[i]
                                 }));
@@ -402,7 +402,7 @@ export default class InputProcessorCreator
                 }
                 //check to much input
                 for(let i = paramKeysLength; i < input.length; i++) {
-                    processInfo.errorBag.addBackError(new BackError(MainBackErrors.inputParamNotAssignable,
+                    processInfo.errorBag.add(new BackError(MainBackErrors.inputParamNotAssignable,
                         {
                             index: i,
                             value: input[i]
@@ -433,7 +433,7 @@ export default class InputProcessorCreator
                 const {defaultValue,optional} = (modelDefinition as ModelPreparationMem)._optionalInfo;
                 if(!optional){
                     //ups missing
-                    processInfo.errorBag.addBackError(new BackError(MainBackErrors.inputIsMissing));
+                    processInfo.errorBag.add(new BackError(MainBackErrors.inputIsMissing));
                 }
                 else {
                     //set default value
