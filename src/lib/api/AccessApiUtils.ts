@@ -9,26 +9,23 @@ import forint, {ForintQuery}                         from "forint";
 import {RawZationToken}                              from '../main/constants/internal';
 
 /**
- * This function can be used to check the access with the token of a client.
- * You can use it in the access check properties,
- * for example, in the controller, databox, or custom channel config.
- * You can check if some specific key-value pairs exist in the token variables.
+ * @description
+ * This function can be used to check the access with the token payload of a client.
+ * You can set that the token payload has to include some specific key-value pairs.
  * @example
- * access: $tokenHasVariables({canCreateItems: true})
- * @param checkProps
+ * access: $tokenPayloadIncludes({canCreateItems: true})
+ * @param paris
  */
-export function $tokenHasVariables(checkProps: Record<string,any>) {
-    const checkKeys = Object.keys(checkProps);
+export function $tokenPayloadIncludes(paris: Record<string,any>) {
+    const checkKeys = Object.keys(paris);
     const checkKeysLength = checkKeys.length;
     return createTokenCheckFunction((token) => {
-        if(token !== null && token.payload !== undefined) {
-            const tokenVariables = token.payload;
+        if(token != null && token.payload !== undefined) {
+            const payload = token.payload;
             let tmpKey;
             for(let i = 0; i < checkKeysLength; i++){
                 tmpKey = checkKeys[i];
-                if(tokenVariables[tmpKey] !== checkProps[tmpKey]){
-                    return false;
-                }
+                if(payload[tmpKey] !== paris[tmpKey]){return false;}
             }
             return true;
         }
@@ -37,25 +34,20 @@ export function $tokenHasVariables(checkProps: Record<string,any>) {
 }
 
 /**
- * This function can be used to check the access with the token of a client.
- * You can use it in the access check properties,
- * for example, in the controller, databox, or custom channel config.
- * You can check if the token variables are matching with a query
- * (it works with the forint library).
+ * This function can be used to check the access with the token payload of a client.
+ * You can set that the token payload has to match with a forint query.
  * @example
- * access: $tokenVariablesMatch({age: {$gt: 18}})
+ * access: $tokenPayloadMatches({age: {$gt: 18}})
  * @param query
  */
-export function $tokenVariablesMatch<T>(query: ForintQuery<T>) {
+export function $tokenPayloadMatches<T>(query: ForintQuery<T>) {
     const checker = forint({[nameof<RawZationToken>(s => s.payload)]: query});
-    return createTokenCheckFunction((token) => checker(token));
+    return createTokenCheckFunction(token => checker(token));
 }
 
 /**
- * This function can be used to check the access with the token of a client.
- * You can use it in the access check properties,
- * for example, in the controller, databox, or custom channel config.
- * You can check if the token user id matches with a specific user id.
+ * This function can be used to check the access with the token user id of a client.
+ * You can set that the token user-id has to match with a specific string or number.
  * @example
  * access: [$userId('luca'),$userId(221,false)]
  * @param id

@@ -22,8 +22,8 @@ import {ControllerConfig}           from "./lib/main/config/definitions/parts/co
 import {StartMode}                  from "./lib/core/startMode";
 import Router                       from "./lib/api/Router";
 import {Register}                   from "./lib/api/component/decorator/Register";
-import {$value, $key, $pair, $all, $any, $contains, $matches}                     from './lib/api/databox/DbApiUtils';
-import {$tokenHasVariables, $tokenVariablesMatch, $userId}                        from './lib/api/AccessApiUtils';
+import {$value, $key, $pair, $all, $any, $contains, $matches}   from './lib/api/databox/DbApiUtils';
+import {$tokenPayloadIncludes, $tokenPayloadMatches, $userId}   from './lib/api/AccessApiUtils';
 import {updateModelTranslatable}                  from './lib/api/configTranslatable/modelTranslatable';
 import {updateInputConfigTranslatable}            from './lib/api/configTranslatable/inputConfigTranslatable';
 import {Model}                      from "./lib/api/input/decorator/Model";
@@ -115,8 +115,8 @@ export {
     $any,
     $matches,
     $userId,
-    $tokenHasVariables,
-    $tokenVariablesMatch,
+    $tokenPayloadIncludes,
+    $tokenPayloadMatches,
     AuthController,
     Controller,
     ControllerConfig,
