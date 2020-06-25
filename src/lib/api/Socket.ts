@@ -720,24 +720,23 @@ export default class Socket<A extends object = any, TP extends object = any>
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Emit to this socket.
+     * Emit to the client socket.
      * If you not only transmit the return value is a promise with the result,
      * and if an error occurs while emitting the error is thrown.
      * @param event
      * @param data
-     * @param onlyTransmit
+     * @param transmit
      * Indicates if you only want to transmit data.
      */
-    emit<T extends boolean>(event: string,data: any,onlyTransmit?: T): T extends true ? void : Promise<any>
-    // noinspection JSUnusedGlobalSymbols
-    emit(event: string,data: any,onlyTransmit: boolean = true): Promise<any> | void {
+    emit<T extends boolean = true>(event: string, data: any, transmit?: T): T extends true ? void : Promise<any>
+    emit(event: string, data: any, transmit: boolean = true): Promise<any> | void {
         event = ZATION_CUSTOM_EVENT_NAMESPACE + event;
-        if(onlyTransmit) {
+        if(transmit) {
             this._rawSocket.emit(event, data);
         }
         else {
             return new Promise<any>((resolve, reject) => {
-                this._rawSocket.emit(event,data,(err, data) => {
+                this._rawSocket.emit(event, data,(err, data) => {
                     err ? reject(err): resolve(data);
                 });
             });
@@ -745,34 +744,34 @@ export default class Socket<A extends object = any, TP extends object = any>
     }
 
     /**
-     * Respond on an emit-event of this socket.
+     * Respond on an emit-event of the client socket.
      * @param event
      * @param handler
      * The function that gets called when the event occurs, parameters are
      * the data and a response function that you can call to respond to the event.
      */
-    on(event: string,handler: OnHandlerFunction){
+    on(event: string, handler: OnHandlerFunction){
         this._rawSocket.on(ZATION_CUSTOM_EVENT_NAMESPACE + event,handler);
     }
 
     /**
-     * Respond on emit-event of this socket but only once.
+     * Respond on an emit-event of the client socket but only once.
      * @param event
      * @param handler
      * The function that gets called when the event occurs, parameters are
      * the data and a response function that you can call to respond to the event.
      */
-    once(event: string,handler: OnHandlerFunction): void {
+    once(event: string, handler: OnHandlerFunction): void {
         this._rawSocket.once(ZATION_CUSTOM_EVENT_NAMESPACE + event,handler);
     }
 
     /**
-     * Removes a specific or all handler from an emit-event of this socket.
+     * Removes a specific or all handlers of an emit-event of the client socket.
      * @param event
      * @param handler
      */
-    off(event: string,handler?: OnHandlerFunction): void {
-        this._rawSocket.off(ZATION_CUSTOM_EVENT_NAMESPACE + event,handler);
+    off(event: string, handler?: OnHandlerFunction): void {
+        this._rawSocket.off(ZATION_CUSTOM_EVENT_NAMESPACE + event, handler);
     }
 
     //Part Handshake
