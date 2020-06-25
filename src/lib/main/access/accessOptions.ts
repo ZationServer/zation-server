@@ -5,17 +5,18 @@ Copyright(c) Luca Scaringella
  */
 
 import {ZationAccess, RawZationToken} from '../constants/internal';
+import {DeepReadonly}                 from 'ts-essentials';
 
 //TokenCheckFunction
 export const tokenCheckFunctionSymbol = Symbol();
-export type TokenCheckFunction = {(token: RawZationToken | null): boolean,[tokenCheckFunctionSymbol]: boolean};
+export type TokenCheckFunction = {(token: DeepReadonly<RawZationToken> | null): boolean,[tokenCheckFunctionSymbol]: boolean};
 
 /**
  * Creates a token check function.
  * It can be used for more advanced use cases.
  * @param checkFunction
  */
-export function createTokenCheckFunction(checkFunction: (token: RawZationToken | null) => boolean): TokenCheckFunction {
+export function createTokenCheckFunction(checkFunction: (token: DeepReadonly<RawZationToken> | null) => boolean): TokenCheckFunction {
     checkFunction[tokenCheckFunctionSymbol] = true;
     return checkFunction as TokenCheckFunction;
 }

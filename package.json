@@ -72,7 +72,7 @@
     "z-uws": "0.15.2",
     "eosjs-ecc": "4.0.4",
     "base64url": "3.0.1",
-    "utility-types": "3.10.0",
+    "ts-essentials": "^7.0.0",
     "zation-client": "1.2.5",
     "zation-service": "0.4.3",
     "zation-bag-extension": "1.4.0"

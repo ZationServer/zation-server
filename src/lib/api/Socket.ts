@@ -27,6 +27,7 @@ import UndefinedUserIdError                   from '../main/error/undefinedUserI
 import {IncomingHttpHeaders, IncomingMessage} from 'http';
 import ApiLevelUtils                          from '../main/apiLevel/apiLevelUtils';
 import {Agent}                                from 'useragent';
+import {DeepReadonly}                         from 'ts-essentials';
 
 type TokenUpdateListener = (oldToken: null | RawZationToken, newToken: null | RawZationToken) => void
 
@@ -369,17 +370,25 @@ export default class Socket<A extends object = any, TP extends object = any>
     /**
      * Returns the token payload of this socket.
      */
-    get tokenPayload(): Partial<TP> | undefined {
+    get tokenPayload(): DeepReadonly<Partial<TP>> | undefined {
         if(!this._auth) return undefined;
-        const payload = this.rawToken!.payload;
-        return payload ? CloneUtils.deepClone(payload) : {};
+        return (this.rawToken!.payload || {}) as DeepReadonly<Partial<TP>>;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * Returns the token payload of this socket.
      * @throws AuthenticationRequiredError if this socket is not authenticated.
      */
-    getTokenPayload(): Partial<TP> {
+    getTokenPayload(): DeepReadonly<Partial<TP>> {
+        return (this.getRawToken().payload || {}) as DeepReadonly<Partial<TP>>;
+    }
+
+    /**
+     * Returns a deep clone of the token payload of this socket.
+     * @throws AuthenticationRequiredError if this socket is not authenticated.
+     */
+    getTokenPayloadClone(): Partial<TP> {
         const payload = this.getRawToken().payload;
         return payload ? CloneUtils.deepClone(payload) : {};
     }
@@ -438,7 +447,7 @@ export default class Socket<A extends object = any, TP extends object = any>
      * @throws AuthenticationRequiredError if the client is not authenticated.
      */
     setTokenPayloadProp(path: string | string[], value: any): Promise<void> {
-        const payload = this.getTokenPayload();
+        const payload = this.getTokenPayloadClone();
         ObjectPath.set(payload,path,value);
         return this.setTokenPayload(payload);
     }
@@ -461,7 +470,7 @@ export default class Socket<A extends object = any, TP extends object = any>
      * @throws AuthenticationRequiredError if the client is not authenticated.
      */
     deleteTokenPayloadProp(path: string | string[]): Promise<void> {
-        const payload = this.getTokenPayload();
+        const payload = this.getTokenPayloadClone();
         ObjectPath.del(payload,path);
         return this.setTokenPayload(payload);
     }
@@ -486,7 +495,7 @@ export default class Socket<A extends object = any, TP extends object = any>
      * @throws AuthenticationRequiredError if the client is not authenticated.
      */
     seqEditTokenPayload(): ObjectPathSequence {
-        return new ObjectPathSequenceImp(this.getTokenPayload(), (payload) =>
+        return new ObjectPathSequenceImp(this.getTokenPayloadClone(), (payload) =>
             this.setTokenPayload(payload));
     }
 

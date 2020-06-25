@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import ExpressCore        = require("express-serve-static-core");
 import {FileLogOptions}     from '../config/definitions/main/mainConfig';
-import {DeepRequired}       from 'utility-types';
+import {DeepRequired}       from 'ts-essentials';
 import {processFileLogPath} from './logWriter';
 
 /**

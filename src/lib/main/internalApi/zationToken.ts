@@ -6,6 +6,7 @@ Copyright(c) Luca Scaringella
 
 import {RawZationToken}  from "../constants/internal";
 import CloneUtils        from '../utils/cloneUtils';
+import {DeepReadonly}    from 'ts-essentials';
 
 export default class ZationToken<TP extends object = any>
 {
@@ -49,8 +50,16 @@ export default class ZationToken<TP extends object = any>
     /**
      * Returns the token payload.
      */
-    getTokenPayload(): Partial<TP> {
-        return CloneUtils.deepClone(this._token.payload!);
+    getTokenPayload(): DeepReadonly<Partial<TP>> {
+        return (this._token.payload || {}) as DeepReadonly<Partial<TP>>;
     }
 
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns a deep clone of the token payload.
+     */
+    getTokenPayloadClone(): Partial<TP> {
+        const payload = this._token.payload;
+        return payload ? CloneUtils.deepClone(payload) : {};
+    }
 }

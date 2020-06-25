@@ -735,7 +735,7 @@ export default class ConfigChecker
             });
 
             if(Array.isArray(value)){
-                //model array shortcut
+                //array model
                 rememberCache.push(value);
                 this.checkArrayModel(value, target, rememberCache);
             }

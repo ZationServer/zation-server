@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import {ServerOptions}                 from "https";
-import {DeepRequired}                  from 'utility-types';
+import {DeepRequired}                  from 'ts-essentials';
 
 export const OPTION_AUTO = 'auto';
 export const OPTION_HALF_AUTO = 'half-auto';

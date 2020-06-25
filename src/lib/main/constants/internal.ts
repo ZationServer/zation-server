@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 export type ZationAccessRecord = Record<ZationAccess,any>;
 export type ZationAccess = 'all' | 'allAuth' | 'allNotAuth';
 
-export interface RawZationToken extends PrepareZationToken{
+export interface RawZationToken extends PrepareZationToken {
     tid: string,
     userId?: string | number,
     exp: number,
