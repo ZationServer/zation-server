@@ -751,7 +751,7 @@ export default class Socket<A extends object = any, TP extends object = any>
      * the data and a response function that you can call to respond to the event.
      */
     on(event: string, handler: OnHandlerFunction){
-        this._rawSocket.on(ZATION_CUSTOM_EVENT_NAMESPACE + event,handler);
+        this._rawSocket.on(ZATION_CUSTOM_EVENT_NAMESPACE + event, handler);
     }
 
     /**
@@ -762,7 +762,7 @@ export default class Socket<A extends object = any, TP extends object = any>
      * the data and a response function that you can call to respond to the event.
      */
     once(event: string, handler: OnHandlerFunction): void {
-        this._rawSocket.once(ZATION_CUSTOM_EVENT_NAMESPACE + event,handler);
+        this._rawSocket.once(ZATION_CUSTOM_EVENT_NAMESPACE + event, handler);
     }
 
     /**
