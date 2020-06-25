@@ -29,6 +29,7 @@ import {
 
 import express      = require('express');
 import {Request , Response} from "express";
+import * as path            from 'path';
 import cookieParser = require('cookie-parser');
 import bodyParser   = require('body-parser');
 import fileUpload   = require('express-fileupload');
@@ -468,7 +469,8 @@ class ZationWorker extends SCWorker
 
         if(this.zc.mainConfig.usePanel) {
             this.app.use([`${serverPath}/panel/*`,`${serverPath}/panel`],
-                express.static(__dirname + '/../public/panel'));
+                express.static(require.resolve('zation-panel')));
+            this.app.use(`/zation/assets/panel`, express.static(path.dirname(require.resolve('zation-panel'))));
         }
 
         this.app.get(`/zation/serverSettings.js`,(req,res) => {

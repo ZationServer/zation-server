@@ -75,7 +75,8 @@
     "ts-essentials": "^7.0.0",
     "zation-client": "1.2.6",
     "zation-service": "0.4.3",
-    "zation-bag-extension": "1.4.0"
+    "zation-bag-extension": "1.4.0",
+    "zation-panel": "0.6.5"
   },
   "devDependencies": {
     "@types/chai": "4.1.7",
