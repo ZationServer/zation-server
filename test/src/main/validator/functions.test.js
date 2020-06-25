@@ -8,7 +8,7 @@ const BackErrorBag       = require("../../../../dist/lib/api/BackErrorBag").defa
 const Base64TestData     = require("../../../testData/base64");
 const ZationConfigStub   = require("../../../stubs/zationConfigFull");
 const {ValidationType}   = require("../../../../dist");
-const {FormatLetters}    = require("../../../../dist/lib/main/constants/validation");
+const {FormatLetters}    = require("../../../../dist/lib/main/definitions/validation");
 const ConfigPreCompiler  = require("../../../../dist/lib/main/config/utils/configPreCompiler").default;
 const {ValidatorLibrary} = require("../../../../dist/lib/main/validator/validatorLibrary");
 const assert             = require("chai").assert;
@@ -43,7 +43,7 @@ describe('Function Validation',() => {
             it('Double not matching regex should produce two errors',() => {
                 const eb = new BackErrorBag;
                 ValidatorFunctions.regex('aba',{onlyNumbers : /^[0-9]*$/,minLength : /^.{6,}$/},eb,{});
-                assert(eb.getBackErrorCount() === 2);
+                assert(eb.count === 2);
             });
 
             it('Double matching regex should produce no error',() => {

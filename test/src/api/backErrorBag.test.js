@@ -29,20 +29,20 @@ describe('Api.BackErrorBag',() => {
        it('IsEmpty',() => {
            const eb = new BackErrorBag();
            assert(eb.isEmpty());
-           eb.addBackError(new BackError());
+           eb.add(new BackError());
            assert(!eb.isEmpty());
        });
 
         it('IsNotEmpty',() => {
             const eb = new BackErrorBag();
             assert(!eb.isNotEmpty());
-            eb.addBackError(new BackError());
+            eb.add(new BackError());
             assert(eb.isNotEmpty());
         });
 
         it('AddBackError',() => {
             const eb = new BackErrorBag();
-            eb.addBackError(new BackError({name : 'error1'}));
+            eb.add(new BackError({name : 'error1'}));
             assert.equal(eb.getBackErrors()[0].name,'error1');
         });
 
@@ -76,20 +76,20 @@ describe('Api.BackErrorBag',() => {
         it('emptyBag',() => {
             const eb = new BackErrorBag(new BackError({name : 'test1'}));
             assert(eb.isNotEmpty());
-            eb.emptyBag();
+            eb.empty();
             assert(eb.isEmpty());
         });
 
         it('getBackErrorCount',() => {
             const eb = new BackErrorBag();
-            assert.equal(eb.getBackErrorCount(),0);
-            eb.addBackError(new BackError({name : 'test1'}));
-            assert.equal(eb.getBackErrorCount(),1);
+            assert.equal(eb.count,0);
+            eb.add(new BackError({name : 'test1'}));
+            assert.equal(eb.count,1);
             eb.addNewBackError({});
             eb.addNewBackError({});
-            assert.equal(eb.getBackErrorCount(),3);
-            eb.emptyBag();
-            assert.equal(eb.getBackErrorCount(),0);
+            assert.equal(eb.count,3);
+            eb.empty();
+            assert.equal(eb.count,0);
         });
 
         it('throw',() => {
