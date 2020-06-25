@@ -90,13 +90,14 @@ export default class InputProcessorCreator
         const arrayInner = (arrayModel[0] as Model & ModelPreparationMem);
         const arraySettings = arrayModel[1] || {};
         const hasConvert = typeof arraySettings.convert === 'function';
+        const arrayValidate = ValidatorEngine.createArrayValidator(arraySettings);
 
         return async (srcObj, srcKey, currentPath, processInfo) => {
             const input = srcObj[srcKey];
             const errorBag = processInfo.errorBag;
 
             if(Array.isArray(input)) {
-                if(ValidatorEngine.validateArray(input,arraySettings,currentPath,errorBag)) {
+                if(arrayValidate(input,errorBag,currentPath)) {
                     const promises: Promise<any>[] = [];
                     //input reference so we can return it normal
                     for(let i = 0; i < input.length; i++) {

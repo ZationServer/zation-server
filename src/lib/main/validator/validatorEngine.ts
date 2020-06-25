@@ -21,6 +21,8 @@ export type ValueTypeValidateFunction =
     (input: any,errorBag: BackErrorBag,preparedErrorData: PreparedErrorData) => string | undefined;
 export type ValueValidateFunction =
     (input: any, errorBag: BackErrorBag, preparedErrorData: PreparedErrorData, type: string | undefined) => Promise<any>;
+export type ArrayValidateFunction =
+    (input: any[],errorBag: BackErrorBag,currentPath: string) => boolean;
 
 export interface PreparedErrorData {
     path: string,
@@ -109,57 +111,61 @@ export default class ValidatorEngine
     }
 
     /**
-     * Validate array model.
-     * @param array
+     * Creates a closure to validate an array.
      * @param arrayConfig
-     * @param currentPath
-     * @param errorBag
      */
-    static validateArray(array,arrayConfig: ArraySettings,currentPath,errorBag)
+    static createArrayValidator(arrayConfig: ArraySettings): ArrayValidateFunction
     {
-        let isOk = true;
+        const checks: ((input: any[],errorBag: BackErrorBag,currentPath: string) => void)[] = [];
+
         if(arrayConfig.length !== undefined)
         {
             const length = arrayConfig.length;
-            if(array.length !== length)
-            {
-                isOk = false;
-                errorBag.addBackError(new BackError(ValidatorBackErrors.arrayNotMatchesWithLength,
-                    {
-                        value: array,
-                        path: currentPath,
-                        length: length
-                    }));
-            }
+            checks.push((input,errorBag,currentPath) =>  {
+                if(input.length !== length) {
+                    errorBag.addBackError(new BackError(ValidatorBackErrors.arrayNotMatchesWithLength,
+                        {
+                            value: input,
+                            path: currentPath,
+                            length: length
+                        }));
+                }
+            })
         }
         if(arrayConfig.minLength !== undefined)
         {
             const minLength = arrayConfig.minLength;
-            if(array.length < minLength)
-            {
-                isOk = false;
-                errorBag.addBackError(new BackError(ValidatorBackErrors.arrayNotMatchesWithMinLength,
-                    {
-                        value: array,
-                        path: currentPath,
-                        minLength: minLength
-                    }));
-            }
+            checks.push((input,errorBag,currentPath) => {
+                if(input.length < minLength) {
+                    errorBag.addBackError(new BackError(ValidatorBackErrors.arrayNotMatchesWithMinLength,
+                        {
+                            value: input,
+                            path: currentPath,
+                            minLength: minLength
+                        }));
+                }
+            });
         }
         if(arrayConfig.maxLength !== undefined)
         {
             const maxLength = arrayConfig.maxLength;
-            if(array.length > maxLength)
-            {
-                isOk = false;
-                errorBag.addBackError(new BackError(ValidatorBackErrors.arrayNotMatchesWithMaxLength,
-                    {
-                        value: array,
-                        path: currentPath,
-                        maxLength: maxLength
-                    }));
-            }
+            checks.push((input,errorBag,currentPath) => {
+                if(input.length > maxLength) {
+                    errorBag.addBackError(new BackError(ValidatorBackErrors.arrayNotMatchesWithMaxLength,
+                        {
+                            value: input,
+                            path: currentPath,
+                            maxLength: maxLength
+                        }));
+                }
+            });
         }
-        return isOk;
+
+        const checksLength = checks.length;
+        return (input, errorBag, currentPath) => {
+            const tmpErrCount = errorBag.getBackErrorCount();
+            for(let i = 0; i < checksLength; i++) checks[i](input, errorBag, currentPath);
+            return tmpErrCount === errorBag.getBackErrorCount();
+        }
     }
 }
