@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 // noinspection TypeScriptPreferShortImport
 import Bag                                from "../Bag";
 import {VersionSystemAccessCheckFunction} from "../../main/systemVersion/systemVersionChecker";
-import {ClientErrorName}                  from "../../main/constants/clientErrorName";
+import {ClientErrorName}                  from "../../main/definitions/clientErrorName";
 import ConfigBuildError                   from "../../main/config/manager/configBuildError";
 import Component, {ComponentClass}        from '../component/Component';
 import Socket                             from '../Socket';

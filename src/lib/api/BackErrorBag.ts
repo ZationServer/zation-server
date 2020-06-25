@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import BackErrorConstruct   from "../main/constants/backErrorConstruct";
+import BackErrorConstruct   from "../main/definitions/backErrorConstruct";
 import BackError, {DryBackError} from './BackError';
 
 export default class BackErrorBag

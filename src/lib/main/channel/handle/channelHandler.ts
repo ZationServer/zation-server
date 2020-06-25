@@ -9,7 +9,7 @@ import {RespondFunction}            from '../../sc/socket';
 import {isValidChannelSubRequest}   from './channelReqUtils';
 import {ChannelPrepare}             from '../channelPrepare';
 import ApiLevelUtils                from '../../apiLevel/apiLevelUtils';
-import {ClientErrorName}            from '../../constants/clientErrorName';
+import {ClientErrorName}            from '../../definitions/clientErrorName';
 import ZationConfig                 from '../../config/manager/zationConfig';
 import Socket                       from '../../../api/Socket';
 

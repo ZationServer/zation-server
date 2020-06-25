@@ -9,7 +9,7 @@ This Marks error in code
 Example try to set custom auth token, but sc is not authenticated.
  */
 
-import BackErrorConstruct from "../constants/backErrorConstruct";
+import BackErrorConstruct from "../definitions/backErrorConstruct";
 import BackError          from "./../../api/BackError";
 
 const codeErrorSymbol = Symbol();

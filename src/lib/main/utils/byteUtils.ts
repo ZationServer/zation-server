@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 // noinspection TypeScriptPreferShortImport
-import {ValidationTypeRecord} from '../constants/validationType';
+import {ValidationTypeRecord} from '../definitions/validationType';
 import {byteLength}           from "byte-length";
 import Base64Utils            from "./base64Utils";
 

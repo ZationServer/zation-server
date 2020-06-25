@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import ChannelCore, {ChPreparedData} from './ChannelCore';
 import Bag                           from '../Bag';
-import {ClientErrorName}             from '../../main/constants/clientErrorName';
+import {ClientErrorName}             from '../../main/definitions/clientErrorName';
 import Socket                        from '../Socket';
 import FuncUtils                     from '../../main/utils/funcUtils';
 import {ErrorEventHolder}            from '../../main/error/errorEventHolder';

@@ -4,10 +4,10 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ErrorGroup}       from "../constants/errorGroup";
+import {ErrorGroup}       from "../definitions/errorGroup";
 // noinspection TypeScriptPreferShortImport
-import {ErrorType}        from "./../constants/errorType";
-import BackErrorConstruct from "../constants/backErrorConstruct";
+import {ErrorType}        from "../definitions/errorType";
+import BackErrorConstruct from "../definitions/backErrorConstruct";
 
 export const ValidatorBackErrors = {
     valueIsNotTypeObject: {

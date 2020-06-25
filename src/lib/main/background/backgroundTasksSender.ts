@@ -8,7 +8,7 @@ import ZationMaster from '../../core/zationMaster';
 import ZationConfig from '../config/manager/zationConfig';
 import Logger                               from '../log/logger';
 import {getMoment, processTaskTriggerTime}  from '../utils/timeUtils';
-import {MasterMessageAction}                from '../constants/masterMessage';
+import {MasterMessageAction}                from '../definitions/masterMessage';
 
 export default class BackgroundTasksSender
 {

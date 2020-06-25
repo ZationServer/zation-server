@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {FormatLetters}   from '../../../constants/validation';
+import {FormatLetters}   from '../../../definitions/validation';
 import {GetDateFunction} from './inputConfig';
 
 export interface ValidationFunctions {

@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import {RespondFunction} from "../sc/socket";
 import AsyncChain        from "../utils/asyncChain";
-import {ClientErrorName} from "../constants/clientErrorName";
+import {ClientErrorName} from "../definitions/clientErrorName";
 
 export type FetchManagerBuilder<F extends (input: any,...any: any[]) => any> =
     () => ((respond: RespondFunction,caller: () => any | Promise<any>,isReloadTarget: boolean) => Promise<void>);

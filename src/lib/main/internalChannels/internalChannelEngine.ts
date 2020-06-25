@@ -14,9 +14,9 @@ import {
     WorkerChSpecialTaskAction,
     WorkerChMapTarget,
     WorkerChTaskType, WorkerChAbstractMapTask, WorkerChMapTask
-} from "../constants/workerChTaskDefinitions";
+} from "../definitions/workerChTaskDefinitions";
 import ScServer             from "../sc/scServer";
-import {SyncTokenDefinitions, UpdateTokenMainData} from "../constants/syncTokenDefinitions";
+import {SyncTokenDefinitions, UpdateTokenMainData} from "../definitions/syncTokenDefinitions";
 import Logger               from "../log/logger";
 
 export const INTERNAL_WORKER_CH = 'W>';

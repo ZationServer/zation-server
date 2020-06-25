@@ -6,11 +6,11 @@ Copyright(c) Luca Scaringella
 
 import {StarterConfig}       from "../definitions/main/starterConfig";
 import {InternalMainConfig}  from "../definitions/main/mainConfig";
-import InternalData          from "../../constants/internalData";
+import InternalData          from "../../definitions/internalData";
 import ConfigLocations       from "./configLocations";
 // noinspection TypeScriptPreferShortImport
 import {StartMode}           from "../../../core/startMode";
-import {JwtSignOptions}      from "../../constants/jwt";
+import {JwtSignOptions}      from "../../definitions/jwt";
 
 export default interface ZcTransport {
     starterConfig: StarterConfig,

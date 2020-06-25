@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ClientErrorName} from "../constants/clientErrorName";
+import {ClientErrorName} from "../definitions/clientErrorName";
 
 export default class NoMoreDataAvailableError extends Error
 {

@@ -4,8 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {PrepareZationToken, RawZationToken} from "../constants/internal";
-import {JwtSignFunction, JwtSignOptions, JwtVerifyFunction, JwtVerifyOptions} from "../constants/jwt";
+import {PrepareZationToken, RawZationToken} from "../definitions/internal";
+import {JwtSignFunction, JwtSignOptions, JwtVerifyFunction, JwtVerifyOptions} from "../definitions/jwt";
 import AuthConfig          from "../auth/authConfig";
 import BackError           from "../../api/BackError";
 import {MainBackErrors}    from "../zationBackErrors/mainBackErrors";

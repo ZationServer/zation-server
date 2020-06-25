@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import 'source-map-support/register';
-import {WorkerMessageAction}    from '../main/constants/workerMessageAction';
+import {WorkerMessageAction}    from '../main/definitions/workerMessageAction';
 import {StarterConfig}          from '../main/config/definitions/main/starterConfig';
 import StringSet                from '../main/utils/stringSet';
 import StateServerEngine        from '../main/cluster/stateServerEngine';
@@ -19,18 +19,18 @@ import ZationConfigMaster       from '../main/config/manager/zationConfigMaster'
 import ConfigPrecompiler                       from '../main/config/utils/configPrecompiler';
 import LicenseManager, {License, LicenseLevel} from '../main/utils/licenseManager';
 // noinspection ES6PreferShortImport
-import {StartErrorName}                        from '../main/constants/startErrorName';
+import {StartErrorName}                        from '../main/definitions/startErrorName';
 // noinspection TypeScriptPreferShortImport
 import {processRawStartMode, StartMode, startModeSymbol} from './startMode';
 import ConfigBuildError                 from '../main/config/manager/configBuildError';
 import ConfigLoader                     from '../main/config/manager/configLoader';
 import BagExtensionConflictChecker      from '../main/bagExtension/bagExtensionConflictChecker';
-import {ProcessType, processTypeSymbol} from '../main/constants/processType';
+import {ProcessType, processTypeSymbol} from '../main/definitions/processType';
 // noinspection ES6PreferShortImport
 import {Events}                                    from '../main/config/definitions/parts/events';
 import StartDebugStopwatch                         from '../main/utils/startDebugStopwatch';
 import {getMoment}                                 from '../main/utils/timeUtils';
-import {MasterMessageAction, MasterMessagePackage} from '../main/constants/masterMessage';
+import {MasterMessageAction, MasterMessagePackage} from '../main/definitions/masterMessage';
 // noinspection ES6PreferShortImport
 import {ConsoleColor}                              from '../main/log/logCategories';
 

@@ -5,8 +5,8 @@ Copyright(c) Luca Scaringella
  */
 
 import ZationWorker         = require("../../core/zationWorker");
-import {WorkerMessageAction}  from "../constants/workerMessageAction";
-import {BrokerMessageAction}  from "../constants/brokerMessageAction";
+import {WorkerMessageAction}  from "../definitions/workerMessageAction";
+import {BrokerMessageAction}  from "../definitions/brokerMessageAction";
 
 export default class NodeInfo {
 

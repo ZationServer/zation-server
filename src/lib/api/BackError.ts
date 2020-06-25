@@ -4,9 +4,9 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import BackErrorConstruct   from "../main/constants/backErrorConstruct";
+import BackErrorConstruct   from "../main/definitions/backErrorConstruct";
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
-import {ErrorType}          from "../main/constants/errorType";
+import {ErrorType}          from "../main/definitions/errorType";
 import BackErrorBuilder     from '../main/builder/backErrorBuilder';
 
 type BackErrorInfo = Record<string,any> & {main ?: any};

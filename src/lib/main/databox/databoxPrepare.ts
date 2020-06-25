@@ -10,7 +10,7 @@ import Bag                                                      from "../../api/
 import ApiLevelUtils, {ApiLevelSwitch}                          from "../apiLevel/apiLevelUtils";
 import DataboxCore, {DbPreparedData}                            from "../../api/databox/DataboxCore";
 import ZationWorker                                           = require("../../core/zationWorker");
-import {ClientErrorName}                                        from "../constants/clientErrorName";
+import {ClientErrorName}                                        from "../definitions/clientErrorName";
 // noinspection ES6PreferShortImport
 import {DataboxConfig}                                          from "../config/definitions/parts/databoxConfig";
 import DataboxFamily                                            from "../../api/databox/DataboxFamily";

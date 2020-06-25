@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 // noinspection TypeScriptPreferShortImport
-import {ErrorType}        from "./../constants/errorType";
+import {ErrorType}        from "../definitions/errorType";
 
 export const MainBackErrors = {
     unknownController: {

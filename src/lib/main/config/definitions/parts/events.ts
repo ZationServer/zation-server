@@ -8,7 +8,7 @@ import ExpressCore                   = require("express-serve-static-core");
 import Express                       = require('express');
 import ZationWorker                  = require("../../../../core/zationWorker");
 import ScServer                        from "../../../sc/scServer";
-import {RawZationToken}                from "../../../constants/internal";
+import {RawZationToken}                from "../../../definitions/internal";
 import BackError                       from "../../../../api/BackError";
 import ServerInfo                      from "../../../internalApi/serverInfo";
 import Socket                          from "../../../../api/Socket";

@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {modelPrototypeSymbol}           from '../../main/constants/model';
+import {modelPrototypeSymbol}           from '../../main/definitions/model';
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {AnyModelTranslatable, Model}    from '../../main/config/definitions/parts/inputConfig';
 import {resolveIfModelTranslatable}     from '../configTranslatable/modelTranslatable';

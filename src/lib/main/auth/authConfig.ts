@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import {AuthUserGroupConfig, UserGroupsConfig} from "../config/definitions/parts/userGroupsConfig";
-import {DEFAULT_USER_GROUP_FALLBACK}           from "../constants/internal";
+import {DEFAULT_USER_GROUP_FALLBACK}           from "../definitions/internal";
 import ZationConfigFull                        from "../config/manager/zationConfigFull";
 
 export default class AuthConfig

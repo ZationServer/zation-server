@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 import Channel                    from '../../../../api/channel/Channel';
 // noinspection ES6PreferShortImport
 import {ChannelConfig}            from '../../../../main/config/definitions/parts/channelConfig';
-import {RawZationToken}           from '../../../constants/internal';
+import {RawZationToken}           from '../../../definitions/internal';
 import {createTokenCheckFunction} from '../../../access/accessOptions';
 
 export default class PanelChannel extends Channel

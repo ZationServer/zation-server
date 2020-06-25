@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ZationAccessRecord}                      from '../constants/internal';
+import {ZationAccessRecord}                      from '../definitions/internal';
 import {AccessConfigValue, isTokenCheckFunction} from "./accessOptions";
 import Logger                                    from '../log/logger';
 import {ErrorEventHolder}                        from '../error/errorEventHolder';

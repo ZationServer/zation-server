@@ -6,14 +6,14 @@ Copyright(c) Luca Scaringella
 
 import 'source-map-support/register'
 
-import {BrokerMessageAction}  from "../main/constants/brokerMessageAction";
+import {BrokerMessageAction}  from "../main/definitions/brokerMessageAction";
 import SystemInfo             from "../main/utils/systemInfo";
 import ZationConfig           from "../main/config/manager/zationConfig";
 import Logger                 from "../main/log/logger";
 import ZationConfigFull       from "../main/config/manager/zationConfigFull";
 const SCBroker              = require('socketcluster/scbroker');
 const scClusterBrokerClient = require('scc-broker-client');
-import {ProcessType, processTypeSymbol} from '../main/constants/processType';
+import {ProcessType, processTypeSymbol} from '../main/definitions/processType';
 import {startModeSymbol}                from './startMode';
 import StartDebugStopwatch              from '../main/utils/startDebugStopwatch';
 

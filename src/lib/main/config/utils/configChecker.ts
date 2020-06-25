@@ -4,23 +4,23 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ConfigNames, DEFAULT_USER_GROUP_FALLBACK, ZationAccessRecord} from '../../constants/internal';
+import {ConfigNames, DEFAULT_USER_GROUP_FALLBACK, ZationAccessRecord} from '../../definitions/internal';
 import {AppConfig}                                    from '../definitions/main/appConfig';
 import {PanelUserConfig}                              from '../definitions/main/mainConfig';
 // noinspection TypeScriptPreferShortImport
-import {OnlyBase64Functions, OnlyDateFunctions, OnlyNumberFunctions, OnlyStringFunctions, TypeTypes} from '../../constants/validation';
+import {OnlyBase64Functions, OnlyDateFunctions, OnlyNumberFunctions, OnlyStringFunctions, TypeTypes} from '../../definitions/validation';
 import ConfigCheckerTools                    from './configCheckerTools';
 import ConfigError                           from '../../error/configError';
 import Target                                from './target';
 import Logger                                from '../../log/logger';
 import * as ObjectPath                       from 'object-path';
 import Controller, {ControllerClass}         from '../../../api/Controller';
-import {ValidationTypeRecord}                from '../../constants/validationType';
+import {ValidationTypeRecord}                from '../../definitions/validationType';
 import Iterator                              from '../../utils/iterator';
 import ObjectUtils                           from '../../utils/objectUtils';
 import ConfigLoader                          from '../manager/configLoader';
 import {isModelTranslatable, modelTranslateSymbol, resolveIfModelTranslatable} from '../../../api/configTranslatable/modelTranslatable';
-import {modelPrototypeSymbol}                                                  from '../../constants/model';
+import {modelPrototypeSymbol}                                                  from '../../definitions/model';
 import {AnyModelTranslatable, AnyOfModel, InputConfig, Model, ObjectModel, ParamInput, ValueModel} from '../definitions/parts/inputConfig';
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig}               from '../definitions/parts/controllerConfig';

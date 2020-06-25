@@ -25,7 +25,7 @@ import DataboxFamily, {DataboxFamilyClass} from "../../api/databox/DataboxFamily
 import DataboxFamilyContainer              from "../../api/databox/container/databoxFamilyContainer";
 import Databox, {DataboxClass}             from "../../api/databox/Databox";
 import DataboxContainer                    from "../../api/databox/container/databoxContainer";
-import {ClientErrorName}                   from "../constants/clientErrorName";
+import {ClientErrorName}                   from "../definitions/clientErrorName";
 import ComponentUtils                      from '../component/componentUtils';
 const uniqid                             = require('uniqid');
 

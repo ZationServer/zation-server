@@ -13,8 +13,8 @@ It not contains the type check.
  */
 
 // noinspection TypeScriptPreferShortImport
-import {ValidationType}   from "../constants/validationType";
-import {FormatLetters}    from "../constants/validation";
+import {ValidationType}   from "../definitions/validationType";
+import {FormatLetters}    from "../definitions/validation";
 import BackError          from "../../api/BackError";
 import EasyValidator      from "./easyValidator";
 import {ValidatorBackErrors} from "../zationBackErrors/validatorBackErrors";

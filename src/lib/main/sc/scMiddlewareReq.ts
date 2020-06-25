@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import {RawSocket}        from "./socket";
-import {RawZationToken}   from "../constants/internal";
+import {RawZationToken}   from "../definitions/internal";
 import {IncomingMessage}  from 'http';
 
 export interface PubOutMiddlewareReq  {

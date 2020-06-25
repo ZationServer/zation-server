@@ -12,7 +12,7 @@ import {
     DataboxConnectReq,
     DataboxConnectRes,
 } from "../dbDefinitions";
-import {ClientErrorName}           from "../../constants/clientErrorName";
+import {ClientErrorName}           from "../../definitions/clientErrorName";
 import Logger                      from "../../log/logger";
 import Socket                      from '../../../api/Socket';
 import {isValidDataboxConnectionRequest} from './databoxReqUtils';

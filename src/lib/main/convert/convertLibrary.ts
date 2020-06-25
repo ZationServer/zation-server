@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 // noinspection TypeScriptPreferShortImport
-import {ValidationType}  from "../constants/validationType";
+import {ValidationType}  from "../definitions/validationType";
 import Converter         from "./converter";
 import {PartialRecord}   from '../utils/typeUtils';
 

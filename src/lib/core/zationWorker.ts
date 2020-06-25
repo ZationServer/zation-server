@@ -13,11 +13,11 @@ import {
     WorkerChMapTarget,
     WorkerChTaskType,
     WorkerChSpecialTask, WorkerTaskPackage, WorkerChMapTask
-} from "../main/constants/workerChTaskDefinitions";
+} from "../main/definitions/workerChTaskDefinitions";
 // noinspection ES6PreferShortImport
 import {RawSocket}            from '../main/sc/socket';
-import {RawZationToken}       from "../main/constants/internal";
-import {WorkerMessageAction}  from "../main/constants/workerMessageAction";
+import {RawZationToken}       from "../main/definitions/internal";
+import {WorkerMessageAction}  from "../main/definitions/workerMessageAction";
 import {ChannelPrepare}       from "../main/channel/channelPrepare";
 import NodeInfo               from "../main/utils/nodeInfo";
 import SocketSet              from "../main/utils/socketSet";
@@ -25,7 +25,7 @@ import OriginsUtils, {OriginChecker} from "../main/origins/originsUtils";
 import {
     SyncTokenDefinitions,
     SyncTokenOperationType,
-} from "../main/constants/syncTokenDefinitions";
+} from "../main/definitions/syncTokenDefinitions";
 
 import express      = require('express');
 import {Request , Response} from "express";
@@ -55,7 +55,7 @@ import ZationConfigFull     from "../main/config/manager/zationConfigFull";
 import ConfigLoader         from "../main/config/manager/configLoader";
 import RawSocketUpgradeFactory  from "../main/socket/rawSocketUpgradeFactory";
 import InternalChannelEngine, {INTERNAL_WORKER_CH} from '../main/internalChannels/internalChannelEngine';
-import {MasterMessageAction, MasterMessagePackage} from '../main/constants/masterMessage';
+import {MasterMessageAction, MasterMessagePackage} from '../main/definitions/masterMessage';
 import {
     AuthMiddlewareReq,
     HandshakeScMiddlewareReq,
@@ -63,9 +63,9 @@ import {
     PubInMiddlewareReq,
     SubMiddlewareReq
 } from "../main/sc/scMiddlewareReq";
-import {SocketAction}             from "../main/constants/socketAction";
+import {SocketAction}             from "../main/definitions/socketAction";
 import {TaskFunction}             from "../main/config/definitions/parts/backgroundTask";
-import {ClientErrorName}          from "../main/constants/clientErrorName";
+import {ClientErrorName}          from "../main/definitions/clientErrorName";
 import {DATABOX_START_INDICATOR}  from "../main/databox/dbDefinitions";
 import {CHANNEL_START_INDICATOR}  from '../main/channel/channelDefinitions';
 import DataboxHandler             from "../main/databox/handle/databoxHandler";
@@ -74,7 +74,7 @@ import LicenseManager, {License}  from "../main/utils/licenseManager";
 import ConfigPrecompiler          from "../main/config/utils/configPrecompiler";
 import BagExtensionProcessor      from '../main/bagExtension/bagExtensionProcessor';
 import FunctionInitEngine         from '../main/functionInit/functionInitEngine';
-import {ProcessType, processTypeSymbol} from '../main/constants/processType';
+import {ProcessType, processTypeSymbol} from '../main/definitions/processType';
 import InjectionsManager                from '../main/injections/injectionsManager';
 import InitializerManager               from '../main/initializer/initializerManager';
 import {startModeSymbol}                from './startMode';

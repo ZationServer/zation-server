@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {SyncTokenDefinitions, SyncTokenOperationType} from "../../constants/syncTokenDefinitions";
+import {SyncTokenDefinitions, SyncTokenOperationType} from "../../definitions/syncTokenDefinitions";
 import {ObjectPathSequence}                           from "./objectPathSequence";
 
 type CommitFunction = (operations: SyncTokenDefinitions[]) => Promise<void>;

@@ -8,8 +8,8 @@ import fetch, {Request, RequestInit, Response}              from 'node-fetch';
 import base64url                                            from "base64url"
 import PortChecker                                          from "../main/utils/portChecker";
 import AsymmetricKeyPairs                                   from "../main/internalApi/asymmetricKeyPairs";
-import {WorkerMessageAction}                                from "../main/constants/workerMessageAction";
-import {ZATION_CUSTOM_EVENT_NAMESPACE}                      from "../main/constants/internal";
+import {WorkerMessageAction}                                from "../main/definitions/workerMessageAction";
+import {ZATION_CUSTOM_EVENT_NAMESPACE}                      from "../main/definitions/internal";
 import {InternalMainConfig}                                 from "../main/config/definitions/main/mainConfig";
 import {PrecompiledAppConfig}                               from "../main/config/definitions/main/appConfig";
 import {PrecompiledServiceConfig}                           from "../main/config/definitions/main/serviceConfig";
@@ -20,7 +20,7 @@ import {
     WorkerChMapTaskAction,
     WorkerChSpecialTaskAction,
     WorkerChMapTarget
-} from "../main/constants/workerChTaskDefinitions";
+} from "../main/definitions/workerChTaskDefinitions";
 
 const crypto: any                                          = require('crypto');
 const IP: any                                              = require('ip');
@@ -28,7 +28,7 @@ const crypto2: any                                         = require("crypto2");
 const uuidV4                                               = require('uuid/v4');
 const uniqid                                               = require('uniqid');
 import ZationWorker                                         = require("../core/zationWorker");
-import {SyncTokenOperationType}                             from "../main/constants/syncTokenDefinitions";
+import {SyncTokenOperationType}                             from "../main/definitions/syncTokenDefinitions";
 import OsUtils                                              from "../main/utils/osUtils";
 import SystemInfo                                           from "../main/utils/systemInfo";
 import ChannelPublisher                                     from "../main/internalChannels/internalChannelEngine";
@@ -41,7 +41,7 @@ import ObjectPathTokenRemoteSequenceImp                     from "../main/intern
 import Base64Utils                                          from "../main/utils/base64Utils";
 import ZationConfigFull                                     from "../main/config/manager/zationConfigFull";
 import CloneUtils                                           from "../main/utils/cloneUtils";
-import {JwtSignOptions,JwtVerifyOptions}                    from "../main/constants/jwt";
+import {JwtSignOptions,JwtVerifyOptions}                    from "../main/definitions/jwt";
 import ApiLevelUtils, {ApiLevelSwitch, ApiLevelSwitchFunction} from "../main/apiLevel/apiLevelUtils";
 import {DataboxFamilyClass}                                    from "./databox/DataboxFamily";
 import DataboxFamilyContainer                                  from "./databox/container/databoxFamilyContainer";

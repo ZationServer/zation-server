@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ZATION_CUSTOM_EVENT_NAMESPACE, RawZationToken, PrepareZationToken} from '../main/constants/internal';
+import {ZATION_CUSTOM_EVENT_NAMESPACE, RawZationToken, PrepareZationToken} from '../main/definitions/internal';
 import {OnHandlerFunction, RawSocket}                  from "../main/sc/socket";
 import TokenUtils       from "../main/token/tokenUtils";
 import DataboxFamily    from "./databox/DataboxFamily";
@@ -17,7 +17,7 @@ import ObjectPathSequenceImp from "../main/internalApi/objectPathSequence/object
 import {ObjectPathSequence}  from "../main/internalApi/objectPathSequence/objectPathSequence";
 import ChannelFamily         from './channel/ChannelFamily';
 import Channel               from './channel/Channel';
-import {JwtSignOptions}      from '../main/constants/jwt';
+import {JwtSignOptions}      from '../main/definitions/jwt';
 import AuthConfig            from '../main/auth/authConfig';
 import ObjectPathSequenceBoxImp from '../main/internalApi/objectPathSequence/objectPathSequenceBoxImp';
 import {bag}                    from './Bag';

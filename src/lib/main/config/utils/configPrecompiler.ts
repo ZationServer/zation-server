@@ -26,7 +26,7 @@ import DbConfigUtils                                          from "../../databo
 import {PrecompiledEvents, Events}                            from '../definitions/parts/events';
 import FuncUtils                                              from '../../utils/funcUtils';
 import {PrecompiledMiddleware}                                from '../definitions/parts/middleware';
-import {modelPrototypeSymbol}                                 from '../../constants/model';
+import {modelPrototypeSymbol}                                 from '../../definitions/model';
 import {inputConfigTranslateSymbol, isInputConfigTranslatable}                                 from '../../../api/configTranslatable/inputConfigTranslatable';
 import {isModelTranslatable, modelTranslateSymbol, resolveIfModelTranslatable}                 from '../../../api/configTranslatable/modelTranslatable';
 import {AnyFunction}                                                                           from '../../utils/typeUtils';

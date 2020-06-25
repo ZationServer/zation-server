@@ -19,7 +19,7 @@ import {
 import {createTokenCheckFunction, TokenCheckFunction}     from "../main/access/accessOptions";
 import DataboxFamily                        from "./databox/DataboxFamily";
 import Databox                              from "./databox/Databox";
-import {RawZationToken}                     from "../main/constants/internal";
+import {RawZationToken}                     from "../main/definitions/internal";
 import {registerBagExtension,BagExtension}  from 'zation-bag-extension';
 import {ComponentClass}                     from './component/Component';
 import {AnyDataboxClass}                    from './databox/AnyDataboxClass';

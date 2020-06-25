@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import {createTokenCheckFunction, createUserIdCheck} from "../main/access/accessOptions";
 import forint, {ForintQuery}                         from "forint";
-import {RawZationToken}                              from '../main/constants/internal';
+import {RawZationToken}                              from '../main/definitions/internal';
 
 /**
  * @description

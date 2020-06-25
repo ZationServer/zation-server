@@ -9,7 +9,7 @@ import {InternalMainConfig} from "../definitions/main/mainConfig";
 import ZationConfig         from "./zationConfig";
 import crypto             = require('crypto');
 import ConfigLocations      from "./configLocations";
-import InternalData         from "../../constants/internalData";
+import InternalData         from "../../definitions/internalData";
 
 export default class ZationConfigMaster extends ZationConfig {
 

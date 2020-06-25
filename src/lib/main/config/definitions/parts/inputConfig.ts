@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import BackErrorBag          from '../../../../api/BackErrorBag';
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
-import {ValidationType}      from '../../../constants/validationType.js';
+import {ValidationType}      from '../../../definitions/validationType.js';
 import {ValidationFunctions} from './validationFunctions';
 import {InputConfigTranslatable}                 from '../../../../api/configTranslatable/inputConfigTranslatable';
 import {ModelTranslatable}                       from '../../../../api/configTranslatable/modelTranslatable';

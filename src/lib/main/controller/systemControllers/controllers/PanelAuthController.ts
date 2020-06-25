@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 // noinspection TypeScriptPreferShortImport
-import {RawZationToken}   from "../../../constants/internal";
+import {RawZationToken}   from "../../../definitions/internal";
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig} from "../../../config/definitions/parts/controllerConfig";
 import BackError          from "../../../../api/BackError";

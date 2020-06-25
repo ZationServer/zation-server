@@ -6,13 +6,13 @@ Copyright(c) Luca Scaringella
 
 import {InternalMainConfig}                         from "../definitions/main/mainConfig";
 import {StarterConfig}                              from "../definitions/main/starterConfig";
-import InternalData        from "../../constants/internalData";
+import InternalData        from "../../definitions/internalData";
 // noinspection TypeScriptPreferShortImport
 import {StartMode}         from "../../../core/startMode";
 import ServerInfo          from "../../internalApi/serverInfo";
 import ZcTransport         from "./zcTransport";
 import ConfigLocations     from "./configLocations";
-import {JwtSignOptions}    from "../../constants/jwt";
+import {JwtSignOptions}    from "../../definitions/jwt";
 
 export default abstract class ZationConfig {
 

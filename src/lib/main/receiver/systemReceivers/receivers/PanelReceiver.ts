@@ -10,7 +10,7 @@ import {ReceiverConfig} from '../../../config/definitions/parts/receiverConfig';
 // noinspection ES6PreferShortImport
 import {$single}                  from '../../../../api/input/Single';
 import {createTokenCheckFunction} from '../../../access/accessOptions';
-import {RawZationToken}           from '../../../constants/internal';
+import {RawZationToken}           from '../../../definitions/internal';
 // noinspection ES6PreferShortImport
 import {bag}                      from '../../../../api/Bag';
 import {ScExchange}               from '../../../sc/scServer';

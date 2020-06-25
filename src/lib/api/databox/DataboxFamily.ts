@@ -44,7 +44,7 @@ import {
 } from '../../main/databox/dbDefinitions';
 import DataboxUtils           from "../../main/databox/databoxUtils";
 import DbCudOperationSequence from "../../main/databox/dbCudOperationSequence";
-import {ClientErrorName}      from "../../main/constants/clientErrorName";
+import {ClientErrorName}      from "../../main/definitions/clientErrorName";
 import DataboxFetchManager, {FetchManagerBuilder} from "../../main/databox/databoxFetchManager";
 import Socket                                     from "../Socket";
 import CloneUtils                                 from "../../main/utils/cloneUtils";

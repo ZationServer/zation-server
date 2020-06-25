@@ -9,9 +9,9 @@ import {DataboxConfig}                    from "../../main/config/definitions/pa
 import Bag                                from "../Bag";
 import NoMoreDataAvailableError           from "../../main/databox/noMoreDataAvailable";
 import {VersionSystemAccessCheckFunction} from "../../main/systemVersion/systemVersionChecker";
-import {ClientErrorName}                  from "../../main/constants/clientErrorName";
+import {ClientErrorName}                  from "../../main/definitions/clientErrorName";
 const  Jwt                              = require('jsonwebtoken');
-import {JwtSignFunction, JwtVerifyFunction, JwtVerifyOptions} from "../../main/constants/jwt";
+import {JwtSignFunction, JwtVerifyFunction, JwtVerifyOptions} from "../../main/definitions/jwt";
 import DbKeyArrayUtils                    from "../../main/databox/dbKeyArrayUtils";
 import {DataboxConnectReq, DataboxConnectRes, DataboxInfo, DbToken} from '../../main/databox/dbDefinitions';
 import {InputConsumeFunction}             from "../../main/input/inputClosureCreator";

@@ -10,7 +10,7 @@ import ChAccessHelper                      from "./chAccessHelper";
 import SystemVersionChecker                from "../systemVersion/systemVersionChecker";
 import ApiLevelUtils, {ApiLevelSwitch}     from '../apiLevel/apiLevelUtils';
 import ChannelCore, {ChPreparedData}       from '../../api/channel/ChannelCore';
-import {ClientErrorName}                   from '../constants/clientErrorName';
+import {ClientErrorName}                   from '../definitions/clientErrorName';
 import {AnyChannelClass}                   from '../../api/channel/AnyChannelClass';
 // noinspection ES6PreferShortImport
 import {ChannelConfig}                     from '../config/definitions/parts/channelConfig';

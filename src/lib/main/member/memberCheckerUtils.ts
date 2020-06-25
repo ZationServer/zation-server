@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import Bag                from "../../api/Bag";
-import {ClientErrorName}  from "../constants/clientErrorName";
+import {ClientErrorName}  from "../definitions/clientErrorName";
 
 export type IsMember = (value: string, bag: Bag) => Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void;
 export type IsMemberChecker = (value: string) => Promise<void>;

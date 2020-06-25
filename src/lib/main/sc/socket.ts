@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {RawZationToken}     from "../constants/internal";
+import {RawZationToken}     from "../definitions/internal";
 import {IncomingMessage}    from "http";
 import Socket               from "../../api/Socket";
 

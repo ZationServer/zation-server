@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ZationAccess, RawZationToken} from '../constants/internal';
+import {ZationAccess, RawZationToken} from '../definitions/internal';
 import {DeepReadonly}                 from 'ts-essentials';
 
 //TokenCheckFunction
