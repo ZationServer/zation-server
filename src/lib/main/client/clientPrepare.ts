@@ -12,7 +12,6 @@ export default class ClientPrepare
     static buildClientJs(serverSettingsFile: string): string
     {
         let res = '';
-        // noinspection JSUnresolvedVariable,JSUnresolvedFunction
         res += ClientPrepare.loadZationMinifyClient();
         res += serverSettingsFile;
         return res;

@@ -39,11 +39,11 @@ export interface AuthAccessConfig<T extends Function = NormalAuthAccessCustomFun
      * //Or-Conditions
      * ['user','guest',$userId(23)] // Only all clients with user group: user, default user group or user id 23 are allowed.
      * //And-Conditions (Array in Or-Condition-Array)
-     * [['user',$tokenHasVariables({canEdit: true})]] //Only clients with user group: user and token variable
-     * canEdit with the value true are allowed.
+     * [['user',$tokenPayloadIncludes({canEdit: true})]] //Only clients with user group: user and token payload
+     * property canEdit with the value true are allowed.
      * //Complex
-     * ['admin',['user',$tokenVariablesMatch({age: {$gt: 17}})]] //Only clients with user group: admin or
-     * clients with user group: user and the token variable: age witch a value that's greater than 17, are allowed.
+     * ['admin',['user',$tokenPayloadMatches({age: {$gt: 17}})]] //Only clients with user group: admin or
+     * clients with user group: user and the token payload property: age with a value that's greater than 17 are allowed.
      */
     access?: Notable<AccessConfigValue<T>>;
 }

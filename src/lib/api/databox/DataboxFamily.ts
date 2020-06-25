@@ -1174,7 +1174,7 @@ export default class DataboxFamily extends DataboxCore {
      * because when your overwrite at least one of them, the Databox
      * switches to a more costly performance implementation.
      * You should not invoke long process tasks in this middleware.
-     * Instead, try to prepare stuff in the token of the socket or the socket variables.
+     * Instead, try to prepare stuff in the token of the socket or the socket attachment.
      * The middleware will be called before each socket reaches a cud operation.
      * You can change the value with the parameter changeValue by simply calling
      * the function with the new value.
@@ -1200,7 +1200,7 @@ export default class DataboxFamily extends DataboxCore {
      * because when your overwrite at least one of them, the Databox
      * switches to a more costly performance implementation.
      * You should not invoke long process tasks in this middleware.
-     * Instead, try to prepare stuff in the token of the socket or the socket variables.
+     * Instead, try to prepare stuff in the token of the socket or the socket attachment.
      * The middleware will be called before each socket reaches a cud operation.
      * You can change the value with the parameter changeValue by simply calling
      * the function with the new value.
@@ -1226,7 +1226,7 @@ export default class DataboxFamily extends DataboxCore {
      * because when your overwrite at least one of them, the Databox
      * switches to a more costly performance implementation.
      * You should not invoke long process tasks in this middleware.
-     * Instead, try to prepare stuff in the token of the socket or the socket variables.
+     * Instead, try to prepare stuff in the token of the socket or the socket attachment.
      * The middleware will be called before each socket reaches a cud operation.
      * You are able to block the complete operation for the socket
      * by calling the internal block method or throwing any error.

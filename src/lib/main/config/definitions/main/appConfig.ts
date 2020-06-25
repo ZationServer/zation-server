@@ -55,7 +55,7 @@ export interface AppConfig
      * @example
      * middleware: {
      *     socket: (socket) => {
-     *         if(socket.handshakeVariables['oldClient']){
+     *         if(socket.getHandshakeAttachment()?.oldClient){
      *             return false;
      *         }
      *     }

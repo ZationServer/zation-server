@@ -211,7 +211,7 @@ export default class Bag<WA extends object = any> {
      * You can define them in the variables property of the main config.
      */
     getMainConfigVariables<V = any>(): V {
-        return this.zc.mainConfig.variables;
+        return this.zc.mainConfig.variables || {};
     }
 
     //Part Auth
@@ -795,7 +795,7 @@ export default class Bag<WA extends object = any> {
      * but you can override some options by providing jwt sign options as a second argument.
      * The return value is the signed token as a string.
      * @example
-     * await signToken({someVariable: 'Hello'},{expiresIn: 200});
+     * await signToken({age: 21},{expiresIn: 200});
      * @param data
      * @param jwtOptions
      */

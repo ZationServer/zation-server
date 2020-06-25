@@ -219,15 +219,15 @@ export interface MainConfig
      */
     socketDataboxLimit?: number;
     /**
-     * This property gives you the possibility to pass extra variables in the main config.
-     * You can access them with the small bag.
+     * This property gives you the possibility to set variables in the
+     * main config which you can access with the Bag.
      * @example
      * //define
      * variables: {
      *    myVar: 'someValue'
      * }
      * //access
-     * bag.getMainConfigVariable('myVar');
+     * bag.getMainConfigVariables().myVar;
      */
     variables?: object,
 

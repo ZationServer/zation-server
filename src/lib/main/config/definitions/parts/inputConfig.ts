@@ -280,8 +280,7 @@ export interface ObjectModel
     /**
      * Set the construct function of the object model,
      * that function can be used as a constructor of the input object.
-     * It will be called with the input object as this and the small bag
-     * that allows you to add properties to the object.
+     * The this-context will be bound to the input object.
      * If you inherit from another object model the constructor functions will be chained.
      * Means that the super construct function is called before the sub construct function.
      * The Bag instance can be securely accessed with the variable 'bag'.

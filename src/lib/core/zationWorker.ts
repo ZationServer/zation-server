@@ -524,7 +524,7 @@ class ZationWorker extends SCWorker
 
         /**
          * Middleware when the socket is created.
-         * Zation will add the client version,system and handshake variables.
+         * Zation will add the client version, system and handshake attachment.
          */
         this.scServer.addMiddleware(this.scServer.MIDDLEWARE_HANDSHAKE_SC, async (req: HandshakeScMiddlewareReq, next) =>
         {
@@ -537,7 +537,7 @@ class ZationWorker extends SCWorker
             {
                 const rawSocket = req.socket;
 
-                //parse custom variables
+                //parse attachment
                 let attachment = {};
                 if(typeof query.attachment === 'string') {
                     try {
