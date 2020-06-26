@@ -692,13 +692,17 @@ export default class ConfigChecker
         if (value.length === 0) {
             this.ceb.addError(new ConfigError(ConfigNames.App,
                 `${target.toString()} you have to specify an array body.`));
-        } else if (value.length === 1) {
-            this.checkModel(value[0], target.addPath('ArrayItem'), rememberCache);
-        } else if (value.length === 2) {
-            if (typeof value[1] !== 'object') {
+        } else if (value.length <= 2) {
+            if (value.length === 2 && typeof value[1] !== 'object') {
                 const targetArrayElement2 = target.setExtraInfo('ArraySettings');
                 this.ceb.addError(new ConfigError(ConfigNames.App,
                     `${targetArrayElement2.toString()} the second element should be from type object and can specify settings for the array model. Given typ is: '${typeof value[1]}'`));
+            }
+            if(isOptionalModel(resolveIfModelTranslatable(value[0]))) {
+                Logger.consoleLogConfigWarning(
+                    ConfigNames.App,
+                    `${target.addPath('ArrayItem').toString()} An optional model in an array is useless.`
+                );
             }
             this.checkModel(value[0], target.addPath('ArrayItem'), rememberCache);
         } else {
@@ -716,9 +720,7 @@ export default class ConfigChecker
      * @param rememberCache
      */
     private checkModel(value: Model | AnyModelTranslatable, target: Target, rememberCache: Model[] = []) {
-        value = resolveIfModelTranslatable(value);
-        const isOptional = isOptionalModel(value);
-        value = unwrapIfOptionalModel(value);
+        value = unwrapIfOptionalModel(resolveIfModelTranslatable(value));
 
         if(typeof value === 'object'){
             //check circle dependencies
@@ -740,12 +742,6 @@ export default class ConfigChecker
                 this.checkArrayModel(value, target, rememberCache);
             }
             else {
-                if(isOptional && target.getLastPath() === 'ArrayItem') {
-                    Logger.consoleLogConfigWarning(
-                        ConfigNames.App,
-                        `${target.toString()} An optional model in an array is useless.`
-                    );
-                }
                 //check input
                 if (value.hasOwnProperty(nameof<ObjectModel>(s => s.properties))) {
                     //is object model
