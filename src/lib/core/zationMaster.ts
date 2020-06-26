@@ -40,7 +40,7 @@ global[processTypeSymbol] = ProcessType.Master;
 
 export default class ZationMaster {
     private static instance: ZationMaster | null = null;
-    private static readonly version: string = '1.7.1';
+    private static readonly version: string = '1.7.2';
     static readonly minLicenseVersionRequired: number = 1;
 
     private readonly serverStartedTimeStamp: number;
