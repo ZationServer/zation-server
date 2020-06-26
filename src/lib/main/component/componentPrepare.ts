@@ -22,7 +22,7 @@ export default abstract class ComponentPrepare<T extends Object>
     protected readonly componentType: string;
     protected readonly config: Record<string,any | ApiLevelSwitch<any>>;
     protected readonly components: Record<string,ApiLevelSwitchFunction<T>>;
-    protected readonly componentInits: ((bag: Bag) => Promise<void> | void)[] = [];
+    protected readonly componentInits: (() => Promise<void> | void)[] = [];
 
     protected constructor(zc: ZationConfigFull,worker: ZationWorker,bag: Bag,type: string,config: Record<string,any | ApiLevelSwitch<any>>) {
         this.zc = zc;
@@ -115,7 +115,7 @@ export default abstract class ComponentPrepare<T extends Object>
         const length = this.componentInits.length;
         const promises: (Promise<void> | void)[] = [];
         for(let i = 0; i < length; i++){
-            promises.push(this.componentInits[i](this.bag));
+            promises.push(this.componentInits[i]());
         }
         await Promise.all(promises);
     }

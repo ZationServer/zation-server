@@ -55,9 +55,8 @@ export default class Component {
      * @description
      * Gets once invoked at the start of the worker
      * after an instance is created of this Component.
-     * @param bag
      */
-    initialize(bag: Bag): Promise<void> | void {
+    initialize(): Promise<void> | void {
     }
 }
 
