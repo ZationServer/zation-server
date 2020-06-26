@@ -371,11 +371,11 @@ export default class ConfigChecker
             this.checkPanelUserConfig(panelUserConfig, new Target(`Panel UserConfig`));
         }
 
-        if (this.zcLoader.mainConfig.usePanel && !hasOneUser) {
+        if (this.zcLoader.mainConfig.usePanel && !hasOneUser && this.zcLoader.appConfig.middleware?.panelAuth == null) {
             Logger.consoleLogConfigWarning
             (
-                ConfigNames.Main,
-                `The zation panel is activated but no panelUser is defined in the main config.`
+                [ConfigNames.Main,ConfigNames.App],
+                `The zation panel is activated, but no panel user is defined in the main config, and no panel auth middleware is set.`
             );
         }
 

@@ -50,9 +50,10 @@ export default class Logger
         }
     }
 
-    static consoleLogConfigWarning(configName: string, message: string): void {
+    static consoleLogConfigWarning(configName: string | string[], message: string): void {
         if (Logger._showConfigWarnings) {
-            Logger._simpleLogger.warn(`Config: ${configName} -> ${message}`);
+            if(typeof configName === 'string') configName = [configName];
+            Logger._simpleLogger.warn(`Config${configName.length > 1 ? 's' : ''}: ${configName.join(', ')} -> ${message}`);
         }
     }
 
