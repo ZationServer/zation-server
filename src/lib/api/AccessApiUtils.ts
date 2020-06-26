@@ -14,10 +14,10 @@ import {RawZationToken}                              from '../main/definitions/i
  * You can set that the token payload has to include some specific key-value pairs.
  * @example
  * access: $tokenPayloadIncludes({canCreateItems: true})
- * @param paris
+ * @param pairs
  */
-export function $tokenPayloadIncludes(paris: Record<string,any>) {
-    const checkKeys = Object.keys(paris);
+export function $tokenPayloadIncludes(pairs: Record<string,any>) {
+    const checkKeys = Object.keys(pairs);
     const checkKeysLength = checkKeys.length;
     return createTokenCheckFunction((token) => {
         if(token != null && token.payload !== undefined) {
@@ -25,7 +25,7 @@ export function $tokenPayloadIncludes(paris: Record<string,any>) {
             let tmpKey;
             for(let i = 0; i < checkKeysLength; i++){
                 tmpKey = checkKeys[i];
-                if(payload[tmpKey] !== paris[tmpKey]){return false;}
+                if(payload[tmpKey] !== pairs[tmpKey]){return false;}
             }
             return true;
         }
