@@ -4,586 +4,400 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-/*
-Validation Library from Zation
-
-Contains validator functions
-The validator functions only invoke if precondition is true.
-It not contains the type check.
- */
-
-// noinspection TypeScriptPreferShortImport
+// noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ValidationType}   from "../definitions/validationType";
 import {FormatLetters}    from "../definitions/validation";
-import BackError          from "../../api/BackError";
-import EasyValidator      from "./easyValidator";
 import {ValidatorBackErrors} from "../zationBackErrors/validatorBackErrors";
 import Base64Utils           from "../utils/base64Utils";
 import ByteUtils             from "../utils/byteUtils";
 import BackErrorBag          from "../../api/BackErrorBag";
-import {PreparedErrorData}   from "./validatorEngine";
+import {PreparedErrorData}   from "./validatorCreator";
 import {ValidationFunctions} from '../config/definitions/parts/validationFunctions';
+import {ValidatorUtils}      from './validatorUtils';
 
-export type TypeValidator =
-    (input: any,backErrorBag: BackErrorBag,prepareErrorData: PreparedErrorData,strictType: boolean) => Promise<void> | void;
+export type TypeValidator = (input: any) => boolean;
 
-const typeLibrary: Record<Exclude<ValidationType,'all'>,TypeValidator> = {
-
-    object: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isObject(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeObject,prepareErrorData));
-        }
+const typeLibrary: Record<Exclude<ValidationType,'all'>,(strictType: boolean) => TypeValidator> = {
+    object: () => ValidatorUtils.isObject,
+    array: () => ValidatorUtils.isArray,
+    string: () => ValidatorUtils.isString,
+    char: () => ValidatorUtils.isChar,
+    null: () => ValidatorUtils.isNull,
+    int: (strictType) => {
+        const {isInteger,isStringInteger} = ValidatorUtils;
+        if(strictType) return (input) => isInteger(input);
+        return (input) => isInteger(input) || isStringInteger(input);
     },
-
-    array: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isArray(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeArray,prepareErrorData));
-        }
+    float: (strictType) => {
+        const {isFloat, isStringFloat} = ValidatorUtils;
+        if(strictType) return (input) => isFloat(input);
+        return (input) => isFloat(input) || isStringFloat(input);
     },
-
-    string: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isString(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeString,prepareErrorData));
-        }
+    number: (strictType) => {
+        const {isNumber,isStringNumber} = ValidatorUtils;
+        if(strictType) return (input) => isNumber(input);
+        return (input) => isNumber(input) || isStringNumber(input);
     },
-
-    char: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isChar(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeChar,prepareErrorData));
-        }
+    date: () => ValidatorUtils.isDate,
+    email: () => ValidatorUtils.isEmail,
+    boolean: (strictType) => {
+        const {isBoolean,isStringBoolean,isNumberBoolean} = ValidatorUtils;
+        if(strictType) return (input) => isBoolean(input);
+        return (input) => isBoolean(input) || isStringBoolean(input) || isNumberBoolean(input);
     },
-
-    null: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isNull(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeNull,prepareErrorData));
-        }
-    },
-
-    int: (input, backErrorBag, prepareErrorData, strictType) =>
-    {
-        if(!Number.isInteger(input)){
-            if(!(!strictType && EasyValidator.isStringInt(input))) {
-                backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeInt,prepareErrorData));
-            }
-        }
-    },
-
-    float: (input, backErrorBag, prepareErrorData, strictType) =>
-    {
-        if(!EasyValidator.isFloat(input)) {
-            if(!(!strictType && EasyValidator.isStringFloat(input))) {
-                backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeFloat,prepareErrorData));
-            }
-        }
-    },
-
-    number: (input, backErrorBag, prepareErrorData, strictType) =>
-    {
-        if(!EasyValidator.isNumber(input)) {
-            if(!(!strictType && EasyValidator.isStringNumber(input))) {
-                backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeNumber,prepareErrorData));
-            }
-        }
-    },
-
-    date: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isDate(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeDate,prepareErrorData));
-        }
-    },
-
-    email: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isEmail(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeEmail,prepareErrorData));
-        }
-    },
-
-    boolean: (input, backErrorBag, prepareErrorData, strictType) =>
-    {
-        if(!EasyValidator.isBoolean(input)) {
-            if(!(!strictType && (EasyValidator.isStringBoolean(input) || EasyValidator.isNumberBoolean(input)))) {
-                backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeBoolean,prepareErrorData));
-            }
-        }
-    },
-
-    sha512: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isSha512(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeSha512,prepareErrorData));
-        }
-    },
-
-    sha256: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isSha256(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeSha256,prepareErrorData));
-        }
-    },
-
-    sha384: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isSha384(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeSha384,prepareErrorData));
-        }
-    },
-
-    sha1: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isSha1(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeSha1,prepareErrorData));
-        }
-    },
-
-    md5: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isMd5(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeMd5,prepareErrorData));
-        }
-    },
-
-    hexColor: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isHexColor(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeHexColor,prepareErrorData));
-        }
-    },
-
-    hexadecimal: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isHexadecimal(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeHexadecimal,prepareErrorData));
-        }
-    },
-
-    ip4: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isIP4(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeIp4,prepareErrorData));
-        }
-    },
-
-    ip6: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isIP6(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeIp6,prepareErrorData));
-        }
-    },
-
-    isbn10: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isISB10(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeIsbn10,prepareErrorData));
-        }
-    },
-
-    isbn13: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isISB13(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeIsbn13,prepareErrorData));
-        }
-    },
-
-    json: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isJSON(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeJson,prepareErrorData));
-        }
-    },
-
-    url: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isUrl(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeUrl,prepareErrorData));
-        }
-    },
-
-    mimeType: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isMimeType(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeMimeType,prepareErrorData));
-        }
-    },
-
-    macAddress: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isMACAddress(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeMacAddress,prepareErrorData));
-        }
-    },
-
-    mobileNumber: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isMobilePhone(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeMobileNumber,prepareErrorData));
-        }
-    },
-
-    uuid3: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isUUID3(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeUuid3,prepareErrorData));
-        }
-    },
-
-    uuid4: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isUUID4(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeUuid4,prepareErrorData));
-        }
-    },
-
-    uuid5: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isUUID5(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeUuid5,prepareErrorData));
-        }
-    },
-
-    base64: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isBase64(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeBase64,prepareErrorData));
-        }
-    },
-
-    ascii: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isAscii(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeAscii,prepareErrorData));
-        }
-    },
-
-    userId: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!(EasyValidator.isString(input) || EasyValidator.isNumber(input))) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeUserId,prepareErrorData));
-        }
-    },
-
-    mongoId: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isMongoId(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeMongoId,prepareErrorData));
-        }
-    },
-
-    latLong: (input, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.isLatLong(input)) {
-            backErrorBag.add(new BackError(ValidatorBackErrors.valueIsNotTypeLatLong,prepareErrorData));
-        }
-    }
-
+    sha512: () => ValidatorUtils.isSha512,
+    sha256: () => ValidatorUtils.isSha256,
+    sha384: () => ValidatorUtils.isSha384,
+    sha1: () => ValidatorUtils.isSha1,
+    md5: () => ValidatorUtils.isMd5,
+    hexColor: () => ValidatorUtils.isHexColor,
+    hexadecimal: () => ValidatorUtils.isHexadecimal,
+    ip4: () => ValidatorUtils.isIP4,
+    ip6: () => ValidatorUtils.isIP6,
+    isbn10: () => ValidatorUtils.isISBN10,
+    isbn13: () => ValidatorUtils.isISBN13,
+    json: () => ValidatorUtils.isJSON,
+    url: () => ValidatorUtils.isURL,
+    mimeType: () => ValidatorUtils.isMimeType,
+    macAddress: () => ValidatorUtils.isMACAddress,
+    mobileNumber: () => ValidatorUtils.isMobileNumber,
+    uuid3: () => ValidatorUtils.isUUID3,
+    uuid4: () => ValidatorUtils.isUUID4,
+    uuid5: () => ValidatorUtils.isUUID5,
+    base64: () => ValidatorUtils.isBase64,
+    ascii: () => ValidatorUtils.isAscii,
+    userId: () => ValidatorUtils.isUserId,
+    mongoId: () => ValidatorUtils.isMongoId,
+    latLong: () => ValidatorUtils.isLatLong
 };
 
 export type FunctionValidator =
-    (input: any, settings: any, backErrorBag : BackErrorBag, prepareErrorData: PreparedErrorData, type: string | undefined) => void | Promise<void>
+    (input: any, backErrorBag : BackErrorBag, prepareErrorData: PreparedErrorData, type: string | undefined) => void | Promise<void>
 
-const functionLibrary: Record<keyof ValidationFunctions,FunctionValidator> = {
+const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => FunctionValidator> = {
 
-    regex: (input, settings, backErrorBag, prepareErrorData) =>
-    {
-        if(typeof input === 'string') {
-            if(typeof settings === 'object' && !(settings instanceof RegExp)) {
-                for(const name in settings) {
-                    if(settings.hasOwnProperty(name)){
-                        if(!input.match(settings[name])) {
-                            backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithRegex,
-                                {
-                                    ...prepareErrorData,
-                                    regexName: name,
-                                    regex: settings[name].toString()
-                                });
-                        }
+    regex: (settings) => {
+        if(typeof settings === 'object' && !(settings instanceof RegExp)) {
+            const regexes: RegExp[] = [];
+            const names: string[] = [];
+
+            let tmpRegex;
+            for(let k in settings){
+                if(settings.hasOwnProperty(k)){
+                    tmpRegex = settings[k];
+                    regexes.push(typeof tmpRegex === 'string' ? new RegExp(tmpRegex) : tmpRegex);
+                    names.push(k);
+                }
+            }
+            const regexesLength = regexes.length;
+
+            return (input, backErrorBag, prepareErrorData) => {
+                for(let i = 0; i < regexesLength; i++){
+                    if(!regexes[i].test(input)) {
+                        backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithRegex,
+                            {
+                                ...prepareErrorData,
+                                regexName: names[i],
+                                regex: regexes[i].toString()
+                            });
                     }
                 }
             }
-            else {
-                if(!input.match(settings)) {
+        }
+        else {
+            const regex = typeof settings === 'string' ? new RegExp(settings) : settings;
+            return (input, backErrorBag, prepareErrorData) => {
+                if(!regex.test(input)) {
                     backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithRegex,
                         {
                             ...prepareErrorData,
-                            regex: settings.toString()
+                            regex: regex.toString()
                         });
                 }
             }
         }
     },
 
-    in: (input, settings, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.validIn(settings,input)) {
-            backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithIn,
-                {
-                    ...prepareErrorData,
-                    values: settings
-                });
-        }
-    },
-
-    privateIn: (input, settings, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.validIn(settings,input)) {
-            backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithPrivateIn,prepareErrorData);
-        }
-    },
-
-    minLength: (input, settings, backErrorBag, prepareErrorData) =>
-    {
-        if(typeof input === 'string' && input.length < settings) {
-            backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMinLength,
-                {
-                    ...prepareErrorData,
-                    minLength: settings
-                });
-        }
-    },
-
-    maxLength: (input, settings, backErrorBag, prepareErrorData) =>
-    {
-        if(typeof input === 'string' && input.length > settings) {
-            backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMaxLength,
-                {
-                    ...prepareErrorData,
-                    maxLength: settings
-
-                });
-        }
-    },
-
-    length: (input, settings, backErrorBag, prepareErrorData) =>
-    {
-        if(typeof input === 'string' && input.length !== settings) {
-            backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithLength,
-                {
-                    ...prepareErrorData,
-                    length: settings
-
-                });
-        }
-    },
-
-    contains: (input, settings, backErrorBag, prepareErrorData) =>
-    {
-        if(typeof input === 'string') {
-            const missingContains = EasyValidator.missingContains(input,settings);
-            if(missingContains.length > 0) {
-                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithContains,
+    in: (settings) => {
+        const inChecker = ValidatorUtils.createInChecker(settings);
+        return (input, backErrorBag, prepareErrorData) => {
+            if(!inChecker(settings)){
+                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithIn,
                     {
                         ...prepareErrorData,
-                        shouldContain: settings,
-                        missing: missingContains
+                        values: settings
                     });
             }
         }
     },
 
-    equals: (input, settings, backErrorBag, prepareErrorData) =>
-    {
-        if(!EasyValidator.equals(input,settings)) {
-            backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithEquals,
-                {
-                    ...prepareErrorData,
-                    shouldEquals: settings
-                });
-        }
-    },
-
-    minValue: (input, settings, backErrorBag, prepareErrorData) =>
-    {
-        if(typeof input === 'number' && input < settings) {
-            backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMinValue,
-                {
-                    ...prepareErrorData,
-                    minValue: settings
-
-                });
-        }
-    },
-
-    maxValue: (input, settings, backErrorBag, prepareErrorData) =>
-    {
-        if(typeof input === 'number' && input > settings) {
-            backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMaxValue,
-                {
-                    ...prepareErrorData,
-                    maxValue: settings
-                });
-        }
-    },
-
-    startsWith: (input, settings, backErrorBag, prepareErrorData) =>
-    {
-        if(typeof input === 'string' && !input.startsWith(settings)) {
-            backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithStartsWith,
-                {
-                    ...prepareErrorData,
-                    shouldStartsWith: settings
-
-                });
-        }
-    },
-
-    endsWith: (input, settings, backErrorBag, prepareErrorData) =>
-    {
-        if(typeof input === 'string' && !input.endsWith(settings)) {
-            backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithEndsWith,
-                {
-                    ...prepareErrorData,
-                    shouldEndsWith: settings
-                });
-        }
-    },
-
-    letters: (input, settings, backErrorBag, prepareErrorData) =>
-    {
-        if(typeof input === 'string') {
-            if(!(settings === FormatLetters.UpperCase ? EasyValidator.isUpperCase(input) : EasyValidator.isLowerCase(input))) {
-                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithLettersFormat,{
-                    ...prepareErrorData,
-                    format: settings
-                });
+    privateIn: (settings) => {
+        const inChecker = ValidatorUtils.createInChecker(settings);
+        return (input, backErrorBag, prepareErrorData) => {
+            if(!inChecker(settings)){
+                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithPrivateIn,prepareErrorData);
             }
         }
     },
 
-    charClass: (input, settings, backErrorBag, prepareErrorData) =>
-    {
-        if(typeof input === 'string') {
-            if(!input.match(settings)) {
-                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithCharClass,
+    minLength: (settings) => {
+        return (input, backErrorBag, prepareErrorData) => {
+            if(typeof input === 'string' && input.length < settings) {
+                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMinLength,
                     {
                         ...prepareErrorData,
-                        regex: settings.toString()
+                        minLength: settings
                     });
             }
         }
     },
 
-    before: async (input, settings, backErrorBag, prepareErrorData) =>
-    {
-        if((typeof input === "string" && EasyValidator.isDate(input)) || input instanceof Date)
-        {
-            const inputDate: Date = typeof input === 'string' ? new Date(input): input;
-            const checkDate: Date = typeof settings === 'function' ? await settings(): settings;
-            if(inputDate > checkDate) {
-                backErrorBag.addNewBackError(ValidatorBackErrors.dateIsNotBefore,
+    maxLength: (settings) => {
+        return (input, backErrorBag, prepareErrorData) => {
+            if(typeof input === 'string' && input.length > settings) {
+                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMaxLength,
                     {
                         ...prepareErrorData,
-                        shouldBefore: checkDate
+                        maxLength: settings
+
                     });
             }
         }
     },
 
-    after: async (input, settings, backErrorBag, prepareErrorData) =>
-    {
-        if((typeof input === "string" && EasyValidator.isDate(input)) || input instanceof Date)
-        {
-            const inputDate: Date = typeof input === 'string' ? new Date(input): input;
-            const checkDate: Date = typeof settings === 'function' ? await settings(): settings;
-            if(inputDate < checkDate) {
-                backErrorBag.addNewBackError(ValidatorBackErrors.dateIsNotAfter,
+    length: (settings) => {
+        return (input, backErrorBag, prepareErrorData) => {
+            if(typeof input === 'string' && input.length !== settings) {
+                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithLength,
                     {
                         ...prepareErrorData,
-                        shouldAfter: checkDate
+                        length: settings
+
                     });
             }
         }
     },
 
-    minByteSize: (input, settings, backErrorBag, prepareErrorData, type) =>
-    {
-        if(typeof input === "string" && ByteUtils.getByteSize(input,type) < settings)
-        {
-            backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMinByteSize,
-                {
-                    ...prepareErrorData,
-                    minByteSize: settings
-                });
+    contains: (settings) => {
+        const containsChecker = ValidatorUtils.createContainsChecker(settings);
+        return (input, backErrorBag, prepareErrorData) => {
+            if(typeof input === 'string') {
+                if(!containsChecker(input)){
+                    backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithContains,
+                        {
+                            ...prepareErrorData,
+                            shouldContain: settings
+                        });
+                }
+            }
         }
     },
 
-    maxByteSize: (input, settings, backErrorBag, prepareErrorData,type) =>
-    {
-        if(typeof input === "string" && ByteUtils.getByteSize(input,type) > settings)
-        {
-            backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMaxByteSize,
-                {
-                    ...prepareErrorData,
-                    maxByteSize: settings
-                });
+    equals: (settings) => {
+        return (input, backErrorBag, prepareErrorData) => {
+            if(input !== settings){
+                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithEquals,
+                    {
+                        ...prepareErrorData,
+                        shouldEquals: settings
+                    });
+            }
         }
     },
 
-    mimeType: (input, settings, backErrorBag, prepareErrorData) =>
-    {
-        if(typeof input === "string")
-        {
-            if(!Array.isArray(settings)){
-                settings = [settings];
+    minValue: (settings) => {
+        return (input, backErrorBag, prepareErrorData) => {
+            if(typeof input === 'number' && input < settings) {
+                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMinValue,
+                    {
+                        ...prepareErrorData,
+                        minValue: settings
+                    });
             }
+        };
+    },
 
-            const mime = Base64Utils.getMimeType(input);
-            const fails: string[] = [];
+    maxValue: (settings) => {
+        return (input, backErrorBag, prepareErrorData) => {
+            if(typeof input === 'number' && input > settings) {
+                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMaxValue,
+                    {
+                        ...prepareErrorData,
+                        maxValue: settings
+                    });
+            }
+        };
+    },
 
-            for(let i = 0; i < settings.length; i++)
-            {
-                if(settings[i] === mime){
-                    return;
-                }
-                else {
-                    fails.push(settings[i]);
+    startsWith: (settings) => {
+        return (input, backErrorBag, prepareErrorData) => {
+            if(typeof input === 'string' && !input.startsWith(settings)) {
+                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithStartsWith,
+                    {
+                        ...prepareErrorData,
+                        shouldStartWith: settings
+                    });
+            }
+        };
+    },
+
+    endsWith: (settings) => {
+        return (input, backErrorBag, prepareErrorData) => {
+            if(typeof input === 'string' && !input.endsWith(settings)) {
+                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithEndsWith,
+                    {
+                        ...prepareErrorData,
+                        shouldEndWith: settings
+                    });
+            }
+        };
+    },
+
+    letters: (settings) => {
+        const testFormat: (str: string) => string = settings === FormatLetters.UpperCase ?
+            str => str.toUpperCase() : str => str.toLowerCase()
+        return (input, backErrorBag, prepareErrorData) => {
+            if(typeof input === 'string'){
+                if(input !== testFormat(input)) {
+                    backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithLettersFormat,{
+                        ...prepareErrorData,
+                        format: settings
+                    });
                 }
             }
+        };
+    },
 
-            //if found a mime than it already exists with return.
-            backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMimeType,
-                {
-                    ...prepareErrorData,
-                    mimeType: fails
-                });
+    charClass: (settings) => {
+        const regex = new RegExp("^["+settings+"]*$");
+        return (input, backErrorBag, prepareErrorData) => {
+            if(typeof input === 'string') {
+                if(!regex.test(input)) {
+                    backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithCharClass,
+                        {
+                            ...prepareErrorData,
+                            regex: regex.toString()
+                        });
+                }
+            }
+        };
+    },
+
+    before: (settings) => {
+        const getCheckDate: () => Date | Promise<Date> =
+            typeof settings === 'function' ? settings : () => settings;
+        const {isDate} = ValidatorUtils;
+        return async (input, backErrorBag, prepareErrorData) => {
+            if((typeof input === "string" && isDate(input)) || input instanceof Date) {
+                const checkDate = await getCheckDate();
+                if((typeof input === 'string' ? new Date(input) : input) >= checkDate) {
+                    backErrorBag.addNewBackError(ValidatorBackErrors.dateIsNotBefore,
+                        {
+                            ...prepareErrorData,
+                            shouldBefore: checkDate
+                        });
+                }
+            }
+        };
+    },
+
+    after: (settings) => {
+        const getCheckDate: () => Date | Promise<Date> =
+            typeof settings === 'function' ? settings : () => settings;
+        const {isDate} = ValidatorUtils;
+        return async (input, backErrorBag, prepareErrorData) => {
+            if((typeof input === "string" && isDate(input)) || input instanceof Date) {
+                const checkDate = await getCheckDate();
+                if((typeof input === 'string' ? new Date(input) : input) <= checkDate) {
+                    backErrorBag.addNewBackError(ValidatorBackErrors.dateIsNotAfter,
+                        {
+                            ...prepareErrorData,
+                            shouldAfter: checkDate
+                        });
+                }
+            }
+        };
+    },
+
+    minByteSize: (settings) => {
+        return (input, backErrorBag, prepareErrorData, type) => {
+            if(typeof input === "string" && ByteUtils.getByteSize(input,type) < settings) {
+                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMinByteSize,
+                    {
+                        ...prepareErrorData,
+                        minByteSize: settings
+                    });
+            }
         }
     },
 
-    mimeSubType: (input, settings, backErrorBag, prepareErrorData) =>
-    {
-        if(typeof input === "string")
-        {
-            if(!Array.isArray(settings)){
-                settings = [settings];
+    maxByteSize: (settings) => {
+        return (input, backErrorBag, prepareErrorData, type) => {
+            if(typeof input === "string" && ByteUtils.getByteSize(input,type) > settings) {
+                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMaxByteSize,
+                    {
+                        ...prepareErrorData,
+                        maxByteSize: settings
+                    });
             }
+        };
+    },
 
-            const sub = Base64Utils.getMimeSubType(input);
-            const fails: string[] = [];
-
-            for(let i = 0; i < settings.length; i++)
-            {
-                if(settings[i] === sub){
-                    return;
+    mimeType: (settings) => {
+        if(Array.isArray(settings)){
+            const length = settings.length;
+            return (input, backErrorBag, prepareErrorData) => {
+                if(typeof input === 'string'){
+                    const inMimeType = Base64Utils.getMimeType(input);
+                    for(let i = 0; i < length; i++) if(inMimeType === settings[i]) return;
+                    backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMimeType,
+                        {
+                            ...prepareErrorData,
+                            mimeType: settings
+                        });
                 }
-                else {
-                    fails.push(settings[i]);
+            };
+        }
+        else {
+            return (input, backErrorBag, prepareErrorData) => {
+                if(typeof input === 'string' && Base64Utils.getMimeType(input) !== settings){
+                    backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMimeType,
+                        {
+                            ...prepareErrorData,
+                            mimeType: settings
+                        });
                 }
-            }
+            };
+        }
+    },
 
-            //if found a sub than it already exists with return.
-            backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMimeSubType,
-                {
-                    ...prepareErrorData,
-                    mimeSubType: fails
-                });
+    mimeSubType: (settings) => {
+        if(Array.isArray(settings)){
+            const length = settings.length;
+            return (input, backErrorBag, prepareErrorData) => {
+                if(typeof input === 'string'){
+                    const inMimeSubType = Base64Utils.getMimeSubType(input);
+                    for(let i = 0; i < length; i++) if(inMimeSubType === settings[i]) return;
+                    backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMimeSubType,
+                        {
+                            ...prepareErrorData,
+                            mimeSubType: settings
+                        });
+                }
+            };
+        }
+        else {
+            return (input, backErrorBag, prepareErrorData) => {
+                if(typeof input === 'string' && Base64Utils.getMimeSubType(input) !== settings){
+                    backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMimeSubType,
+                        {
+                            ...prepareErrorData,
+                            mimeSubType: settings
+                        });
+                }
+            };
         }
     }
-
 };
 
 export namespace ValidatorLibrary {

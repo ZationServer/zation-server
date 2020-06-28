@@ -10,7 +10,7 @@ import {ArraySettings, ValidateFunction, ValueModel}       from "../config/defin
 // noinspection TypeScriptPreferShortImport
 import BackErrorBag          from "../../api/BackErrorBag";
 import BackError             from "../../api/BackError";
-import {ValidatorLibrary}    from "./validatorLibrary";
+import {FunctionValidator, ValidatorLibrary} from './validatorLibrary';
 import FuncUtils             from "../utils/funcUtils";
 import {ValidatorBackErrors} from "../zationBackErrors/validatorBackErrors";
 
@@ -29,79 +29,73 @@ export interface PreparedErrorData {
     value: any
 }
 
-type PreparedFunctionValidator =
-    (input: any, backErrorBag : BackErrorBag, prepareErrorData: PreparedErrorData, type: string | undefined) => Promise<void> | void
-
-export default class ValidatorEngine
+export default class ValidatorCreator
 {
     /**
-     * Creates a closure to validate the type of the input data.
+     * Creates a closure to validate the value validation functions.
      * @param config
      */
-    static createValueValidator(config: ValueModel): ValueValidateFunction
+    static createValueFunctionValidator(config: ValueModel): ValueValidateFunction
     {
-        const validatorFunctions: PreparedFunctionValidator[] = [];
+        const functionValidator: FunctionValidator[] = [];
         let validateFunction: ValidateFunction = () => {};
 
-        for(const cKey in config) {
-            if(config.hasOwnProperty(cKey)) {
-                const cValue = config[cKey];
-                if(ValidatorFunctions.hasOwnProperty(cKey)) {
-                    validatorFunctions.push((input, backErrorBag, prepareErrorData, type) =>
-                        ValidatorFunctions[cKey](input,cValue,backErrorBag,prepareErrorData,type));
+        for(const k in config) {
+            if(config.hasOwnProperty(k)) {
+                const settings = config[k];
+                if(ValidatorFunctions.hasOwnProperty(k)) {
+                    functionValidator.push(ValidatorFunctions[k](settings));
                 }
-                else if(cKey === nameof<ValueModel>(s => s.validate)) {
-                    validateFunction = FuncUtils.createFuncAsyncInvoker(cValue);
+                else if(k === nameof<ValueModel>(s => s.validate)) {
+                    validateFunction = FuncUtils.createFuncAsyncInvoker(settings);
                 }
             }
         }
+        const functionValidatorLength = functionValidator.length;
 
         return async (input, errorBag, preparedErrorData, type) => {
             const promises: (Promise<void> | void)[] = [];
-            for(let i = 0; i < validatorFunctions.length; i++){
-                promises.push(validatorFunctions[i](input,errorBag,preparedErrorData,type));
-            }
+            for(let i = 0; i < functionValidatorLength; i++) promises.push(functionValidator[i](input,errorBag,preparedErrorData,type));
             promises.push(validateFunction(input,errorBag,preparedErrorData.path,type));
             await Promise.all(promises);
         };
     }
 
     /**
-     * Creates a closure to validate the input type.
+     * Creates a closure to validate the value model type.
      * @param type
      * @param strictType
      */
     static createValueTypeValidator(type: string | string[] | undefined,strictType: boolean): ValueTypeValidateFunction {
         if(type !== undefined && type !== nameof<ValidationTypeRecord>(s => s.all)) {
             if(Array.isArray(type)){
+                const typeLength = type.length;
+                const preparedTypeValidator: ((data: any) => boolean)[] = [];
+                for(let i = 0; i < typeLength; i++){
+                    preparedTypeValidator.push(ValidatorTypes[type[i]](strictType));
+                }
                 return (input, errorBag, preparedErrorData) => {
-                    let foundAValidTyp = false;
-                    let typeTmp;
-                    const errorBagTemp = new BackErrorBag();
-                    for(let i = 0; i < type.length; i++) {
-                        const tempErrorCount = errorBagTemp.count;
-                        ValidatorTypes[type[i]](input,errorBagTemp,preparedErrorData,strictType);
-                        if(tempErrorCount === errorBagTemp.count) {
-                            foundAValidTyp = true;
-                            typeTmp = type[i];
-                            break;
-                        }
+                    for(let i = 0; i < typeLength; i++) {
+                        if(preparedTypeValidator[i](input)) return type[i];
                     }
-                    if(!foundAValidTyp) {
-                        errorBag.add(new BackError(ValidatorBackErrors.noValidTypeWasFound,
-                            {
-                                path: preparedErrorData.path,
-                                value: preparedErrorData.value,
-                                types: type
-                            }));
-                    }
-                    return typeTmp;
+                    errorBag.add(new BackError(ValidatorBackErrors.valueNotMatchesWithType,
+                        {
+                            path: preparedErrorData.path,
+                            value: preparedErrorData.value,
+                            type: type
+                        }));
                 }
             }
             else {
+                const typeValidate = ValidatorTypes[type](strictType);
                 return (input, errorBag, preparedErrorData) => {
-                    ValidatorTypes[type](input,errorBag,preparedErrorData,strictType);
-                    return type;
+                    if(typeValidate(input)) return type;
+                    errorBag.add(new BackError(ValidatorBackErrors.valueNotMatchesWithType,
+                        {
+                            path: preparedErrorData.path,
+                            value: preparedErrorData.value,
+                            type: type
+                        }));
                 }
             }
         }

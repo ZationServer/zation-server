@@ -295,7 +295,6 @@ export default class ConfigPrecompiler
             }
             else {
                 this.precompileValueModelInheritance(directModel as ValueModel);
-                this.precompileValidationFunctions(directModel as ValueModel);
 
                 if(!model.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
                     Object.defineProperty(model,nameof<ModelPreparationMem>(s => s._process),{
@@ -383,33 +382,6 @@ export default class ConfigPrecompiler
             }
             if(directModel[modelPrototypeSymbol]) {
                 this.resolveTranslatableModels(directModel,modelPrototypeSymbol);
-            }
-        }
-    }
-
-    // noinspection JSMethodCanBeStatic
-    /**
-     * A function that will precompile validation functions of a value model.
-     * @param value
-     */
-    private precompileValidationFunctions(value: ValueModel): void
-    {
-        //charClass function
-        if(typeof value.charClass === "string") {
-            // @ts-ignore
-            //ignore because its used internal for performance speed
-            value.charClass = new RegExp("^["+value.charClass+"]*$");
-        }
-
-        //regex
-        if(typeof value.regex === "string"){
-            value.regex = new RegExp(value.regex);
-        }
-        else if(typeof value.regex === "object"){
-            for(const regexName in value.regex) {
-                if(value.regex.hasOwnProperty(regexName) && typeof value.regex[regexName] === 'string'){
-                    value.regex[regexName] = new RegExp(value.regex[regexName]);
-                }
             }
         }
     }

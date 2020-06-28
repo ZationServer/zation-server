@@ -12,7 +12,7 @@ import {
     ObjectModel, ParamInput, SingleModelInput, ValueModel,
 } from '../config/definitions/parts/inputConfig';
 import BackErrorBag          from "../../api/BackErrorBag";
-import ValidatorEngine       from "../validator/validatorEngine";
+import ValidatorCreator      from "../validator/validatorCreator";
 import ConvertEngine         from "../convert/convertEngine";
 import BackError             from "../../api/BackError";
 import {MainBackErrors}      from "../zationBackErrors/mainBackErrors";
@@ -49,8 +49,8 @@ export default class InputProcessorCreator
         const convertType = typeof valueModel.convertType === 'boolean' ? valueModel.convertType: true;
         const hasConvert = typeof valueModel.convert === 'function';
 
-        const typeValidate = ValidatorEngine.createValueTypeValidator(type,strictType);
-        const valueValidate = ValidatorEngine.createValueValidator(valueModel);
+        const typeValidate = ValidatorCreator.createValueTypeValidator(type,strictType);
+        const functionValidate = ValidatorCreator.createValueFunctionValidator(valueModel);
 
         return async (srcObj,srcKey,currentPath,{errorBag,processTaskList,createProcessTaskList}) => {
             const preparedErrorData = {
@@ -58,15 +58,15 @@ export default class InputProcessorCreator
                 path: currentPath
             };
 
-            const currentErrorCount = errorBag.count;
+            const tmpErrorCount = errorBag.count;
 
             const selectedType = typeValidate(srcObj[srcKey],errorBag,preparedErrorData);
 
-            if(currentErrorCount === errorBag.count && convertType){
+            if(tmpErrorCount === errorBag.count && convertType){
                 srcObj[srcKey] = ConvertEngine.convert(srcObj[srcKey],selectedType,strictType);
             }
 
-            await valueValidate(srcObj[srcKey],errorBag,preparedErrorData,selectedType);
+            await functionValidate(srcObj[srcKey],errorBag,preparedErrorData,selectedType);
 
             //check for convertTask
             if(
@@ -90,7 +90,7 @@ export default class InputProcessorCreator
         const arrayInner = (arrayModel[0] as Model & ModelPreparationMem);
         const arraySettings = arrayModel[1] || {};
         const hasConvert = typeof arraySettings.convert === 'function';
-        const arrayValidate = ValidatorEngine.createArrayValidator(arraySettings);
+        const arrayValidate = ValidatorCreator.createArrayValidator(arraySettings);
 
         return async (srcObj, srcKey, currentPath, processInfo) => {
             const input = srcObj[srcKey];

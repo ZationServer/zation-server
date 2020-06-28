@@ -5,7 +5,6 @@ Copyright(c) Luca Scaringella
  */
 
 export enum ErrorGroup {
-    TypeError             = 'TypeError',
     ValueLengthError      = 'ValueLengthError',
     ArrayLengthError      = 'ArrayLengthError',
     NumberSizeError       = 'NumberSizeError',
