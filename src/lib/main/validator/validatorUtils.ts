@@ -97,7 +97,7 @@ export namespace ValidatorUtils {
         catch (_) {return false;}
     };
     export const isMobileNumber = (() => {
-        const regex = /^[+]*[(]?[0-9]{1,4}[)]?[-\s\./0-9]*$/;
+        const regex = /^[+]*[(]?[0-9]{1,4}[)]?[-\s./0-9]*$/;
         return (data: any) => typeof data === 'string' && regex.test(data);
     })();
     export const isUUID3 = (data: any) => {
@@ -113,7 +113,7 @@ export namespace ValidatorUtils {
         catch (_) {return false;}
     };
     export const isBase64 = (() => {
-        const regex = new RegExp('^(data:\\w+\\/[a-zA-Z+\\-.]+;base64,)?(?:[A-Za-z0-9+\\/]{4})*(?:[A-Za-z0-9+\\/]{2}==|[A-Za-z0-9+\/]{3}=)?$', 'gi');
+        const regex = /^(data:\w+\/[a-zA-Z+\-.]+;base64,)?(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
         return (data: any) => typeof data === 'string' && regex.test(data);
     })();
     export const isAscii = (data: any) => {
@@ -144,7 +144,7 @@ export namespace ValidatorUtils {
             }
         }
         else {
-            return (value) => value.indexOf(value) !== -1;
+            return (value) => value.indexOf(contains) !== -1;
         }
     }
 }
