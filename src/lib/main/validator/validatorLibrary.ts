@@ -121,7 +121,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
     in: (settings) => {
         const inChecker = ValidatorUtils.createInChecker(settings);
         return (input, backErrorBag, prepareErrorData) => {
-            if(!inChecker(settings)){
+            if(!inChecker(input)){
                 backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithIn,
                     {
                         ...prepareErrorData,
@@ -134,7 +134,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
     privateIn: (settings) => {
         const inChecker = ValidatorUtils.createInChecker(settings);
         return (input, backErrorBag, prepareErrorData) => {
-            if(!inChecker(settings)){
+            if(!inChecker(input)){
                 backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithPrivateIn,prepareErrorData);
             }
         }
