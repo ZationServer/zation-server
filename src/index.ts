@@ -26,6 +26,9 @@ import {$value, $key, $pair, $all, $any, $contains, $matches}   from './lib/api/
 import {$tokenPayloadIncludes, $tokenPayloadMatches, $userId}   from './lib/api/AccessApiUtils';
 import {updateModelTranslatable}                  from './lib/api/configTranslatable/modelTranslatable';
 import {updateInputConfigTranslatable}            from './lib/api/configTranslatable/inputConfigTranslatable';
+import {Model as AnyModel, ImplicitModel}         from './lib/main/config/definitions/parts/inputConfig';
+import {ModelMetaData, MetaModel}                 from './lib/main/models/metaModel';
+import {ExplicitModel}              from './lib/main/models/explicitModel';
 import {Model}                      from "./lib/api/input/decorator/Model";
 import {ObjectModel}                from "./lib/api/input/decorator/ObjectModel";
 import {ParamInput}                 from "./lib/api/input/decorator/ParamInput";
@@ -150,5 +153,10 @@ export {
     Events,
     Middleware,
     updateModelTranslatable,
-    updateInputConfigTranslatable
+    updateInputConfigTranslatable,
+    AnyModel,
+    MetaModel,
+    ModelMetaData,
+    ImplicitModel,
+    ExplicitModel
 };
