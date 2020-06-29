@@ -13,7 +13,7 @@ import {
 } from '../config/definitions/parts/inputConfig';
 import BackErrorBag          from "../../api/BackErrorBag";
 import ValidatorCreator      from "../validator/validatorCreator";
-import ConvertEngine         from "../convert/convertEngine";
+import TypeConverterCreator  from "../typeConvert/typeConverterCreator";
 import BackError             from "../../api/BackError";
 import {MainBackErrors}      from "../zationBackErrors/mainBackErrors";
 import Iterator              from "../utils/iterator";
@@ -52,6 +52,8 @@ export default class InputProcessorCreator
         const typeValidate = ValidatorCreator.createValueTypeValidator(type,strictType);
         const functionValidate = ValidatorCreator.createValueFunctionValidator(valueModel);
 
+        const convert = TypeConverterCreator.createConverter(strictType);
+
         return async (srcObj,srcKey,currentPath,{errorBag,processTaskList,createProcessTaskList}) => {
             const preparedErrorData = {
                 value: srcObj[srcKey],
@@ -63,7 +65,7 @@ export default class InputProcessorCreator
             const selectedType = typeValidate(srcObj[srcKey],errorBag,preparedErrorData);
 
             if(tmpErrorCount === errorBag.count && convertType){
-                srcObj[srcKey] = ConvertEngine.convert(srcObj[srcKey],selectedType,strictType);
+                srcObj[srcKey] = convert(srcObj[srcKey],selectedType);
             }
 
             await functionValidate(srcObj[srcKey],errorBag,preparedErrorData,selectedType);
