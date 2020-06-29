@@ -82,7 +82,7 @@ export default class ValidatorCreator
                         {
                             path: preparedErrorData.path,
                             value: preparedErrorData.value,
-                            type: type
+                            type: [...type]
                         }));
                 }
             }
