@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 import ZationWorker                = require("../../core/zationWorker");
 import BackError                     from "../../api/BackError";
 import SystemVersionChecker          from "../systemVersion/systemVersionChecker";
-import {MainBackErrors}              from "../zationBackErrors/mainBackErrors";
+import {MainBackErrors}              from "../systemBackErrors/mainBackErrors";
 import Bag                           from "../../api/Bag";
 import ZationConfigFull              from "../config/manager/zationConfigFull";
 import InputClosureCreator           from "../input/inputClosureCreator";

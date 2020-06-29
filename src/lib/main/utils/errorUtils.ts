@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import BackError, {DryBackError} from '../../api/BackError';
 import BackErrorBag      from "../../api/BackErrorBag";
-import {MainBackErrors}  from "../zationBackErrors/mainBackErrors";
+import {MainBackErrors}  from "../systemBackErrors/mainBackErrors";
 
 export default class ErrorUtils {
     /**

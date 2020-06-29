@@ -12,5 +12,5 @@ export default interface BackErrorConstruct
     type?: string;
     sendInfo?: boolean;
     private ?: boolean;
-    fromZationSystem ?: boolean;
+    custom ?: boolean;
 }

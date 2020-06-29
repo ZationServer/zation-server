@@ -180,10 +180,10 @@ export default class BackErrorBuilder
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set if the BackError is from zation system.
+     * Set if the BackError is custom-defined.
      */
-    fromZationSystem(fromZationSystem: boolean): BackErrorBuilder {
-        this._construct.fromZationSystem = fromZationSystem;
+    custom(custom: boolean): BackErrorBuilder {
+        this._construct.custom = custom;
         return this;
     }
 

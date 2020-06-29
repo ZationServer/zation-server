@@ -6,8 +6,9 @@ Copyright(c) Luca Scaringella
 
 // noinspection TypeScriptPreferShortImport
 import {ErrorType}        from "../definitions/errorType";
+import BackErrorConstruct from '../definitions/backErrorConstruct';
 
-export const MainBackErrors = {
+export const MainBackErrors: Record<string, BackErrorConstruct> = {
     unknownController: {
         name         : 'unknownController',
         description  : 'The controller is not found.',
@@ -15,7 +16,7 @@ export const MainBackErrors = {
         sendInfo     : true,
         //INFO
         // identifier
-        fromZationSystem: true
+        custom: false
     },
 
     unknownReceiver: {
@@ -26,7 +27,7 @@ export const MainBackErrors = {
         private      : true,
         //INFO
         // identifier
-        fromZationSystem: true
+        custom: false
     },
 
     apiLevelIncompatible: {
@@ -37,7 +38,7 @@ export const MainBackErrors = {
         //INFO
         // identifier
         // apiLevel
-        fromZationSystem: true
+        custom: false
     },
 
     authControllerNotSet: {
@@ -45,7 +46,7 @@ export const MainBackErrors = {
         description  : 'Auth controller not set.',
         type         : ErrorType.InputError,
         sendInfo     : false,
-        fromZationSystem: true
+        custom: false
     },
 
     noAccessWithSystem : {
@@ -55,7 +56,7 @@ export const MainBackErrors = {
         sendInfo     : false,
         //INFO
         // system
-        fromZationSystem: true
+        custom: false
     },
 
     noAccessWithVersion   : {
@@ -65,7 +66,7 @@ export const MainBackErrors = {
         sendInfo     : true,
         //INFO
         // version
-        fromZationSystem: true
+        custom: false
     },
 
     serviceNotFound : {
@@ -77,7 +78,7 @@ export const MainBackErrors = {
         //INFO
         // serviceName (name of the service)
         // instanceName  (name of the instance)
-        fromZationSystem: true
+        custom: false
     },
 
     inputIsIncompatible : {
@@ -86,7 +87,7 @@ export const MainBackErrors = {
         type         : ErrorType.CodeError,
         sendInfo     : false,
         private      : true,
-        fromZationSystem: true
+        custom: false
     },
 
     authenticationRequired : {
@@ -97,7 +98,7 @@ export const MainBackErrors = {
         private      : true,
         //INFO
         // reason
-        fromZationSystem: true
+        custom: false
     },
 
     undefinedUserId : {
@@ -106,7 +107,7 @@ export const MainBackErrors = {
         type         : ErrorType.SystemError,
         sendInfo     : false,
         private      : true,
-        fromZationSystem: true
+        custom: false
     },
 
     unknownChannel : {
@@ -117,7 +118,7 @@ export const MainBackErrors = {
         private      : true,
         //INFO
         // name
-        fromZationSystem: true
+        custom: false
     },
 
     componentNotFound : {
@@ -129,7 +130,7 @@ export const MainBackErrors = {
         //INFO
         // className
         // componentType
-        fromZationSystem: true
+        custom: false
     },
 
     inputIsMissing   : {
@@ -137,7 +138,7 @@ export const MainBackErrors = {
         description  : 'Input is missing.',
         type         : ErrorType.InputError,
         sendInfo     : true,
-        fromZationSystem: true
+        custom: false
     },
 
     inputParamIsMissing   : {
@@ -147,7 +148,7 @@ export const MainBackErrors = {
         sendInfo     : true,
         //INFO
         // paramName (the name of the missing param)
-        fromZationSystem: true
+        custom: false
     },
 
     unknownInputParam: {
@@ -157,7 +158,7 @@ export const MainBackErrors = {
         sendInfo     : true,
         //INFO
         // paramName (the unknown input param name)
-        fromZationSystem: true
+        custom: false
     },
 
     inputParamNotAssignable   : {
@@ -168,7 +169,7 @@ export const MainBackErrors = {
         //INFO
         // index (index of the input param that is not assignable)
         // value (input value of the input param that is not assignable)
-        fromZationSystem: true
+        custom: false
     },
 
     arrayWasExpected   : {
@@ -179,7 +180,7 @@ export const MainBackErrors = {
         //INFO
         // path (full path to the value where an array was expected)
         // value (the input value that is not from type array)
-        fromZationSystem: true
+        custom: false
     },
 
     objectWasExpected   : {
@@ -190,7 +191,7 @@ export const MainBackErrors = {
         //INFO
         // value (the input value that is not from type object)
         // path (full path to the value where an object was expected)
-        fromZationSystem: true
+        custom: false
     },
 
     objectPropertyIsMissing : {
@@ -202,7 +203,7 @@ export const MainBackErrors = {
         // object (the input object where the property is missing)
         // propertyName (name of missing property)
         // path (the full input path to missing property)
-        fromZationSystem: true
+        custom: false
     },
 
     unknownObjectProperty: {
@@ -213,7 +214,7 @@ export const MainBackErrors = {
         //INFO
         // propertyName (name of the unknown property)
         // path (full input path to unknown property)
-        fromZationSystem: true
+        custom: false
     },
 
     inTokenSavedAuthUserGroupIsNotFound   : {
@@ -225,7 +226,7 @@ export const MainBackErrors = {
         //INFO
         // savedAuthUserGroup (the saved auth group in token)
         // authUserGroupsInZationConfig (auth groups in the zation config)
-        fromZationSystem: true
+        custom: false
     },
 
     tokenWithoutAuthUserGroup : {
@@ -234,7 +235,7 @@ export const MainBackErrors = {
         type         : ErrorType.TokenError,
         private      : true,
         sendInfo     : false,
-        fromZationSystem: true
+        custom: false
     },
 
     tokenWithAuthUserGroupAndOnlyPanel : {
@@ -243,7 +244,7 @@ export const MainBackErrors = {
         type         : ErrorType.TokenError,
         private      : true,
         sendInfo     : false,
-        fromZationSystem: true
+        custom: false
     },
 
     invalidPanelAuthData : {
@@ -252,7 +253,7 @@ export const MainBackErrors = {
         type         : ErrorType.AuthError,
         private      : false,
         sendInfo     : false,
-        fromZationSystem: true
+        custom: false
     },
 
     panelIsNotActivated : {
@@ -261,7 +262,7 @@ export const MainBackErrors = {
         type         : ErrorType.InputError,
         private      : false,
         sendInfo     : false,
-        fromZationSystem: true
+        custom: false
     },
 
     noAccessWithTokenState : {
@@ -273,7 +274,7 @@ export const MainBackErrors = {
         // authIn (show if you auth in system)
         // authUserGroup (your auth type)
         // userId (your user id)
-        fromZationSystem: true
+        custom: false
     },
 
     invalidRequest: {
@@ -282,7 +283,7 @@ export const MainBackErrors = {
         type         : ErrorType.InputError,
         private      : false,
         sendInfo     : false,
-        fromZationSystem: true
+        custom: false
     },
 
     invalidPackage: {
@@ -291,7 +292,7 @@ export const MainBackErrors = {
         type         : ErrorType.InputError,
         private      : true,
         sendInfo     : false,
-        fromZationSystem: true
+        custom: false
     },
 
     invalidInputTypeInParamBasedInput: {
@@ -301,7 +302,7 @@ export const MainBackErrors = {
         //INFO
         // inputType
         sendInfo     : true,
-        fromZationSystem: true
+        custom: false
     },
 
     JSONParseSyntaxError: {
@@ -310,7 +311,7 @@ export const MainBackErrors = {
         type         : ErrorType.InputError,
         private      : false,
         sendInfo     : false,
-        fromZationSystem: true
+        custom: false
     },
 
     invalidValidationCheckStructure: {
@@ -321,7 +322,7 @@ export const MainBackErrors = {
         sendInfo     : true,
         //INFO
         // checkIndex
-        fromZationSystem: true
+        custom: false
     },
 
     pathNotResolvable: {
@@ -333,7 +334,7 @@ export const MainBackErrors = {
         //INFO
         // path
         // checkIndex
-        fromZationSystem: true
+        custom: false
     },
 
     validationCheckLimitReached: {
@@ -345,7 +346,7 @@ export const MainBackErrors = {
         //INFO
         // limit
         // checksCount
-        fromZationSystem: true
+        custom: false
     },
 
     unknownError: {
@@ -355,7 +356,7 @@ export const MainBackErrors = {
         sendInfo     : true,
         //INFO
         // info (info from Exception only in Debug Mode!)
-        fromZationSystem: true
+        custom: false
     },
 
     unknownTokenVerifyError: {
@@ -364,7 +365,7 @@ export const MainBackErrors = {
         type         : ErrorType.TokenError,
         sendInfo     : false,
         //INFO
-        fromZationSystem: true
+        custom: false
     },
 
     unknownTokenSignError: {
@@ -373,7 +374,7 @@ export const MainBackErrors = {
         type         : ErrorType.TokenError,
         sendInfo     : false,
         //INFO
-        fromZationSystem: true
+        custom: false
     },
 
     tokenExpiredError: {
@@ -383,7 +384,7 @@ export const MainBackErrors = {
         sendInfo     : true,
         //INFO
         // expiredAt
-        fromZationSystem: true
+        custom: false
     },
 
     jsonWebTokenError: {
@@ -393,6 +394,6 @@ export const MainBackErrors = {
         sendInfo     : true,
         //INFO
         // message
-        fromZationSystem: true
+        custom: false
     }
 };

@@ -29,9 +29,9 @@ export interface DryBackError {
      */
     d?: string,
     /**
-     * From Zation System
+     * Custom
      */
-    z: 0 | 1,
+    c: 0 | 1,
     /**
      * Info
      */
@@ -46,7 +46,7 @@ export default class BackError extends Error
     private sendInfo: boolean;
     private info: BackErrorInfo;
     private private: boolean;
-    private fromZationSystem: boolean;
+    private custom: boolean;
 
     // noinspection JSUnusedGlobalSymbols
     /**
@@ -104,10 +104,10 @@ export default class BackError extends Error
         this.group       = value.group;
         this.description = value.description || 'No Description defined in Error';
         this.type        = value.type || ErrorType.NormalError;
-        this.sendInfo    = value.sendInfo || true;
+        this.sendInfo    = value.sendInfo !== undefined ? value.sendInfo : true;
         this.info        = {};
-        this.private     = value.private || false;
-        this.fromZationSystem = value.fromZationSystem || false;
+        this.private     = value.private !== undefined ? value.private : false;
+        this.custom      = value.custom !== undefined ? value.custom : true;
 
         if(info) {
             if (typeof info === 'string') {
@@ -125,7 +125,7 @@ export default class BackError extends Error
      * Returns the complete information as a string.
      */
     toString(): string {
-        return `BackError  Name: ${this.name} Group: ${this.group}  Description: ${this.description}  Type: ${this.type}  Info: ${JSON.stringify(this.info)}  isPrivate:${this.private}  isFromZationSystem:${this.fromZationSystem}`;
+        return `BackError  Name: ${this.name} Group: ${this.group}  Description: ${this.description}  Type: ${this.type}  Info: ${JSON.stringify(this.info)}  Private: ${this.private}  Custom: ${this.custom}`;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -140,7 +140,7 @@ export default class BackError extends Error
             return {
                 n: 'BackError',
                 t: this.type,
-                z: this.fromZationSystem ? 1 : 0
+                c: this.custom ? 1 : 0
             }
         }
         else{
@@ -148,7 +148,7 @@ export default class BackError extends Error
                 n: this.name,
                 g: this.group,
                 t: this.type,
-                z: this.fromZationSystem ? 1 : 0,
+                c: this.custom ? 1 : 0,
                 i: this.sendInfo ? this.info: {},
                 ...(withDesc ? {d: this.description}: {})
             };
@@ -327,24 +327,20 @@ export default class BackError extends Error
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns if the BackError is from zation system.
-     * This indicates if this BackError is from the main zation system.
-     * This is used in the system internal.
+     * Returns if the BackError is a custom-defined error.
      */
-    isFromZationSystem(): boolean {
-        return this.fromZationSystem;
+    isCustom(): boolean {
+        return this.custom;
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set if the BackError is from zation system.
-     * This indicates if this BackError is from the main zation system.
-     * This is used in the system internal.
-     * @param fromZationSystem
+     * Set if the BackError is custom-defined.
+     * @param custom
      */
-    setFromZationSystem(fromZationSystem: boolean): void {
-        this.fromZationSystem = fromZationSystem;
+    setCustom(custom: boolean): void {
+        this.custom = custom;
     }
 
     // noinspection JSUnusedGlobalSymbols

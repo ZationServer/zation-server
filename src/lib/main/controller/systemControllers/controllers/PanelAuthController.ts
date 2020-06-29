@@ -9,7 +9,7 @@ import {RawZationToken}   from "../../../definitions/internal";
 import {ControllerConfig} from "../../../config/definitions/parts/controllerConfig";
 import BackError          from "../../../../api/BackError";
 import Controller         from "../../../../api/Controller";
-import {MainBackErrors}   from "../../../zationBackErrors/mainBackErrors";
+import {MainBackErrors}   from "../../../systemBackErrors/mainBackErrors";
 import TokenUtils         from "../../../token/tokenUtils";
 import Socket             from '../../../../api/Socket';
 // noinspection ES6PreferShortImport

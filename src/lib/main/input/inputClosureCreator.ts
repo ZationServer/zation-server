@@ -9,7 +9,7 @@ import BackErrorBag                     from "../../api/BackErrorBag";
 import ProcessTaskEngine, {ProcessTask} from "./processTaskEngine";
 import InputProcessor, {Processable}    from "./inputProcessorCreator";
 import BackError                        from "../../api/BackError";
-import {MainBackErrors}                 from "../zationBackErrors/mainBackErrors";
+import {MainBackErrors}                 from "../systemBackErrors/mainBackErrors";
 import InputUtils                       from "./inputUtils";
 import {ValidationCheckPair}            from "../controller/controllerDefinitions";
 

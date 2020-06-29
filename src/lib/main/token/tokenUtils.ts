@@ -8,7 +8,7 @@ import {PrepareZationToken, RawZationToken} from "../definitions/internal";
 import {JwtSignFunction, JwtSignOptions, JwtVerifyFunction, JwtVerifyOptions} from "../definitions/jwt";
 import AuthConfig          from "../auth/authConfig";
 import BackError           from "../../api/BackError";
-import {MainBackErrors}    from "../zationBackErrors/mainBackErrors";
+import {MainBackErrors}    from "../systemBackErrors/mainBackErrors";
 import ZationConfigFull    from "../config/manager/zationConfigFull";
 import ObjectUtils         from "../utils/objectUtils";
 import ZationConfig        from "../config/manager/zationConfig";

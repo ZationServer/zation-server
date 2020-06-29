@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import BackError          from "../../api/BackError";
-import {MainBackErrors}   from "../zationBackErrors/mainBackErrors";
+import {MainBackErrors}   from "../systemBackErrors/mainBackErrors";
 import stringify          from "fast-stringify";
 
 export function jsonParse(value: string): object {

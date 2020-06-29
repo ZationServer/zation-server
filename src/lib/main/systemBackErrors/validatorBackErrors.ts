@@ -9,7 +9,7 @@ import {ErrorGroup}       from "../definitions/errorGroup";
 import {ErrorType}        from "../definitions/errorType";
 import BackErrorConstruct from "../definitions/backErrorConstruct";
 
-export const ValidatorBackErrors = {
+export const ValidatorBackErrors: Record<string, BackErrorConstruct> = {
     valueNotMatchesWithType: {
         name         : 'valueNotMatchesWithType',
         description  : 'Value not matches with type.',
@@ -19,7 +19,7 @@ export const ValidatorBackErrors = {
         // value
         // path
         // type
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct,
 
     valueNotMatchesWithMinLength: {
@@ -32,7 +32,7 @@ export const ValidatorBackErrors = {
         // value
         // path
         // minLength
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct,
 
     valueNotMatchesWithMaxLength: {
@@ -45,7 +45,7 @@ export const ValidatorBackErrors = {
         // value
         // path
         // maxLength
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct,
 
     valueNotMatchesWithLength: {
@@ -58,7 +58,7 @@ export const ValidatorBackErrors = {
         // value
         // path
         // length
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct,
 
     valueNotMatchesWithLettersFormat: {
@@ -70,7 +70,7 @@ export const ValidatorBackErrors = {
         // value
         // path
         // format
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct,
 
     valueNotMatchesWithCharClass: {
@@ -82,7 +82,7 @@ export const ValidatorBackErrors = {
         // value
         // path
         // regex
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct,
 
     dateIsNotBefore: {
@@ -95,7 +95,7 @@ export const ValidatorBackErrors = {
         // value
         // path
         // shouldBefore
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct,
 
     dateIsNotAfter: {
@@ -108,7 +108,7 @@ export const ValidatorBackErrors = {
         // value
         // path
         // shouldAfter
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct,
 
     valueNotMatchesWithContains: {
@@ -120,7 +120,7 @@ export const ValidatorBackErrors = {
         // value
         // path
         // shouldContain
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct,
 
     valueNotMatchesWithEquals: {
@@ -132,7 +132,7 @@ export const ValidatorBackErrors = {
         // value
         // path
         // shouldEqual
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct,
 
     valueNotMatchesWithMinValue: {
@@ -145,7 +145,7 @@ export const ValidatorBackErrors = {
         // value
         // path
         // minValue
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct,
 
     valueNotMatchesWithMaxValue: {
@@ -158,7 +158,7 @@ export const ValidatorBackErrors = {
         // value
         // path
         // maxValue
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct,
 
     valueNotMatchesWithRegex: {
@@ -171,7 +171,7 @@ export const ValidatorBackErrors = {
         // path
         // regexName
         // regex
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct,
 
     valueNotMatchesWithStartsWith: {
@@ -183,7 +183,7 @@ export const ValidatorBackErrors = {
         // value
         // path
         // shouldStartWith
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct,
 
     valueNotMatchesWithEndsWith: {
@@ -195,7 +195,7 @@ export const ValidatorBackErrors = {
         // value
         // path
         // shouldEndWith
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct,
 
     valueNotMatchesWithIn: {
@@ -208,7 +208,7 @@ export const ValidatorBackErrors = {
         // value
         // path
         // values (In-Values Array)
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct,
 
     valueNotMatchesWithPrivateIn: {
@@ -220,7 +220,7 @@ export const ValidatorBackErrors = {
         //INFO
         // value
         // path
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct,
 
     arrayNotMatchesWithMaxLength: {
@@ -233,7 +233,7 @@ export const ValidatorBackErrors = {
         // value
         // path
         // maxLength
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct,
 
     arrayNotMatchesWithMinLength: {
@@ -246,7 +246,7 @@ export const ValidatorBackErrors = {
         // value
         // path
         // minLength
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct,
 
     arrayNotMatchesWithLength: {
@@ -259,7 +259,7 @@ export const ValidatorBackErrors = {
         // value
         // path
         // length
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct,
 
     valueNotMatchesWithMinByteSize: {
@@ -272,7 +272,7 @@ export const ValidatorBackErrors = {
         // value
         // path
         // minByteSize
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct,
 
     valueNotMatchesWithMaxByteSize: {
@@ -285,7 +285,7 @@ export const ValidatorBackErrors = {
         // value
         // path
         // maxByteSize
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct,
 
     valueNotMatchesWithMimeType: {
@@ -298,7 +298,7 @@ export const ValidatorBackErrors = {
         // value
         // path
         // mimeType (mime type that is allow)
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct,
 
     valueNotMatchesWithMimeSubType: {
@@ -311,7 +311,7 @@ export const ValidatorBackErrors = {
         // value
         // path
         // mimeSubType (mime sub type that is allow)
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct,
 
     noAnyOfMatch: {
@@ -322,6 +322,6 @@ export const ValidatorBackErrors = {
         //INFO
         // value
         // path
-        fromZationSystem: true
+        custom: false
     } as BackErrorConstruct
 };

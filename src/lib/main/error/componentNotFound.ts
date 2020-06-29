@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import CodeError        from "./codeError";
-import {MainBackErrors} from "../zationBackErrors/mainBackErrors";
+import {MainBackErrors} from "../systemBackErrors/mainBackErrors";
 
 export default class ComponentNotFound extends CodeError
 {

@@ -12,7 +12,7 @@ import BackErrorBag          from "../../api/BackErrorBag";
 import BackError             from "../../api/BackError";
 import {FunctionValidator, ValidatorLibrary} from './validatorLibrary';
 import FuncUtils             from "../utils/funcUtils";
-import {ValidatorBackErrors} from "../zationBackErrors/validatorBackErrors";
+import {ValidatorBackErrors} from "../systemBackErrors/validatorBackErrors";
 
 const ValidatorFunctions   = ValidatorLibrary.Functions;
 const ValidatorTypes       = ValidatorLibrary.Types;
