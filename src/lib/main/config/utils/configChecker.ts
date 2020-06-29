@@ -61,7 +61,7 @@ export default class ConfigChecker
     private authControllerIdentifier: string;
     private validAccessValues: any[];
 
-    private componentes: ComponentClass[] = [];
+    private components: ComponentClass[] = [];
 
     constructor(zationConfigLoader) {
         this.zcLoader = zationConfigLoader;
@@ -143,13 +143,13 @@ export default class ConfigChecker
     }
 
     private checkComponentIsNotRegistered(component: ComponentClass,target: Target) {
-        if(this.componentes.includes(component)) {
+        if(this.components.includes(component)) {
             this.ceb.addError(new ConfigError(ConfigNames.App,
                 `${target.toString()
             } is already used in the configuration with another identifier or API level. All zation components are singletons.`));
         }
         else {
-            this.componentes.push(component);
+            this.components.push(component);
         }
     }
 
