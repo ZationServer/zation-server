@@ -11,7 +11,7 @@ import {resolveIfModelTranslatable}     from '../configTranslatable/modelTransla
 import {isClassObjectModel}             from './decorator/ObjectModel';
 import ConfigBuildError                 from '../../main/config/manager/configBuildError';
 import {AnyReadonly}                    from '../../main/utils/typeUtils';
-import {unwrapIfOptionalModel}          from '../../main/models/optionalModel';
+import {unwrapIfMetaModel}              from '../../main/models/metaModel';
 
 /**
  * This function can be used to let a value model extends another
@@ -40,8 +40,8 @@ export function $extends<S extends Model | AnyModelTranslatable>(subModel: S | M
     }
     const tmpSubModel = subModel;
 
-    subModel = unwrapIfOptionalModel(resolveIfModelTranslatable(subModel));
-    superModel = unwrapIfOptionalModel(resolveIfModelTranslatable(superModel));
+    subModel = unwrapIfMetaModel(resolveIfModelTranslatable(subModel));
+    superModel = unwrapIfMetaModel(resolveIfModelTranslatable(superModel));
 
     if(Array.isArray(subModel)){
         throw new ConfigBuildError('An array model can not extend another model.')

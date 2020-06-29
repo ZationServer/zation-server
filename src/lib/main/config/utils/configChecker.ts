@@ -47,7 +47,7 @@ import {ReceiverConfig}                                        from '../definiti
 import ComponentUtils                                          from '../../component/componentUtils';
 import {isDefaultImpl}                                         from '../../utils/defaultImplUtils';
 import {explicitModelNameSymbol, isExplicitModel}              from '../../models/explicitModel';
-import {isOptionalModel, unwrapIfOptionalModel}                from '../../models/optionalModel';
+import {isMetaModel, isOptionalMetaModel, unwrapIfMetaModel}   from '../../models/metaModel';
 
 export interface ModelCheckedMem {
     _checked: boolean
@@ -638,7 +638,7 @@ export default class ConfigChecker
                         `${target.toString()} to define a single input model the array must have exactly one item.`));
                 }
             }
-            else if(isOptionalModel(input) || isExplicitModel(input)){
+            else if(isMetaModel(input) || isExplicitModel(input)){
                 this.checkSingleInput(input,target);
             }
             else {
@@ -673,7 +673,7 @@ export default class ConfigChecker
     private checkOptionalRecommendation(keys: string[], input: ParamInput, target: Target) {
         let wasLastOptional = false;
         for (let i = keys.length - 1; i >= 0; i--) {
-            if (isOptionalModel(input[keys[i]])) {
+            if (isOptionalMetaModel(input[keys[i]])) {
                 if ((keys.length - 1) !== i && !wasLastOptional) {
                     Logger.consoleLogConfigWarning(
                         ConfigNames.App,
@@ -698,7 +698,7 @@ export default class ConfigChecker
                 this.ceb.addError(new ConfigError(ConfigNames.App,
                     `${targetArrayElement2.toString()} the second element should be from type object and can specify settings for the array model. Given typ is: '${typeof value[1]}'`));
             }
-            if(isOptionalModel(resolveIfModelTranslatable(value[0]))) {
+            if(isOptionalMetaModel(resolveIfModelTranslatable(value[0]))) {
                 Logger.consoleLogConfigWarning(
                     ConfigNames.App,
                     `${target.addPath('ArrayItem').toString()} An optional model in an array is useless.`
@@ -720,7 +720,7 @@ export default class ConfigChecker
      * @param rememberCache
      */
     private checkModel(value: Model | AnyModelTranslatable, target: Target, rememberCache: Model[] = []) {
-        value = unwrapIfOptionalModel(resolveIfModelTranslatable(value));
+        value = unwrapIfMetaModel(resolveIfModelTranslatable(value));
 
         if(typeof value === 'object'){
             //check circle dependencies
@@ -866,7 +866,7 @@ export default class ConfigChecker
         const prototype = model[modelPrototypeSymbol];
         const prototypeType = typeof prototype;
         if(prototypeType === 'object' || prototypeType === 'function') {
-            const resModel = unwrapIfOptionalModel(resolveIfModelTranslatable(prototype));
+            const resModel = unwrapIfMetaModel(resolveIfModelTranslatable(prototype));
 
             target = target.addPath(`extends=>${typeof resModel[explicitModelNameSymbol] === 'string' ?
                 resModel[explicitModelNameSymbol] : 'Anonymous'}`);

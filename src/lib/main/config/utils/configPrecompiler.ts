@@ -40,7 +40,7 @@ import {systemChannels}                                                         
 import {ReceiverConfig}                                                                        from '../definitions/parts/receiverConfig';
 import {systemReceivers}                                                                       from '../../receiver/systemReceivers/systemReceivers.config';
 import {ReceiverClass}                                                                         from '../../../api/Receiver';
-import {isOptionalModel, unwrapIfOptionalModel}                                                from '../../models/optionalModel';
+import {isMetaModel, unwrapIfMetaModel}                                                        from '../../models/metaModel';
 import {ExplicitModel, isExplicitModel}                                                        from '../../models/explicitModel';
 
 export interface ModelPreparationMem extends Processable{
@@ -175,7 +175,7 @@ export default class ConfigPrecompiler
             configurable: false
         });
 
-        const directModel = unwrapIfOptionalModel(model);
+        const directModel = unwrapIfMetaModel(model);
         if(typeof directModel !== "object") return;
 
         Object.defineProperty(model,nameof<ModelPreparationMem>(s => s._optionalInfo),{
@@ -214,7 +214,7 @@ export default class ConfigPrecompiler
                     const superModel = directModel[modelPrototypeSymbol];
                     this.modelPrecompile(superModel);
 
-                    const superDirectModel = unwrapIfOptionalModel(superModel) as ObjectModel;
+                    const superDirectModel = unwrapIfMetaModel(superModel) as ObjectModel;
 
                     //props
                     const superProps = superDirectModel.properties || {};
@@ -313,7 +313,7 @@ export default class ConfigPrecompiler
      * @param model
      */
     private precompileValueModelInheritance(model: ValueModel) {
-        const proto = unwrapIfOptionalModel(resolveIfModelTranslatable(model[modelPrototypeSymbol]));
+        const proto = unwrapIfMetaModel(resolveIfModelTranslatable(model[modelPrototypeSymbol]));
         if(proto !== undefined) {
             //first super
             this.precompileValueModelInheritance(proto as ValueModel);
@@ -327,14 +327,14 @@ export default class ConfigPrecompiler
         let optional = false;
         let defaultValue = undefined;
 
-        if(isOptionalModel(model)){
-            optional = true;
+        if(isMetaModel(model)){
+            optional = model.optional === true;
             defaultValue = model.default;
         }
         else if(directModel.hasOwnProperty(nameof<AnyOfModel>(s => s.anyOf))) {
             Iterator.iterateSync((_, value) => {
-                if(isOptionalModel(value)){
-                    optional = true;
+                if(isMetaModel(value)){
+                    optional = value.optional === true;
                     defaultValue = value.default;
                     //break;
                     return true;
@@ -361,7 +361,7 @@ export default class ConfigPrecompiler
             configurable: false
         });
 
-        const directModel = unwrapIfOptionalModel(model);
+        const directModel = unwrapIfMetaModel(model);
         if(typeof directModel !== 'object') return;
         if(Array.isArray(directModel)) {
            this.resolveTranslatableModels(directModel,0);
@@ -470,7 +470,7 @@ export default class ConfigPrecompiler
             else if(isModelTranslatable(input)){
                 input = input[modelTranslateSymbol]();
             }
-            if(isOptionalModel(input) || isExplicitModel(input)){
+            if(isMetaModel(input) || isExplicitModel(input)){
                 input = [input];
             }
             inputConfig.input = input as any;

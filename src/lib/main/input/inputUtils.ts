@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import {AnyOfModel, ObjectModel, ParamInput, SingleModelInput} from '../config/definitions/parts/inputConfig';
-import {unwrapIfOptionalModel}                                 from '../models/optionalModel';
+import {unwrapIfMetaModel}                                     from '../models/metaModel';
 
 export default class InputUtils
 {
@@ -27,7 +27,7 @@ export default class InputUtils
             while (i < path.length) {
                 const k = path[i];
                 if(!paramBased){
-                    tempConfig = unwrapIfOptionalModel(tempConfig);
+                    tempConfig = unwrapIfMetaModel(tempConfig);
                     if(tempConfig.hasOwnProperty(nameof<ObjectModel>(s => s.properties))){
                         //if not paramBase return the properties of the object
                         tempConfig = tempConfig[nameof<ObjectModel>(s => s.properties)];

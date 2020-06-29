@@ -10,11 +10,11 @@ import {ValidationType}      from '../../../definitions/validationType.js';
 import {ValidationFunctions} from './validationFunctions';
 import {InputConfigTranslatable}                 from '../../../../api/configTranslatable/inputConfigTranslatable';
 import {ModelTranslatable}                       from '../../../../api/configTranslatable/modelTranslatable';
-import {OptionalModel}                           from '../../../models/optionalModel';
+import {MetaModel}                               from '../../../models/metaModel';
 import {ExplicitModel}                           from '../../../models/explicitModel';
 
 export type ImplicitModel = ValueModel | ObjectModel | ArrayModel | AnyOfModel;
-export type Model = ExplicitModel | ImplicitModel | OptionalModel;
+export type Model = ExplicitModel | ImplicitModel | MetaModel;
 
 export interface AnyOfModel
 {
@@ -125,7 +125,7 @@ export interface InputConfig {
     allowAnyInput?: boolean;
 }
 
-export type Input = ParamInput | SingleModelInput | AnyInputConfigTranslatable | ExplicitModel | OptionalModel;
+export type Input = ParamInput | SingleModelInput | AnyInputConfigTranslatable | ExplicitModel | MetaModel;
 
 export interface SingleModelInput {
     [0]: (Model | AnyModelTranslatable);

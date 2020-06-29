@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 import {AnyModelTranslatable, ImplicitModel, Model}                from '../../main/config/definitions/parts/inputConfig';
 import {AnyReadonly}                                               from '../../main/utils/typeUtils';
 import {resolveIfModelTranslatable}                                from '../configTranslatable/modelTranslatable';
-import {createOptionalModel, OptionalModel, unwrapIfOptionalModel} from '../../main/models/optionalModel';
+import {addNewMetaToModel, MetaModel}                              from '../../main/models/metaModel';
 import {ExplicitModel}                                             from '../../main/models/explicitModel';
 
 /**
@@ -20,6 +20,7 @@ import {ExplicitModel}                                             from '../../m
  * Define a default value that will be used
  * if the input had not provided the value.
  */
-export function $optional<T extends Model | AnyModelTranslatable>(model: T,defaultValue?: any): T extends ExplicitModel | ImplicitModel ? OptionalModel<T> : OptionalModel<AnyReadonly> {
-    return createOptionalModel(unwrapIfOptionalModel(resolveIfModelTranslatable(model)),defaultValue) as any;
+export function $optional<T extends Model | AnyModelTranslatable>(model: T,defaultValue?: any): T extends ExplicitModel | ImplicitModel ? MetaModel<T> : MetaModel<AnyReadonly> {
+    return addNewMetaToModel(resolveIfModelTranslatable(model) as any,
+        {optional: true, ...(defaultValue !== undefined ? {default: defaultValue} : {})});
 }
