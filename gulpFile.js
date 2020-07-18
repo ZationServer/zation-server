@@ -1,7 +1,6 @@
 const {src,dest,series,parallel} = require('gulp');
 const del               = require('del');
 const typescript        = require('gulp-typescript');
-const OptimizeJs        = require('gulp-optimize-js');
 const terser            = require('gulp-terser');
 
 const tsNameof          = require('ts-nameof');
@@ -34,7 +33,6 @@ function copyAssets() {
 
 function optimize() {
     return src(`${outputFolder}/**/*.js`)
-        .pipe(OptimizeJs())
         .pipe(terser())
         .pipe(dest(outputFolder));
 }
