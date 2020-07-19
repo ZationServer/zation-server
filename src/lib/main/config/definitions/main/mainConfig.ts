@@ -161,17 +161,12 @@ export interface MainConfig
      */
     defaultClientApiLevel?: number;
     /**
-     * Specifies if the zation panel is activated.
-     * @default false
+     * Options for the zation panel that helps to analyse/check the server usage
+     * via a web application that is hosted by the server.
+     * Works also in cluster mode.
+     * @default {active: false}
      */
-    usePanel?: boolean;
-    /**
-     * Specifies the panel user, you can define one or more users.
-     * @example
-     * panelUser: {username: 'admin', password: 'admin'}
-     * panelUser: [{username: 'admin', password: 'admin'},{username: 'user',password: '12345'}]
-     */
-    panelUser?: PanelUserConfig | PanelUserConfig[];
+    panel?: PanelOptions;
     /**
      * Defines if the server should provide a full minified javascript client driver file via HTTP.
      * @default true
@@ -618,6 +613,21 @@ export interface PanelUserConfig {
     password: string;
 }
 
+export interface PanelOptions {
+    /**
+     * Specifies if the zation panel should be active.
+     * @default false
+     */
+    active?: boolean;
+    /**
+     * Specifies the panel user/s.
+     * @example
+     * user: {username: 'admin', password: 'admin'}
+     * user: [{username: 'admin', password: 'admin'},{username: 'user',password: '12345'}]
+     */
+    user?: PanelUserConfig | PanelUserConfig[];
+}
+
 //These settings are always set
 export interface InternalMainConfig extends MainConfig {
     instanceId: string;
@@ -638,7 +648,7 @@ export interface InternalMainConfig extends MainConfig {
     sendErrorDescription: boolean;
     wsEngine: string;
     defaultClientApiLevel: number;
-    usePanel: boolean;
+    panel: PanelOptions;
     provideClientJs: boolean;
     authSecretKey: string;
     authDefaultExpiry: number;

@@ -36,7 +36,7 @@ export default class PanelEngine
         this.panelChannel = panelChannel;
         this.zc = this.zw.getZationConfig();
         this.panelUserMap = this.initPanelUserMap(authUserGroups);
-        if(this.zc.mainConfig.usePanel) {
+        if(this.zc.mainConfig.panel.active) {
             this.loadPanelAccessData();
             this.registerPanelInEvent();
             this.idData = {
@@ -62,7 +62,7 @@ export default class PanelEngine
 
     private loadPanelAccessData()
     {
-        const user = this.zc.mainConfig.panelUser;
+        const user = this.zc.mainConfig.panel.user;
         if(Array.isArray(user)) {
             for(let i = 0; i < user.length; i++) {
                 this.addUser(user[i]);

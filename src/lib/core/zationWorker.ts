@@ -301,7 +301,7 @@ class ZationWorker extends SCWorker
         const panelChannel = DynamicSingleton.getInstance<typeof PanelChannel,PanelChannel>(PanelChannel);
         if(!panelChannel) throw new Error('Can not find the instance of system panel channel.');
         this.panelEngine = new PanelEngine(this,panelChannel,this.authConfig.getAuthUserGroups());
-        if(this.zc.mainConfig.usePanel) {
+        if(this.zc.mainConfig.panel.active) {
             await this.initPanelUpdates();
             debugStopwatch.stop(`The Worker with id ${this.id} has created the panel engine.`);
         }
@@ -387,7 +387,7 @@ class ZationWorker extends SCWorker
         this.initSocketMiddleware();
         this.initScServerEvents();
 
-        if(this.zc.mainConfig.usePanel) {
+        if(this.zc.mainConfig.panel.active) {
             this.scServer.on('_connection', (socket) => {
                 // The connection event counts as a WS request
                 this.wsRequestCount++;
@@ -425,7 +425,7 @@ class ZationWorker extends SCWorker
 
     private async startHttpServer()
     {
-        if(this.zc.mainConfig.usePanel) {
+        if(this.zc.mainConfig.panel.active) {
             this.httpServer.on('request', () => {
                 this.httpRequestCount++;
             });
@@ -467,7 +467,7 @@ class ZationWorker extends SCWorker
         //Public folder
         this.app.use(`/zation/assets`, express.static(__dirname + '/../public/assets'));
 
-        if(this.zc.mainConfig.usePanel) {
+        if(this.zc.mainConfig.panel.active) {
             this.app.use([`${serverPath}/panel/*`,`${serverPath}/panel`],
                 express.static(require.resolve('zation-panel')));
             this.app.use(`/zation/assets/panel`, express.static(path.dirname(require.resolve('zation-panel'))));

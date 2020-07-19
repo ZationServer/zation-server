@@ -81,7 +81,10 @@ export default class ConfigLoader {
         instanceId: uuidV4(),
         useTokenClusterKeyCheck: true,
         provideClientJs: true,
-        usePanel: false,
+        panel: {
+            active: false,
+            user: undefined
+        },
         killServerOnServicesCreateError: false,
         log: {
             console: {

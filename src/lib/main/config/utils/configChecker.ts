@@ -359,7 +359,8 @@ export default class ConfigChecker
     }
 
     private checkPanelUserMainConfig() {
-        const panelUserConfig = this.zcLoader.mainConfig.panelUser;
+        const panelOptions = this.zcLoader.mainConfig.panel;
+        const panelUserConfig = panelOptions.user;
         let hasOneUser = false;
         if (Array.isArray(panelUserConfig)) {
             for (let i = 0; i < panelUserConfig.length; i++) {
@@ -371,7 +372,7 @@ export default class ConfigChecker
             this.checkPanelUserConfig(panelUserConfig, new Target(`Panel UserConfig`));
         }
 
-        if (this.zcLoader.mainConfig.usePanel && !hasOneUser && this.zcLoader.appConfig.middleware?.panelAuth == null) {
+        if (panelOptions.active && !hasOneUser && this.zcLoader.appConfig.middleware?.panelAuth == null) {
             Logger.consoleLogConfigWarning
             (
                 [ConfigNames.Main,ConfigNames.App],
@@ -398,7 +399,7 @@ export default class ConfigChecker
 
         if (config.password === 'admin' &&
             config.username === 'admin' &&
-            this.zcLoader.mainConfig.usePanel) {
+            this.zcLoader.mainConfig.panel.active) {
             Logger.consoleLogConfigWarning
             (ConfigNames.Main, `Don't forget to change the panel access credentials in the main configuration.`);
         }
