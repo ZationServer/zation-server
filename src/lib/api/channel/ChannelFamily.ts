@@ -72,7 +72,7 @@ export default class ChannelFamily extends ChannelCore {
     constructor(identifier: string, bag: Bag, chPreparedData: ChPreparedData, apiLevel: number | undefined)
     {
         super(identifier,bag,chPreparedData,apiLevel);
-        this._isMemberCheck = MemberCheckerUtils.createIsMemberChecker(this.isMember.bind(this),this.bag);
+        this._isMemberCheck = MemberCheckerUtils.createIsMemberChecker(this.isMember.bind(this));
 
         this._chId = CHANNEL_START_INDICATOR + this.identifier +
             (apiLevel !== undefined ? `@${apiLevel}`: '');
@@ -348,10 +348,10 @@ export default class ChannelFamily extends ChannelCore {
      * Also if you throw an error, the value is marked as invalid.
      * If you want to mark the value as a member,
      * you have to return nothing or a true.
+     * The Bag instance can be securely accessed with the variable 'bag'.
      * @param value
-     * @param bag
      */
-    public isMember(value: string, bag: Bag): Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void {
+    public isMember(value: string): Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void {
     }
 
     /**

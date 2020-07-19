@@ -122,7 +122,7 @@ export default class DataboxFamily extends DataboxCore {
 
     constructor(identifier: string, bag: Bag, dbPreparedData: DbPreparedData, apiLevel: number | undefined) {
         super(identifier,bag,dbPreparedData,apiLevel);
-        this._isMemberCheck = MemberCheckerUtils.createIsMemberChecker(this.isMember.bind(this),this.bag);
+        this._isMemberCheck = MemberCheckerUtils.createIsMemberChecker(this.isMember.bind(this));
         this._scExchange = bag.getWorker().scServer.exchange;
         this._workerFullId = bag.getWorker().getFullWorkerId();
         this._maxSocketInputChannels = dbPreparedData.maxSocketInputChannels;
@@ -1091,10 +1091,10 @@ export default class DataboxFamily extends DataboxCore {
      * Also if you throw an error, the value is marked as invalid.
      * If you want to mark the value as a member,
      * you have to return nothing or a true.
+     * The Bag instance can be securely accessed with the variable 'bag'.
      * @param value
-     * @param bag
      */
-    public isMember(value: string, bag: Bag): Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void {
+    public isMember(value: string): Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void {
     }
 
     /**

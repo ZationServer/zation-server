@@ -4,10 +4,9 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import Bag                from "../../api/Bag";
 import {ClientErrorName}  from "../definitions/clientErrorName";
 
-export type IsMember = (value: string, bag: Bag) => Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void;
+export type IsMember = (value: string) => Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void;
 export type IsMemberChecker = (value: string) => Promise<void>;
 
 export default class MemberCheckerUtils {
@@ -15,9 +14,8 @@ export default class MemberCheckerUtils {
     /**
      * Returns a Closures for checking if the value is a member.
      * @param memberValidFunc
-     * @param bag
      */
-    static createIsMemberChecker(memberValidFunc: IsMember | undefined, bag: Bag): IsMemberChecker {
+    static createIsMemberChecker(memberValidFunc: IsMember | undefined): IsMemberChecker {
         if(typeof memberValidFunc !== "function"){
             return async () => {}
         }
@@ -25,7 +23,7 @@ export default class MemberCheckerUtils {
             return async (value) => {
                 let res;
                 try {
-                    res = await memberValidFunc(value,bag);
+                    res = await memberValidFunc(value);
                 }
                 catch (e) {
                     res = false;
