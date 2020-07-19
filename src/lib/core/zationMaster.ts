@@ -33,6 +33,7 @@ import {getMoment}                                 from '../main/utils/timeUtils
 import {MasterMessageAction, MasterMessagePackage} from '../main/definitions/masterMessage';
 // noinspection ES6PreferShortImport
 import {ConsoleColor}                              from '../main/log/logCategories';
+const IP: any                                      = require('ip');
 
 const  SocketCluster: any = require('socketcluster');
 
@@ -437,7 +438,9 @@ export default class ZationMaster {
         const port     = this.zc.mainConfig.port;
         const path     = this.zc.mainConfig.path;
         const protocol = this.zc.mainConfig.secure ? 'https': 'http';
-        const server   = `${protocol}://${hostName}:${port}${path}`;
+
+        const urlHostname = (hostName === 'localhost' || hostName === '0.0.0.0') ? IP.address() : hostName;
+        const server   = `${protocol}://${urlHostname}:${port}${path}`;
         const license = this.license ?
             `Licensed to ${this.license.h} (${LicenseLevel[this.license.l]})` :
             'No license (only for testing)';
@@ -463,7 +466,7 @@ export default class ZationMaster {
             msg.push(`            LicenseId: ${this.license.i}`);
         }
         msg.push(`            Server: ${server}`);
-        if(this.zc.mainConfig.usePanel) {
+        if(this.zc.mainConfig.panel.active) {
             msg.push(`            Panel: ${server}/panel`);
         }
         const logFileOptions = this.zc.mainConfig.log.file;
