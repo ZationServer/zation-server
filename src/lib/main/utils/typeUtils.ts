@@ -14,3 +14,11 @@ export type AnyReadonly = {
 export type PartialRecord<K extends keyof any, T> = {
     [P in K]?: T;
 };
+
+export interface AnyClass {
+    prototype: object,
+    new (): any
+    [key: string]: any;
+}
+
+export type Prototype<T> = T extends AnyClass ? T['prototype'] : never;

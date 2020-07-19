@@ -9,6 +9,7 @@ import Channel, {ChannelClass}             from '../../api/channel/Channel';
 import ChannelFamily, {ChannelFamilyClass} from '../../api/channel/ChannelFamily';
 import ChannelFamilyContainer              from '../../api/channel/container/channelFamilyContainer';
 import ChannelContainer                    from '../../api/channel/container/channelContainer';
+import DynamicSingleton                    from '../utils/dynamicSingleton';
 
 export default class ChannelUtils {
 
@@ -23,7 +24,7 @@ export default class ChannelUtils {
         const chFamilyInstances: ChannelFamily[] = [];
 
         for(let i = 0; i < channels.length; i++){
-            const instance = ComponentUtils.getInstanceSafe(channels[i]);
+            const instance = DynamicSingleton.getInstanceSafe(channels[i] as any);
             if(ComponentUtils.isFamily(instance)){
                 chFamilyInstances.push(instance as ChannelFamily);
             }

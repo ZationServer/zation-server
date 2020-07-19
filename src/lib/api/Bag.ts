@@ -51,7 +51,6 @@ import DataboxUtils                                            from "../main/dat
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ObjectPathSequence}                                    from "../main/internalApi/objectPathSequence/objectPathSequence";
 import {createAsyncTimeout, createIntervalAsyncIterator}       from '../main/utils/timeUtils';
-import ComponentUtils                                          from '../main/component/componentUtils';
 import {AnyChannelClass}                                       from './channel/AnyChannelClass';
 import {AnyDataboxClass}                                       from './databox/AnyDataboxClass';
 import {ChannelFamilyClass}                                    from './channel/ChannelFamily';
@@ -59,7 +58,11 @@ import ChannelFamilyContainer                                  from './channel/c
 import {ChannelClass}                                          from './channel/Channel';
 import ChannelContainer                                        from './channel/container/channelContainer';
 import ChannelUtils                                            from '../main/channel/channelUtils';
+import DynamicSingleton                                        from './../main/utils/dynamicSingleton';
 import Socket                                                  from './Socket';
+import {AnyClass, Prototype}                                   from '../main/utils/typeUtils';
+import DataboxCore                                             from './databox/DataboxCore';
+import ChannelCore                                             from './channel/ChannelCore';
 
 /**
  * The bag instance of this process.
@@ -1696,223 +1699,220 @@ export default class Bag<WA extends object = any> {
         return CloneUtils.deepClone(value);
     }
 
-    //Part Databoxes
+    //Part get
 
     /**
-     * This function helps to access your Databox/es.
-     * You only need to call this method with the class/es of the Databox/es.
-     * It returns the specific databox instance.
-     * If you want to access multiple Databoxes, the method returns a
-     * DataboxContainer or DataboxFamilyContainer.
-     * With these containers, you can interact with multiple Databoxes.
-     * So, for example, if you have two Databoxes with different API levels from the same type,
-     * you can communicate directly with both.
+     * @description
+     * This function helps to access your Singletons, Channels and Databoxes.
+     * You only need to call this method with the class/es and it returns the specific instance/s.
+     * If you want to access multiple Databoxes or Channels, the method returns a Databox-/ChannelContainer
+     * or Databox-/ChannelFamilyContainer.
+     * With these containers, you can interact with multiple Databoxes or Channels.
+     * So, for example, if you have two Databoxes/Channels with different API levels
+     * from the same type, you can communicate directly with both.
      * But notice that the containers only provides a limited scope of methods.
-     * It is recommended if you use this method in a component that you prepare
-     * the access to the Databox/es in the initialize method.
+     * If you provide multiple Singletons the function will return an array with all instances.
+     * It is recommended if you use this method in a component that you prepare the access
+     * in the initialize method.
      * If you use this method in an event function, use an initEvent to prepare the access.
      * @example
-     * databox(ProfileDatabox_1,ProfileDatabox_2);
-     * databox(PublicChatDatabox);
+     * get(NavigatorManager)
+     * get(NavigatorManager,DbManager)
+     * get(ProfileDatabox_1,ProfileDatabox_2);
+     * get(PublicChatDatabox);
+     * get(ChatChannel_1,ChatChannel_2);
+     * get(InfoChannel);
      */
-    databox(): undefined;
+    get(): undefined;
+
     /**
-     * This function helps to access your Databox/es.
-     * You only need to call this method with the class/es of the Databox/es.
-     * It returns the specific databox instance.
-     * If you want to access multiple Databoxes, the method returns a
-     * DataboxContainer or DataboxFamilyContainer.
-     * With these containers, you can interact with multiple Databoxes.
-     * So, for example, if you have two Databoxes with different API levels from the same type,
-     * you can communicate directly with both.
+     * @description
+     * This function helps to access your Singletons, Channels and Databoxes.
+     * You only need to call this method with the class/es and it returns the specific instance/s.
+     * If you want to access multiple Databoxes or Channels, the method returns a Databox-/ChannelContainer
+     * or Databox-/ChannelFamilyContainer.
+     * With these containers, you can interact with multiple Databoxes or Channels.
+     * So, for example, if you have two Databoxes/Channels with different API levels
+     * from the same type, you can communicate directly with both.
      * But notice that the containers only provides a limited scope of methods.
-     * It is recommended if you use this method in a component that you prepare
-     * the access to the Databox/es in the initialize method.
+     * If you provide multiple Singletons the function will return an array with all instances.
+     * It is recommended if you use this method in a component that you prepare the access
+     * in the initialize method.
      * If you use this method in an event function, use an initEvent to prepare the access.
      * @example
-     * databox(ProfileDatabox_1,ProfileDatabox_2);
-     * databox(PublicChatDatabox);
-     * @param databox
-     * The class of the Databox.
+     * get(NavigatorManager)
+     * get(NavigatorManager,DbManager)
+     * get(ProfileDatabox_1,ProfileDatabox_2);
+     * get(PublicChatDatabox);
+     * get(ChatChannel_1,ChatChannel_2);
+     * get(InfoChannel);
      */
-    databox<T extends AnyDataboxClass>(databox: T): T['prototype'];
+    get(...databoxes: DataboxFamilyClass[]): DataboxFamilyContainer;
+
     /**
-     * This function helps to access your Databox/es.
-     * You only need to call this method with the class/es of the Databox/es.
-     * It returns the specific databox instance.
-     * If you want to access multiple Databoxes, the method returns a
-     * DataboxContainer or DataboxFamilyContainer.
-     * With these containers, you can interact with multiple Databoxes.
-     * So, for example, if you have two Databoxes with different API levels from the same type,
-     * you can communicate directly with both.
+     * @description
+     * This function helps to access your Singletons, Channels and Databoxes.
+     * You only need to call this method with the class/es and it returns the specific instance/s.
+     * If you want to access multiple Databoxes or Channels, the method returns a Databox-/ChannelContainer
+     * or Databox-/ChannelFamilyContainer.
+     * With these containers, you can interact with multiple Databoxes or Channels.
+     * So, for example, if you have two Databoxes/Channels with different API levels
+     * from the same type, you can communicate directly with both.
      * But notice that the containers only provides a limited scope of methods.
-     * It is recommended if you use this method in a component that you prepare
-     * the access to the Databox/es in the initialize method.
+     * If you provide multiple Singletons the function will return an array with all instances.
+     * It is recommended if you use this method in a component that you prepare the access
+     * in the initialize method.
      * If you use this method in an event function, use an initEvent to prepare the access.
      * @example
-     * databox(ProfileDatabox_1,ProfileDatabox_2);
-     * databox(PublicChatDatabox);
-     * @param databoxes
-     * The class/es of the Databox/es.
+     * get(NavigatorManager)
+     * get(NavigatorManager,DbManager)
+     * get(ProfileDatabox_1,ProfileDatabox_2);
+     * get(PublicChatDatabox);
+     * get(ChatChannel_1,ChatChannel_2);
+     * get(InfoChannel);
      */
-    databox(...databoxes: DataboxFamilyClass[]): DataboxFamilyContainer;
+    get(...databoxes: DataboxClass[]): DataboxContainer;
+
     /**
-     * This function helps to access your Databox/es.
-     * You only need to call this method with the class/es of the Databox/es.
-     * It returns the specific databox instance.
-     * If you want to access multiple Databoxes, the method returns a
-     * DataboxContainer or DataboxFamilyContainer.
-     * With these containers, you can interact with multiple Databoxes.
-     * So, for example, if you have two Databoxes with different API levels from the same type,
-     * you can communicate directly with both.
+     * @description
+     * This function helps to access your Singletons, Channels and Databoxes.
+     * You only need to call this method with the class/es and it returns the specific instance/s.
+     * If you want to access multiple Databoxes or Channels, the method returns a Databox-/ChannelContainer
+     * or Databox-/ChannelFamilyContainer.
+     * With these containers, you can interact with multiple Databoxes or Channels.
+     * So, for example, if you have two Databoxes/Channels with different API levels
+     * from the same type, you can communicate directly with both.
      * But notice that the containers only provides a limited scope of methods.
-     * It is recommended if you use this method in a component that you prepare
-     * the access to the Databox/es in the initialize method.
+     * If you provide multiple Singletons the function will return an array with all instances.
+     * It is recommended if you use this method in a component that you prepare the access
+     * in the initialize method.
      * If you use this method in an event function, use an initEvent to prepare the access.
      * @example
-     * databox(ProfileDatabox_1,ProfileDatabox_2);
-     * databox(PublicChatDatabox);
-     * @param databoxes
-     * The class/es of the Databox/es.
+     * get(NavigatorManager)
+     * get(NavigatorManager,DbManager)
+     * get(ProfileDatabox_1,ProfileDatabox_2);
+     * get(PublicChatDatabox);
+     * get(ChatChannel_1,ChatChannel_2);
+     * get(InfoChannel);
      */
-    databox(...databoxes: DataboxClass[]): DataboxContainer;
+    get(...channels: ChannelFamilyClass[]): ChannelFamilyContainer;
+
     /**
-     * This function helps to access your Databox/es.
-     * You only need to call this method with the class/es of the Databox/es.
-     * It returns the specific databox instance.
-     * If you want to access multiple Databoxes, the method returns a
-     * DataboxContainer or DataboxFamilyContainer.
-     * With these containers, you can interact with multiple Databoxes.
-     * So, for example, if you have two Databoxes with different API levels from the same type,
-     * you can communicate directly with both.
+     * @description
+     * This function helps to access your Singletons, Channels and Databoxes.
+     * You only need to call this method with the class/es and it returns the specific instance/s.
+     * If you want to access multiple Databoxes or Channels, the method returns a Databox-/ChannelContainer
+     * or Databox-/ChannelFamilyContainer.
+     * With these containers, you can interact with multiple Databoxes or Channels.
+     * So, for example, if you have two Databoxes/Channels with different API levels
+     * from the same type, you can communicate directly with both.
      * But notice that the containers only provides a limited scope of methods.
-     * It is recommended if you use this method in a component that you prepare
-     * the access to the Databox/es in the initialize method.
+     * If you provide multiple Singletons the function will return an array with all instances.
+     * It is recommended if you use this method in a component that you prepare the access
+     * in the initialize method.
      * If you use this method in an event function, use an initEvent to prepare the access.
      * @example
-     * databox(ProfileDatabox_1,ProfileDatabox_2);
-     * databox(PublicChatDatabox);
-     * @param databoxes
-     * The class/es of the Databox/es.
+     * get(NavigatorManager)
+     * get(NavigatorManager,DbManager)
+     * get(ProfileDatabox_1,ProfileDatabox_2);
+     * get(PublicChatDatabox);
+     * get(ChatChannel_1,ChatChannel_2);
+     * get(InfoChannel);
      */
-    databox<T extends AnyDataboxClass>(...databoxes: DataboxFamilyClass[] | DataboxClass[] | [T]): DataboxFamilyContainer | DataboxContainer | T['prototype'] | undefined {
-        switch (databoxes.length) {
+    get(...channels: ChannelClass[]): ChannelContainer
+
+    /**
+     * @description
+     * This function helps to access your Singletons, Channels and Databoxes.
+     * You only need to call this method with the class/es and it returns the specific instance/s.
+     * If you want to access multiple Databoxes or Channels, the method returns a Databox-/ChannelContainer
+     * or Databox-/ChannelFamilyContainer.
+     * With these containers, you can interact with multiple Databoxes or Channels.
+     * So, for example, if you have two Databoxes/Channels with different API levels
+     * from the same type, you can communicate directly with both.
+     * But notice that the containers only provides a limited scope of methods.
+     * If you provide multiple Singletons the function will return an array with all instances.
+     * It is recommended if you use this method in a component that you prepare the access
+     * in the initialize method.
+     * If you use this method in an event function, use an initEvent to prepare the access.
+     * @example
+     * get(NavigatorManager)
+     * get(NavigatorManager,DbManager)
+     * get(ProfileDatabox_1,ProfileDatabox_2);
+     * get(PublicChatDatabox);
+     * get(ChatChannel_1,ChatChannel_2);
+     * get(InfoChannel);
+     */
+    get<T extends AnyDataboxClass | AnyChannelClass | AnyClass>(classDef: T): T['prototype'];
+
+    /**
+     * @description
+     * This function helps to access your Singletons, Channels and Databoxes.
+     * You only need to call this method with the class/es and it returns the specific instance/s.
+     * If you want to access multiple Databoxes or Channels, the method returns a Databox-/ChannelContainer
+     * or Databox-/ChannelFamilyContainer.
+     * With these containers, you can interact with multiple Databoxes or Channels.
+     * So, for example, if you have two Databoxes/Channels with different API levels
+     * from the same type, you can communicate directly with both.
+     * But notice that the containers only provides a limited scope of methods.
+     * If you provide multiple Singletons the function will return an array with all instances.
+     * It is recommended if you use this method in a component that you prepare the access
+     * in the initialize method.
+     * If you use this method in an event function, use an initEvent to prepare the access.
+     * @example
+     * get(NavigatorManager)
+     * get(NavigatorManager,DbManager)
+     * get(ProfileDatabox_1,ProfileDatabox_2);
+     * get(PublicChatDatabox);
+     * get(ChatChannel_1,ChatChannel_2);
+     * get(InfoChannel);
+     */
+    get<T extends AnyClass[]>(...classDef: T): {[i in keyof T]: Prototype<T[i]>} & {length: T['length']};
+
+    /**
+     * @description
+     * This function helps to access your Singletons, Channels and Databoxes.
+     * You only need to call this method with the class/es and it returns the specific instance/s.
+     * If you want to access multiple Databoxes or Channels, the method returns a Databox-/ChannelContainer
+     * or Databox-/ChannelFamilyContainer.
+     * With these containers, you can interact with multiple Databoxes or Channels.
+     * So, for example, if you have two Databoxes/Channels with different API levels
+     * from the same type, you can communicate directly with both.
+     * But notice that the containers only provides a limited scope of methods.
+     * If you provide multiple Singletons the function will return an array with all instances.
+     * It is recommended if you use this method in a component that you prepare the access
+     * in the initialize method.
+     * If you use this method in an event function, use an initEvent to prepare the access.
+     * @example
+     * get(NavigatorManager)
+     * get(NavigatorManager,DbManager)
+     * get(ProfileDatabox_1,ProfileDatabox_2);
+     * get(PublicChatDatabox);
+     * get(ChatChannel_1,ChatChannel_2);
+     * get(InfoChannel);
+     */
+    get<T extends (AnyClass | AnyChannelClass | AnyDataboxClass)[]>(...classDef: T): ChannelFamilyContainer | ChannelContainer |
+        T[0]['prototype'] | {[i in keyof T]: Prototype<T[i]>} & {length: T['length']} | undefined
+    {
+        switch (classDef.length) {
             case 0:
                 return undefined;
             case 1:
-                return ComponentUtils.getInstanceSafe(databoxes[0]);
+                return DynamicSingleton.getInstanceSafe(classDef[0] as any);
             default:
-                return DataboxUtils.getDbContainer(databoxes as DataboxFamilyClass[] | DataboxClass[]);
-        }
-    }
-
-    //Part Channels
-
-    /**
-     * This function helps to access your Channel/s.
-     * You only need to call this method with the class/es of the Channel/s.
-     * It returns the specific Channel instance.
-     * If you want to access multiple channels, the method returns a ChannelContainer
-     * or ChannelFamilyContainer.
-     * With these containers, you can interact with multiple channels.
-     * So, for example, if you have two Channels with different API levels from the same type,
-     * you can communicate directly with both.
-     * But notice that the containers only provides a limited scope of methods.
-     * It is recommended if you use this method in a component that you prepare
-     * the access to the Channel/s in the initialize method.
-     * If you use this method in an event function, use an initEvent to prepare the access.
-     * @example
-     * channel(ChatChannel_1,ChatChannel_2);
-     * databox(InfoChannel);
-     */
-    channel(): undefined;
-    /**
-     * This function helps to access your Channel/s.
-     * You only need to call this method with the class/es of the Channel/s.
-     * It returns the specific Channel instance.
-     * If you want to access multiple channels, the method returns a ChannelContainer
-     * or ChannelFamilyContainer.
-     * With these containers, you can interact with multiple channels.
-     * So, for example, if you have two Channels with different API levels from the same type,
-     * you can communicate directly with both.
-     * But notice that the containers only provides a limited scope of methods.
-     * It is recommended if you use this method in a component that you prepare
-     * the access to the Channel/s in the initialize method.
-     * If you use this method in an event function, use an initEvent to prepare the access.
-     * @example
-     * databox(ProfileDataboxFamilyV1,ProfileDataboxFamilyV2);
-     * databox(PublicChatDatabox);
-     * @param channel
-     * The class of the Channel.
-     */
-    channel<T extends AnyChannelClass>(channel: T): T['prototype'];
-    /**
-     * This function helps to access your Channel/s.
-     * You only need to call this method with the class/es of the Channel/s.
-     * It returns the specific Channel instance.
-     * If you want to access multiple channels, the method returns a ChannelContainer
-     * or ChannelFamilyContainer.
-     * With these containers, you can interact with multiple channels.
-     * So, for example, if you have two Channels with different API levels from the same type,
-     * you can communicate directly with both.
-     * But notice that the containers only provides a limited scope of methods.
-     * It is recommended if you use this method in a component that you prepare
-     * the access to the Channel/s in the initialize method.
-     * If you use this method in an event function, use an initEvent to prepare the access.
-     * @example
-     * channel(ChatChannel_1,ChatChannel_2);
-     * databox(InfoChannel);
-     * @param channels
-     * The class/es of the Channel/s.
-     */
-    channel(...channels: ChannelFamilyClass[]): ChannelFamilyContainer;
-    /**
-     * This function helps to access your Channel/s.
-     * You only need to call this method with the class/es of the Channel/s.
-     * It returns the specific Channel instance.
-     * If you want to access multiple channels, the method returns a ChannelContainer
-     * or ChannelFamilyContainer.
-     * With these containers, you can interact with multiple channels.
-     * So, for example, if you have two Channels with different API levels from the same type,
-     * you can communicate directly with both.
-     * But notice that the containers only provides a limited scope of methods.
-     * It is recommended if you use this method in a component that you prepare
-     * the access to the Channel/s in the initialize method.
-     * If you use this method in an event function, use an initEvent to prepare the access.
-     * @example
-     * channel(ChatChannel_1,ChatChannel_2);
-     * databox(InfoChannel);
-     * @param channels
-     * The class/es of the Channel/s.
-     */
-    channel(...channels: ChannelClass[]): ChannelContainer;
-    /**
-     * This function helps to access your Channel/s.
-     * You only need to call this method with the class/es of the Channel/s.
-     * It returns the specific Channel instance.
-     * If you want to access multiple channels, the method returns a ChannelContainer
-     * or ChannelFamilyContainer.
-     * With these containers, you can interact with multiple channels.
-     * So, for example, if you have two Channels with different API levels from the same type,
-     * you can communicate directly with both.
-     * But notice that the containers only provides a limited scope of methods.
-     * It is recommended if you use this method in a component that you prepare
-     * the access to the Channel/s in the initialize method.
-     * If you use this method in an event function, use an initEvent to prepare the access.
-     * @example
-     * channel(ChatChannel_1,ChatChannel_2);
-     * databox(InfoChannel);
-     * @param channels
-     * The class/es of the Channel/s.
-     */
-    channel<T extends AnyChannelClass>(...channels: ChannelFamilyClass[] | ChannelClass[] | [T]): ChannelFamilyContainer | ChannelContainer | T['prototype'] | undefined {
-        switch (channels.length) {
-            case 0:
-                return undefined;
-            case 1:
-                return ComponentUtils.getInstanceSafe(channels[0]);
-            default:
-                return ChannelUtils.getChContainer(channels as ChannelFamilyClass[] | ChannelClass[]);
+                const firstClassDef = classDef[0];
+                if(firstClassDef.prototype instanceof DataboxCore){
+                    return DataboxUtils.getDbContainer(classDef as DataboxFamilyClass[] | DataboxClass[]);
+                }
+                else if(firstClassDef.prototype instanceof ChannelCore){
+                    return ChannelUtils.getChContainer(classDef as ChannelFamilyClass[] | ChannelClass[]);
+                }
+                else {
+                    const instances: any = [];
+                    for(let i = 0; i < classDef.length; i++)
+                        instances[i] = DynamicSingleton.getInstanceSafe(classDef[i] as any);
+                    return instances;
+                }
         }
     }
 }

@@ -4,8 +4,6 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import DynamicSingleton  from '../utils/dynamicSingleton';
-import ComponentNotFound from '../error/componentNotFound';
 import Component, {ComponentClass}       from '../../api/component/Component';
 import ComponentPrepare, {ComponentInfo} from './componentPrepare';
 import * as ObjectPath                   from 'object-path';
@@ -22,20 +20,6 @@ export default class ComponentUtils {
 
     static isFamily(component: ComponentClass | Component): boolean {
         return component[familyTypeSymbol];
-    }
-
-    /**
-     * This method loads the instance of the component and returns it.
-     * If the instance is not found, the method throws an error.
-     *
-     * @param component
-     */
-    static getInstanceSafe<T extends ComponentClass>(component: T): T['prototype'] {
-        const instance = DynamicSingleton.getInstance<T,T['prototype']>(component);
-        if(instance === undefined) {
-            throw new ComponentNotFound(component.name,ComponentUtils.getComponentType(component));
-        }
-        return instance;
     }
 
     /**

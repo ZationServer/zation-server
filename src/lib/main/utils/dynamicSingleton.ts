@@ -4,6 +4,9 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
+import InstanceNotFound from '../error/instanceNotFound';
+import {AnyClass}       from './typeUtils';
+
 const instanceSymbol = Symbol();
 
 export default class DynamicSingleton {
@@ -21,5 +24,18 @@ export default class DynamicSingleton {
 
     static getInstance<T extends {new (...args: any[]): I},I>(classDef: T & any): I | undefined {
         return classDef[instanceSymbol];
+    }
+
+    /**
+     * This method loads the instance of the singleton and returns it.
+     * If the instance is not found, the method throws an error.
+     * @param classDef
+     */
+    static getInstanceSafe<T extends AnyClass>(classDef: T): T['prototype'] {
+        const instance = DynamicSingleton.getInstance<T,T['prototype']>(classDef);
+        if(instance === undefined) {
+            throw new InstanceNotFound(classDef.name);
+        }
+        return instance;
     }
 }

@@ -27,6 +27,7 @@ import Databox, {DataboxClass}             from "../../api/databox/Databox";
 import DataboxContainer                    from "../../api/databox/container/databoxContainer";
 import {ClientErrorName}                   from "../definitions/clientErrorName";
 import ComponentUtils                      from '../component/componentUtils';
+import DynamicSingleton                    from '../utils/dynamicSingleton';
 const uniqid                             = require('uniqid');
 
 export default class DataboxUtils {
@@ -134,7 +135,7 @@ export default class DataboxUtils {
         const databoxFamilyInstances: DataboxFamily[] = [];
 
         for(let i = 0; i < databoxes.length; i++){
-            const instance = ComponentUtils.getInstanceSafe(databoxes[i]);
+            const instance = DynamicSingleton.getInstanceSafe(databoxes[i] as any);
             if(ComponentUtils.isFamily(instance)){
                 databoxFamilyInstances.push(instance as DataboxFamily);
             }
