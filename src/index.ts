@@ -74,6 +74,7 @@ import Packet                       from './lib/api/Packet';
 import Inject                       from './lib/api/injections/decorator/Inject';
 import Injectable                   from './lib/api/injections/Injectable';
 import Initializer                  from './lib/api/Initializer';
+import Singleton                    from './lib/api/Singleton';
 
 //Refresh bag instance export
 Bag._addReadyRefresher((bag) => exports.bag = bag);
@@ -85,6 +86,7 @@ export {
     bag,
     Router,
     Initializer,
+    Singleton,
     Inject,
     Injectable,
     Register,
