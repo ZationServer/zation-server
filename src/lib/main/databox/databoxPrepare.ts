@@ -35,7 +35,7 @@ export default class DataboxPrepare extends ComponentPrepare<DataboxCore>
     }
 
     protected createComponentNotExistsError(identifier: string): Error {
-        const err: any = new Error(`The Databox: '${identifier}' not exists.`);
+        const err: any = new Error(`The Databox: '${identifier}' does not exist.`);
         err.name = ClientErrorName.UnknownDatabox;
         return err;
     }
