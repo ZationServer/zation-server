@@ -71,8 +71,7 @@ import Receiver                     from './lib/api/Receiver';
 import {ReceiverConfig}             from './lib/main/config/definitions/parts/receiverConfig';
 import {RawSocket}                  from './lib/main/sc/socket';
 import Packet                       from './lib/api/Packet';
-import Inject                       from './lib/api/injections/decorator/Inject';
-import Injectable                   from './lib/api/injections/Injectable';
+import {Inject}                     from './lib/api/Inject';
 import Initializer                  from './lib/api/Initializer';
 import Singleton                    from './lib/api/Singleton';
 
@@ -88,7 +87,6 @@ export {
     Initializer,
     Singleton,
     Inject,
-    Injectable,
     Register,
     $not,
     $optional,

@@ -9,7 +9,7 @@ import {ReceiverClass}        from '../Receiver';
 import {AnyDataboxClass}      from '../databox/AnyDataboxClass';
 import Bag                    from '../Bag';
 import {AnyChannelClass}      from '../channel/AnyChannelClass';
-import ComponentUtils, {componentTypeSymbol, familyTypeSymbol} from '../../main/component/componentUtils';
+import ComponentUtils, {componentSymbol, componentTypeSymbol, familyTypeSymbol} from '../../main/component/componentUtils';
 
 export default class Component {
 
@@ -62,6 +62,7 @@ export default class Component {
 
 Component[familyTypeSymbol] = false;
 Component.prototype[familyTypeSymbol] = false;
+Component.prototype[componentSymbol] = true;
 Component.prototype[componentTypeSymbol] = 'Unknown';
 
 export type ComponentClass = ControllerClass | ReceiverClass | AnyDataboxClass | AnyChannelClass;

@@ -6,9 +6,9 @@ Copyright(c) Luca Scaringella
 
 import {AnyDataboxClass} from '../../api/databox/AnyDataboxClass';
 import {AnyChannelClass} from '../../api/channel/AnyChannelClass';
-import {InjectableClass} from '../../api/injections/Injectable';
-import DataboxCore       from '../../api/databox/DataboxCore';
-import ChannelCore       from '../../api/channel/ChannelCore';
+import {AnyClass}        from '../utils/typeUtils';
+import {componentSymbol} from '../component/componentUtils';
+import {singletonSymbol} from '../../api/Singleton';
 // noinspection ES6PreferShortImport
 import {bag}             from '../../api/Bag';
 
@@ -22,35 +22,17 @@ export default class InjectionsManager {
 
     private injections: (() => Promise<void>)[] = [];
 
-    addInjection(target: any,propKey: string,inject: AnyDataboxClass[] | AnyChannelClass[] | InjectableClass[]) {
+    addInjection(target: any,propKey: string,inject: AnyDataboxClass[] | AnyChannelClass[] | AnyClass[]
+        | [(() => any | Promise<any>)])
+    {
         if(inject.length > 0){
-            const firstInject = inject[0];
             let valueGetter: () => Promise<any> | any;
-            if((firstInject as any).prototype instanceof DataboxCore){
-                valueGetter = () => bag.databox(...(inject as any));
+
+            if(inject.length === 1 && !inject[0][componentSymbol] && !inject[0][singletonSymbol]) {
+                valueGetter = inject[0] as () => Promise<any> | any;
             }
-            else if((firstInject as any).prototype instanceof ChannelCore) {
-                valueGetter = () => bag.channel(...(inject as any));
-            }
-            else {
-                if(inject.length > 1){
-                    valueGetter = async () => {
-                        const res: any[] = [];
-                        const promises: Promise<void>[] = [];
-                        for(let i = 0; i < inject.length; i++){
-                            promises.push(new Promise<void>(async r => {
-                                res.push(await (inject[i] as InjectableClass).prototype.getInstance());
-                                r();
-                            }));
-                        }
-                        await Promise.all(promises);
-                        return res;
-                    }
-                }
-                else {
-                    valueGetter = () => (firstInject as InjectableClass).prototype.getInstance();
-                }
-            }
+            else valueGetter = () => bag.get(...(inject as any));
+
             this.injections.push(async () => {
                 target[propKey] = await valueGetter();
             });

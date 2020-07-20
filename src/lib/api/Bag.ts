@@ -864,7 +864,7 @@ export default class Bag<WA extends object = any> {
      * @param serviceName
      * @param instanceName Default: 'default'
      */
-    async getService<S = any>(serviceName: string, instanceName: string = 'default'): Promise<S> {
+    getService<S = any>(serviceName: string, instanceName: string = 'default'): Promise<S> {
         return this.serviceEngine.getService<S>(serviceName, instanceName);
     }
 

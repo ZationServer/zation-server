@@ -9,6 +9,7 @@ import ComponentPrepare, {ComponentInfo} from './componentPrepare';
 import * as ObjectPath                   from 'object-path';
 import ConfigBuildError                  from '../config/manager/configBuildError';
 
+export const componentSymbol = Symbol();
 export const componentTypeSymbol = Symbol();
 export const familyTypeSymbol = Symbol();
 
