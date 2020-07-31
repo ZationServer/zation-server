@@ -223,45 +223,6 @@ export const ValidationBackErrors = {
         custom: false
     } as BackErrorConstruct,
 
-    arrayNotMatchesWithMaxLength: {
-        name         : 'arrayNotMatchesWithMaxLength',
-        group        : ErrorGroup.ArrayLengthError,
-        description  : 'Array not matches with max length.',
-        type         : ErrorType.ValidationError,
-        sendInfo     : true,
-        //INFO
-        // value
-        // path
-        // maxLength
-        custom: false
-    } as BackErrorConstruct,
-
-    arrayNotMatchesWithMinLength: {
-        name         : 'arrayNotMatchesWithMinLength',
-        group        : ErrorGroup.ArrayLengthError,
-        description  : 'Array not matches with min length.',
-        type         : ErrorType.ValidationError,
-        sendInfo     : true,
-        //INFO
-        // value
-        // path
-        // minLength
-        custom: false
-    } as BackErrorConstruct,
-
-    arrayNotMatchesWithLength: {
-        name         : 'arrayNotMatchesWithLength',
-        group        : ErrorGroup.ArrayLengthError,
-        description  : 'Array not matches with length.',
-        type         : ErrorType.ValidationError,
-        sendInfo     : true,
-        //INFO
-        // value
-        // path
-        // length
-        custom: false
-    } as BackErrorConstruct,
-
     valueNotMatchesWithMinByteSize: {
         name         : 'valueNotMatchesWithMinByteSize',
         group        : ErrorGroup.ByteSizeError,
@@ -314,6 +275,57 @@ export const ValidationBackErrors = {
         custom: false
     } as BackErrorConstruct,
 
+    arrayNotMatchesWithMaxLength: {
+        name         : 'arrayNotMatchesWithMaxLength',
+        group        : ErrorGroup.ArrayLengthError,
+        description  : 'Array not matches with max length.',
+        type         : ErrorType.ValidationError,
+        sendInfo     : true,
+        //INFO
+        // value
+        // path
+        // maxLength
+        custom: false
+    } as BackErrorConstruct,
+
+    arrayNotMatchesWithMinLength: {
+        name         : 'arrayNotMatchesWithMinLength',
+        group        : ErrorGroup.ArrayLengthError,
+        description  : 'Array not matches with min length.',
+        type         : ErrorType.ValidationError,
+        sendInfo     : true,
+        //INFO
+        // value
+        // path
+        // minLength
+        custom: false
+    } as BackErrorConstruct,
+
+    arrayNotMatchesWithLength: {
+        name         : 'arrayNotMatchesWithLength',
+        group        : ErrorGroup.ArrayLengthError,
+        description  : 'Array not matches with length.',
+        type         : ErrorType.ValidationError,
+        sendInfo     : true,
+        //INFO
+        // value
+        // path
+        // length
+        custom: false
+    } as BackErrorConstruct,
+
+    noAnyOfMatch: {
+        name         : 'noAnyOfMatch',
+        description  : 'No anyOf match.',
+        type         : ErrorType.ValidationError,
+        sendInfo     : true,
+        //INFO
+        // value
+        // path
+        // canBeNull
+        custom: false
+    } as BackErrorConstruct,
+
     inputNotAllowed: {
         name         : 'inputNotAllowed',
         description  : 'Input is not allowed.',
@@ -335,18 +347,6 @@ export const ValidationBackErrors = {
         description  : 'Value is required.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
-        custom: false
-    } as BackErrorConstruct,
-
-    noAnyOfMatch: {
-        name         : 'noAnyOfMatch',
-        description  : 'No anyOf match.',
-        type         : ErrorType.ValidationError,
-        sendInfo     : true,
-        //INFO
-        // value
-        // path
-        // canBeNull
         custom: false
     } as BackErrorConstruct,
 

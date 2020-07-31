@@ -163,7 +163,7 @@ export const MainBackErrors = {
         name         : 'invalidPackage',
         description  : 'Invalid package.',
         type         : ErrorType.InputError,
-        private      : false,
+        private      : true,
         sendInfo     : false,
         custom: false
     } as BackErrorConstruct,
