@@ -94,7 +94,7 @@ export default class ControllerPrepare extends ComponentPrepare<Controller>
         };
 
         const cInstance: Controller = DynamicSingleton.create<ControllerClass,Controller>
-            (controller,identifier,this.bag,preparedData,apiLevel);
+            (controller,identifier,preparedData,apiLevel);
 
         this.addInit(cInstance);
 

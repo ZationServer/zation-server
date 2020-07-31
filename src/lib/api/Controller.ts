@@ -6,7 +6,6 @@ Copyright(c) Luca Scaringella
 
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig} from "../main/config/definitions/parts/controllerConfig";
-import Bag                from "./Bag";
 import BackErrorBag       from "./BackErrorBag";
 import Component          from './component/Component';
 import {VersionSystemAccessCheckFunction} from '../main/systemVersion/systemVersionChecker';
@@ -41,8 +40,8 @@ export default class Controller<PA extends object = any> extends Component {
      */
     readonly _preparedData: ControllerPreparedData;
 
-    constructor(identifier: string, bag: Bag, preparedData: ControllerPreparedData, apiLevel: number | undefined) {
-        super(identifier,apiLevel,bag);
+    constructor(identifier: string, preparedData: ControllerPreparedData, apiLevel: number | undefined) {
+        super(identifier,apiLevel);
         this._preparedData = preparedData;
     }
 

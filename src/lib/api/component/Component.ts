@@ -7,7 +7,6 @@ Copyright(c) Luca Scaringella
 import {ControllerClass}      from '../Controller';
 import {ReceiverClass}        from '../Receiver';
 import {AnyDataboxClass}      from '../databox/AnyDataboxClass';
-import Bag                    from '../Bag';
 import {AnyChannelClass}      from '../channel/AnyChannelClass';
 import ComponentUtils, {componentSymbol, componentTypeSymbol, familyTypeSymbol} from '../../main/component/componentUtils';
 
@@ -27,22 +26,15 @@ export default class Component {
 
     /**
      * @description
-     * The prepared bag from the worker.
-     */
-    protected readonly bag: Bag;
-
-    /**
-     * @description
      * The API level of the Component from the app config.
      * It can be undefined if no API level is defined.
      */
     protected readonly apiLevel: number | undefined;
 
-    constructor(identifier: string, apiLevel: number | undefined, bag: Bag) {
+    constructor(identifier: string, apiLevel: number | undefined) {
         this.identifier = identifier;
         this.name = ComponentUtils.extractName(identifier);
         this.apiLevel = apiLevel;
-        this.bag = bag;
     }
 
     toString(): string   {

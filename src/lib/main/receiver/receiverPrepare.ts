@@ -77,7 +77,7 @@ export default class ReceiverPrepare extends ComponentPrepare<Receiver>
         };
 
         const rInstance: Receiver = DynamicSingleton.create<ReceiverClass,Receiver>
-            (receiver,identifier,this.bag,preparedData,apiLevel);
+            (receiver,identifier,preparedData,apiLevel);
 
         this.addInit(rInstance);
 

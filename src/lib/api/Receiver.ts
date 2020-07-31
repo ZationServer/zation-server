@@ -6,7 +6,6 @@ Copyright(c) Luca Scaringella
 
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ReceiverConfig}   from '../main/config/definitions/parts/receiverConfig';
-import Bag                from "./Bag";
 import BackErrorBag       from "./BackErrorBag";
 import Socket             from './Socket';
 import Packet             from './Packet';
@@ -33,8 +32,8 @@ export default class Receiver<PA extends object = any> extends Component {
      */
     readonly _preparedData: ReceiverPreparedData;
 
-    constructor(identifier: string, bag: Bag, preparedData: ReceiverPreparedData, apiLevel: number | undefined) {
-        super(identifier,apiLevel,bag);
+    constructor(identifier: string, preparedData: ReceiverPreparedData, apiLevel: number | undefined) {
+        super(identifier,apiLevel);
         this._preparedData = preparedData;
     }
 

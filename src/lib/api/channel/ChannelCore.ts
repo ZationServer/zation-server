@@ -27,7 +27,7 @@ export default abstract class ChannelCore extends Component {
     protected readonly _preparedData: ChPreparedData;
 
     protected constructor(identifier: string, bag: Bag, preparedData: ChPreparedData, apiLevel: number | undefined) {
-        super(identifier,apiLevel,bag);
+        super(identifier,apiLevel);
 
         this._scExchange = bag.getWorker().scServer.exchange;
         this._workerFullId = bag.getWorker().getFullWorkerId();

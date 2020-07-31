@@ -56,9 +56,9 @@ export default abstract class DataboxCore extends Component {
     private readonly _fetchInputConsumer: InputConsumeFunction;
 
     protected constructor(identifier: string, bag: Bag, preparedData: DbPreparedData, apiLevel: number | undefined) {
-        super(identifier,apiLevel,bag);
+        super(identifier,apiLevel);
         this._preparedData = preparedData;
-        this._sendErrorDescription = this.bag.getMainConfig().sendErrorDescription;
+        this._sendErrorDescription = bag.getMainConfig().sendErrorDescription;
 
         this._parallelFetch = preparedData.parallelFetch;
         this._initInputConsumer = preparedData.initInputConsumer;
