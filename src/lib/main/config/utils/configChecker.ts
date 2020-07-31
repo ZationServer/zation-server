@@ -19,9 +19,9 @@ import {ValidationTypeRecord}                from '../../definitions/validationT
 import Iterator                              from '../../utils/iterator';
 import ObjectUtils                           from '../../utils/objectUtils';
 import ConfigLoader                          from '../manager/configLoader';
-import {isModelTranslatable, modelTranslateSymbol, resolveIfModelTranslatable} from '../../../api/configTranslatable/modelTranslatable';
-import {modelPrototypeSymbol}                                                  from '../../definitions/model';
-import {AnyModelTranslatable, AnyOfModel, InputConfig, Model, ObjectModel, ParamInput, ValueModel} from '../definitions/parts/inputConfig';
+import {resolveIfModelTranslatable}          from '../../../api/configTranslatable/modelTranslatable';
+import {modelPrototypeSymbol}                                                    from '../../definitions/model';
+import {AnyModelTranslatable, AnyOfModel, Input, Model, ObjectModel, ValueModel} from '../definitions/parts/inputConfig';
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig}               from '../definitions/parts/controllerConfig';
 // noinspection ES6PreferShortImport
@@ -29,10 +29,8 @@ import {DataboxConfig}                  from '../definitions/parts/databoxConfig
 import DataboxFamily                    from '../../../api/databox/DataboxFamily';
 import Databox                          from '../../../api/databox/Databox';
 import {AuthAccessConfig}               from '../definitions/parts/accessConfigs';
-import DbConfigUtils                           from '../../databox/dbConfigUtils';
 import {getNotableValue}                       from '../../../api/Notable';
 import ErrorBag                                from '../../error/errorBag';
-import {inputConfigTranslateSymbol, isInputConfigTranslatable} from '../../../api/configTranslatable/inputConfigTranslatable';
 import {processAnyOfKey}                                       from '../../models/anyOfModelUtils';
 import AuthController                                          from '../../../api/AuthController';
 import {AnyDataboxClass}                                       from '../../../api/databox/AnyDataboxClass';
@@ -46,8 +44,8 @@ import Receiver, {ReceiverClass}                               from '../../../ap
 import {ReceiverConfig}                                        from '../definitions/parts/receiverConfig';
 import ComponentUtils                                          from '../../component/componentUtils';
 import {isDefaultImpl}                                         from '../../utils/defaultImplUtils';
-import {explicitModelNameSymbol, isExplicitModel}              from '../../models/explicitModel';
-import {isMetaModel, isOptionalMetaModel, unwrapIfMetaModel}   from '../../models/metaModel';
+import {explicitModelNameSymbol}                               from '../../models/explicitModel';
+import {isOptionalMetaModel, unwrapIfMetaModel}                from '../../models/metaModel';
 
 export interface ModelCheckedMem {
     _checked: boolean
@@ -190,6 +188,7 @@ export default class ConfigChecker
     }
 
     private checkChannel(cCh: AnyChannelClass, target: Target) {
+        // noinspection SuspiciousTypeOfGuard
         if(cCh.prototype instanceof Channel || cCh.prototype instanceof ChannelFamily) {
             if(cCh.config)
                 this.checkChannelConfig(cCh.config,target);
@@ -429,6 +428,7 @@ export default class ConfigChecker
                                 `Controller: '${identifier}' the API level must be an integer. The value ${apiLevel} is not allowed.`));
                         }
                         const target = new Target(`Controller: '${identifier}' ${apiLevel ? `(API Level: ${apiLevel}) `: ''}`);
+                        // noinspection SuspiciousTypeOfGuard
                         if(controllerClass.prototype instanceof AuthController){
                             this.checkAuthControllerAccess(controllerClass,target);
                             authControllerCount++;
@@ -471,6 +471,7 @@ export default class ConfigChecker
     }
 
     private checkController(cv: ControllerClass, target: Target) {
+        // noinspection SuspiciousTypeOfGuard
         if(cv.prototype instanceof Controller) {
             if(cv.config)
                 this.checkControllerConfig(cv.config,target);
@@ -483,7 +484,7 @@ export default class ConfigChecker
 
     private checkControllerConfig(config: ControllerConfig,target: Target) {
         this.checkAuthAccessConfig(config, target);
-        this.checkInputConfig(config,target.addPath('input'));
+        this.checkInput(config.input,target.addPath('input'));
     }
 
     private checkReceivers() {
@@ -515,6 +516,7 @@ export default class ConfigChecker
     }
 
     private checkReceiver(cv: ReceiverClass, target: Target) {
+        // noinspection SuspiciousTypeOfGuard
         if(cv.prototype instanceof Receiver) {
             if(cv.config)
                 this.checkReceiverConfig(cv.config,target);
@@ -527,7 +529,7 @@ export default class ConfigChecker
 
     private checkReceiverConfig(config: ReceiverConfig,target: Target) {
         this.checkAuthAccessConfig(config, target);
-        this.checkInputConfig(config,target.addPath('input'));
+        this.checkInput(config.input,target.addPath('input'));
     }
 
     private checkDataboxes() {
@@ -568,6 +570,7 @@ export default class ConfigChecker
     }
 
     private checkDatabox(cdb: AnyDataboxClass, target: Target) {
+        // noinspection SuspiciousTypeOfGuard
         if(cdb.prototype instanceof DataboxFamily || cdb.prototype instanceof Databox) {
             if(cdb.config)
                 this.checkDataboxConfig(cdb.config,target);
@@ -591,102 +594,17 @@ export default class ConfigChecker
 
         this.checkAuthAccessConfig(config, target);
 
-        this.checkInputConfig(DbConfigUtils.convertDbInitInput(config),
-            target.addPath('initInput'),'Init');
-
-        this.checkInputConfig(DbConfigUtils.convertDbFetchInput(config),
-            target.addPath('fetchInput'),'Fetch');
-    }
-
-    // noinspection JSMethodCanBeStatic
-    private checkInputAllAllow(inputConfig: InputConfig, target: Target,inputTypeName: string = '') {
-        if (typeof inputConfig.allowAnyInput === 'boolean' &&
-            inputConfig.allowAnyInput &&
-            (typeof inputConfig.input === 'object')) {
-            Logger.consoleLogConfigWarning(
-                ConfigNames.App,
-                `${target.toString()} is ignored with allowAny${inputTypeName}Input true.`
-            );
-        }
+        this.checkInput(config.initInput, target.addPath('initInput'));
+        this.checkInput(config.fetchInput, target.addPath('fetchInput'));
     }
 
     /**
-     * Checks an input config.
-     * @param inputConfig
+     * Checks an input definition.
+     * @param input
      * @param target
-     * @param inputTypeName
-     * The input type starting with upper case letter.
      */
-    private checkInputConfig(inputConfig: InputConfig, target: Target,inputTypeName: string = '') {
-        /**
-         * Check main structure with structure of controller or stream.
-         */
-        if(inputConfig.input){
-            let input: object = inputConfig.input;
-            if(isInputConfigTranslatable(input)){
-                input = input[inputConfigTranslateSymbol]();
-            }
-            else if(isModelTranslatable(input)){
-                input = input[modelTranslateSymbol]();
-            }
-
-            if(Array.isArray(input)){
-                if(input.length === 1){
-                    this.checkSingleInput(input[0],target);
-                }
-                else {
-                    this.ceb.addError(new ConfigError(ConfigNames.App,
-                        `${target.toString()} to define a single input model the array must have exactly one item.`));
-                }
-            }
-            else if(isMetaModel(input) || isExplicitModel(input)){
-                this.checkSingleInput(input,target);
-            }
-            else {
-                this.checkParamInput(input as ParamInput,target);
-            }
-        }
-        this.checkInputAllAllow(inputConfig, target,inputTypeName);
-    }
-
-    private checkParamInput(paramInput: ParamInput, target: Target) {
-        const keys: any[] = [];
-        if (typeof paramInput === 'object') {
-            for (let k in paramInput) {
-                if (paramInput.hasOwnProperty(k)) {
-                    if(!isNaN(parseInt(k))){
-                        this.ceb.addError(new ConfigError(ConfigNames.App,
-                            `${target.toString()} numeric key ${k} is not allowed in a param based input config because it changes the key order in a for in loop.`));
-                    }
-                    keys.push(k);
-                    this.checkModel(paramInput[k], target.addPath(k));
-                }
-            }
-            this.checkOptionalRecommendation(keys, paramInput, target);
-        }
-    }
-
-    private checkSingleInput(singleInput: Model,target: Target) {
-        this.checkModel(singleInput,target);
-    }
-
-    // noinspection JSMethodCanBeStatic
-    private checkOptionalRecommendation(keys: string[], input: ParamInput, target: Target) {
-        let wasLastOptional = false;
-        for (let i = keys.length - 1; i >= 0; i--) {
-            if (isOptionalMetaModel(input[keys[i]])) {
-                if ((keys.length - 1) !== i && !wasLastOptional) {
-                    Logger.consoleLogConfigWarning(
-                        ConfigNames.App,
-                        `${target.toString()} input: '${keys[i]}', It is recommended to set the optional parameters in a parm based input at the end.`
-                    );
-                    break;
-                }
-                wasLastOptional = true;
-            } else {
-                wasLastOptional = false;
-            }
-        }
+    private checkInput(input: Input | undefined, target: Target) {
+        if(typeof input === 'object' || typeof input === 'function') this.checkModel(input,target);
     }
 
     private checkArrayModel(value, target: Target, rememberCache: Model[]) {

@@ -14,7 +14,6 @@ import BackErrorBuilder             from "./lib/main/builder/backErrorBuilder";
 import ServiceNotFoundError         from './lib/main/services/serviceNotFoundError';
 import AuthenticationRequiredError  from './lib/main/error/authenticationRequiredError';
 import UndefinedUserIdError         from './lib/main/error/undefinedUserIdError';
-import InputIsIncompatibleError     from './lib/main/error/inputIsIncompatibleError';
 import CodeError                    from './lib/main/error/codeError';
 import {ErrorType}                  from "./lib/main/definitions/errorType";
 import {ValidationType}             from './lib/main/definitions/validationType';
@@ -25,13 +24,11 @@ import {Register}                   from "./lib/api/component/decorator/Register
 import {$value, $key, $pair, $all, $any, $contains, $matches}   from './lib/api/databox/DbApiUtils';
 import {$tokenPayloadIncludes, $tokenPayloadMatches, $userId}   from './lib/api/AccessApiUtils';
 import {updateModelTranslatable}                  from './lib/api/configTranslatable/modelTranslatable';
-import {updateInputConfigTranslatable}            from './lib/api/configTranslatable/inputConfigTranslatable';
 import {Model as AnyModel, ImplicitModel}         from './lib/main/config/definitions/parts/inputConfig';
 import {ModelMetaData, MetaModel}                 from './lib/main/models/metaModel';
 import {ExplicitModel}              from './lib/main/models/explicitModel';
 import {Model}                      from "./lib/api/input/decorator/Model";
 import {ObjectModel}                from "./lib/api/input/decorator/ObjectModel";
-import {ParamInput}                 from "./lib/api/input/decorator/ParamInput";
 import {Constructor}                from "./lib/api/input/decorator/Constructor";
 import NoMoreDataAvailableError     from "./lib/main/databox/noMoreDataAvailable";
 import DataboxFamily                from "./lib/api/databox/DataboxFamily";
@@ -55,10 +52,10 @@ import {$init}                      from './lib/api/InitApiUtils';
 import {start}                      from './lib/api/Start';
 import {ConsoleColor}               from './lib/main/log/logCategories';
 import {$optional}                  from './lib/api/input/Optional';
+import {$canBeNull}                 from './lib/api/input/CanBeNull';
 import {$models}                    from './lib/api/input/Models';
 import {$model}                     from './lib/api/input/Model';
 import {$extends}                   from './lib/api/input/Extends';
-import {$single}                    from './lib/api/input/Single';
 import {Events}                     from './lib/main/config/definitions/parts/events';
 import {Middleware}                 from './lib/main/config/definitions/parts/middleware';
 import Channel                      from './lib/api/channel/Channel';
@@ -74,6 +71,7 @@ import Packet                       from './lib/api/Packet';
 import {Inject}                     from './lib/api/Inject';
 import Initializer                  from './lib/api/Initializer';
 import Singleton                    from './lib/api/Singleton';
+import Process, {ProcessType}       from './lib/api/Process';
 
 //Refresh bag instance export
 Bag._addReadyRefresher((bag) => exports.bag = bag);
@@ -89,6 +87,7 @@ export {
     Inject,
     Register,
     $not,
+    $canBeNull,
     $optional,
     $models,
     $model,
@@ -96,7 +95,6 @@ export {
     Model,
     Constructor,
     ObjectModel,
-    ParamInput,
     NoMoreDataAvailableError,
     NoDataAvailableError,
     DataboxFamily,
@@ -130,6 +128,8 @@ export {
     BackErrorBag,
     BackErrorConstruct,
     ErrorType,
+    Process,
+    ProcessType,
     Server,
     Config,
     ServiceNotFoundError,
@@ -137,8 +137,6 @@ export {
     AuthenticationRequiredError,
     UndefinedUserIdError,
     CodeError,
-    InputIsIncompatibleError,
-    $single,
     buildKeyArray,
     Socket,
     RawSocket,
@@ -153,7 +151,6 @@ export {
     Events,
     Middleware,
     updateModelTranslatable,
-    updateInputConfigTranslatable,
     AnyModel,
     MetaModel,
     ModelMetaData,

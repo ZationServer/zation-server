@@ -66,10 +66,10 @@ export default class ReceiverHandler
             } = rInstance._preparedData;
 
             if(!systemAccessCheck(socket)){
-                throw new BackError(MainBackErrors.noAccessWithSystem,{system: socket.clientSystem});
+                throw new BackError(MainBackErrors.accessDenied,{reason: 'system'});
             }
             if(!versionAccessCheck(socket)){
-                throw new BackError(MainBackErrors.noAccessWithVersion,{version: socket.clientVersion});
+                throw new BackError(MainBackErrors.accessDenied,{reason: 'version'});
             }
 
             //check access to receiver
@@ -124,17 +124,8 @@ export default class ReceiverHandler
 
                 return result;
             }
-            else {
-                throw new BackError(MainBackErrors.noAccessWithTokenState,
-                    {
-                        authUserGroup: socket.authUserGroup,
-                        authIn: socket.isAuthenticated(),
-                        userId: socket.userId
-                    });
-            }
+            else throw new BackError(MainBackErrors.accessDenied, {reason: 'tokenState'});
         }
-        else {
-            throw new BackError(MainBackErrors.invalidPackage, {input: pack});
-        }
+        else throw new BackError(MainBackErrors.invalidPackage, {input: pack});
     }
 }

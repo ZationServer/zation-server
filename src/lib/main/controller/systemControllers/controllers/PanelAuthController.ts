@@ -21,11 +21,13 @@ export default class PanelAuthController extends Controller
         access: 'all',
         versionAccess: 'all',
         input: {
-            username: {
-                type: 'string'
-            },
-            password: {
-                type: 'string'
+            properties: {
+                username: {
+                    type: 'string'
+                },
+                password: {
+                    type: 'string'
+                }
             }
         }
     };
@@ -33,7 +35,7 @@ export default class PanelAuthController extends Controller
 
     async handle(socket: Socket,{username,password})
     {
-        if(bag.getZationConfig().mainConfig.usePanel) {
+        if(bag.getZationConfig().mainConfig.panel.active) {
 
             //wait 1.5 seconds for avoiding brute force attacks
             await new Promise((resolve) => {setTimeout(() => resolve(),1500)});
@@ -48,7 +50,7 @@ export default class PanelAuthController extends Controller
             await socket._setToken(token);
         }
         else {
-            throw new BackError(MainBackErrors.panelIsNotActivated);
+            throw new BackError(MainBackErrors.panelDeactivated);
         }
     }
 }

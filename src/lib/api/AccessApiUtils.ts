@@ -20,7 +20,7 @@ export function $tokenPayloadIncludes(pairs: Record<string,any>) {
     const checkKeys = Object.keys(pairs);
     const checkKeysLength = checkKeys.length;
     return createTokenCheckFunction((token) => {
-        if(token != null && token.payload !== undefined) {
+        if(token != null && token.payload != undefined) {
             const payload = token.payload;
             let tmpKey;
             for(let i = 0; i < checkKeysLength; i++){

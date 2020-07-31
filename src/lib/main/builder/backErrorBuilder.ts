@@ -90,50 +90,10 @@ export default class BackErrorBuilder
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the BackError type to auth error.
-     */
-    typeAuthError(): BackErrorBuilder {
-        this._construct.type = ErrorType.AuthError;
-        return this;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
      * Set the BackError type to token error.
      */
     typeTokenError(): BackErrorBuilder {
         this._construct.type = ErrorType.TokenError;
-        return this;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Set the BackError type to database error.
-     */
-    typeDatabaseError(): BackErrorBuilder {
-        this._construct.type = ErrorType.DatabaseError;
-        return this;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Set the BackError type to compatibility error.
-     */
-    typeCompatibilityError(): BackErrorBuilder {
-        this._construct.type = ErrorType.NoAccessError;
-        return this;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Set the BackError type to time error.
-     */
-    typeTimeError(): BackErrorBuilder {
-        this._construct.type = ErrorType.TimeError;
         return this;
     }
 

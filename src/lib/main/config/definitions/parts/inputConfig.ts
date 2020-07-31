@@ -8,10 +8,12 @@ import BackErrorBag          from '../../../../api/BackErrorBag';
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ValidationType}      from '../../../definitions/validationType.js';
 import {ValidationFunctions} from './validationFunctions';
-import {InputConfigTranslatable}                 from '../../../../api/configTranslatable/inputConfigTranslatable';
 import {ModelTranslatable}                       from '../../../../api/configTranslatable/modelTranslatable';
+// noinspection ES6PreferShortImport
 import {MetaModel}                               from '../../../models/metaModel';
+// noinspection ES6PreferShortImport
 import {ExplicitModel}                           from '../../../models/explicitModel';
+import {AnyClass}                                from '../../../utils/typeUtils';
 
 export type ImplicitModel = ValueModel | ObjectModel | ArrayModel | AnyOfModel;
 export type Model = ExplicitModel | ImplicitModel | MetaModel;
@@ -54,36 +56,12 @@ export interface InputConfig {
     /**
      * This property defines the input.
      * It will be used to validate and format the data that flows into the component.
-     * It can specify an input that is based on parameters
-     * so that you can map models to a parameter name.
-     * Or it can specify a single model as an input.
-     * - Parameter-based input.
-     * To define a parameter based input, use an object as a value.
-     * The keys of the object are the parameter names, and the values represent the models.
-     * Notice that it is strongly recommended to only use string keys (with letters) in the object literal,
-     * to keep the same order in a for-in loop.
-     * That is important for Zation when you send your data as an array.
-     * A modern way to create a parameter based input would be to
-     * create a class and use the ParamInput decorator.
-     * - Single model input
-     * To set a single model input, you have multiple options.
-     * When you have a reusable model, means it was created with the $model function or
-     * the $ObjectModel decorator, you can directly refer to this model.
-     * In case you have a disposable model,
-     * you can use the $single function or wrap the model with square brackets.
+     * The input can be defined with a model, or you can allow any input with 'any' literal.
+     * If you don't want to have any input you can use the 'nothing' literal.
+     * @default 'nothing'
      * @example
-     * //Parameter-based input
-     * input: {
-     *     name: {
-     *         type: 'string'
-     *     },
-     *     age: {
-     *         type: 'int',
-     *         minValue: 14
-     *     }
-     * }
-     * //or
-     * class Parameter {
+     * @ObjectModel()
+     * class Person {
      *
      *  @Model({type: 'string'})
      *  name: string;
@@ -92,48 +70,14 @@ export interface InputConfig {
      *  age: number;
      *
      * }
-     * input: Parameter
+     * input: Person
      * //Client can send  ->
      * {name: 'Luca', age: 20}
-     * //or
-     * ['Luca',20]
-     *
-     * //-Single model input-
-     * input: $model({
-     *     type: 'string',
-     *     minLength: 4
-     * })
-     * //or
-     * input: $single({
-     *     type: 'string',
-     *     minLength: 4
-     * })
-     * //or
-     * input: [{
-     *     type: 'string',
-     *     minLength: 4
-     * }]
-     * //Client can send ->
-     * "ThisIsAnyString"
      */
     input?: Input;
-    /**
-     * Specifies if any input is allowed
-     * that means the input validation and converter are disabled.
-     * @default false.
-     */
-    allowAnyInput?: boolean;
 }
 
-export type Input = ParamInput | SingleModelInput | AnyInputConfigTranslatable | ExplicitModel | MetaModel;
-
-export interface SingleModelInput {
-    [0]: (Model | AnyModelTranslatable);
-}
-
-export interface ParamInput {
-    [key: string]: (Model | AnyModelTranslatable);
-}
+export type Input = Model | 'any' | 'nothing';
 
 export type ValidateFunction = (value: any, backErrorBag: BackErrorBag, path: string, type: string | undefined) => Promise<void> | void;
 export type ConvertValueFunction = (value: any) => Promise<any> | any;
@@ -359,11 +303,4 @@ export interface ArrayModel extends Array<(Model | AnyModelTranslatable) | Array
     1?: ArraySettings
 }
 
-export interface AnyClass {
-    prototype: object,
-    new (): any
-    [key: string]: any;
-}
-
-export type AnyInputConfigTranslatable = InputConfigTranslatable | AnyClass;
 export type AnyModelTranslatable = ModelTranslatable | AnyClass;

@@ -9,7 +9,7 @@ import {ErrorGroup}       from "../definitions/errorGroup";
 import {ErrorType}        from "../definitions/errorType";
 import BackErrorConstruct from "../definitions/backErrorConstruct";
 
-export const ValidatorBackErrors: Record<string, BackErrorConstruct> = {
+export const ValidationBackErrors = {
     valueNotMatchesWithType: {
         name         : 'valueNotMatchesWithType',
         description  : 'Value not matches with type.',
@@ -314,6 +314,30 @@ export const ValidatorBackErrors: Record<string, BackErrorConstruct> = {
         custom: false
     } as BackErrorConstruct,
 
+    inputNotAllowed: {
+        name         : 'inputNotAllowed',
+        description  : 'Input is not allowed.',
+        type         : ErrorType.ValidationError,
+        sendInfo     : true,
+        custom: false
+    } as BackErrorConstruct,
+
+    inputRequired: {
+        name         : 'inputRequired',
+        description  : 'Input is required.',
+        type         : ErrorType.ValidationError,
+        sendInfo     : true,
+        custom: false
+    } as BackErrorConstruct,
+
+    valueRequired: {
+        name         : 'valueRequired',
+        description  : 'Value is required.',
+        type         : ErrorType.ValidationError,
+        sendInfo     : true,
+        custom: false
+    } as BackErrorConstruct,
+
     noAnyOfMatch: {
         name         : 'noAnyOfMatch',
         description  : 'No anyOf match.',
@@ -322,6 +346,42 @@ export const ValidatorBackErrors: Record<string, BackErrorConstruct> = {
         //INFO
         // value
         // path
+        // canBeNull
+        custom: false
+    } as BackErrorConstruct,
+
+    invalidType: {
+        name         : 'invalidType',
+        description  : 'Invalid type',
+        type         : ErrorType.ValidationError,
+        sendInfo     : true,
+        //INFO
+        // path (full path to the value)
+        // value (the input value)
+        // expected (expected types)
+        custom: false
+    } as BackErrorConstruct,
+
+    missingObjectProperty: {
+        name         : 'missingObjectProperty',
+        description  : 'Missing object property.',
+        type         : ErrorType.ValidationError,
+        sendInfo     : true,
+        //INFO
+        // object (the input object where the property is missing)
+        // propertyName (name of missing property)
+        // path (the full input path to missing property)
+        custom: false
+    } as BackErrorConstruct,
+
+    unknownObjectProperty: {
+        name         : 'unknownObjectProperty',
+        description  : 'Unknown object property.',
+        type         : ErrorType.ValidationError,
+        sendInfo     : true,
+        //INFO
+        // propertyName (name of the unknown property)
+        // path (full input path to unknown property)
         custom: false
     } as BackErrorConstruct
 };

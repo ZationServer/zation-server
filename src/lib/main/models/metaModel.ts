@@ -9,7 +9,7 @@ import {ExplicitModel}        from './explicitModel';
 
 const metaModelSymbol = Symbol();
 
-interface MetaData {
+export interface ModelMetaData {
     /**
      * Indicates if the inner model is optional.
      */
@@ -19,9 +19,13 @@ interface MetaData {
      * is not provided by the client.
      */
     default?: any;
+    /**
+     * Indicates if the inner model can be null.
+     */
+    canBeNull?: boolean;
 }
 
-export interface MetaModel<T extends ExplicitModel | ImplicitModel = {}> extends MetaData {
+export interface MetaModel<T extends ExplicitModel | ImplicitModel = {}> extends ModelMetaData {
     /**
      * The inner wrapped model.
      */
@@ -43,11 +47,15 @@ export function isMetaModel(value: any): value is MetaModel {
     return value && value[metaModelSymbol] === true;
 }
 
+export function getModelMetaData<T extends Model>(model: T): ModelMetaData {
+    return isMetaModel(model) ? model : {};
+}
+
 export function isOptionalMetaModel(value: any): boolean {
     return value && value[metaModelSymbol] === true && (value as MetaModel).optional as boolean;
 }
 
-export function addNewMetaToModel<T extends Model>(model: T, meta: MetaData): T extends ImplicitModel | ExplicitModel ? MetaModel<T> : T {
+export function addNewMetaToModel<T extends Model>(model: T, meta: ModelMetaData): T extends ImplicitModel | ExplicitModel ? MetaModel<T> : T {
     if(isMetaModel(model)) return ({...model,...meta} as T extends ImplicitModel | ExplicitModel ? MetaModel<T> : T);
     return {...createMetaModel(model as ImplicitModel | ExplicitModel),...meta} as T extends ImplicitModel | ExplicitModel ? MetaModel<T> : T;
 }

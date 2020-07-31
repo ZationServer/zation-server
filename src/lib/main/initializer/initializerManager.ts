@@ -6,6 +6,7 @@ Copyright(c) Luca Scaringella
 
 import {singletonSymbol} from '../../api/Singleton';
 import DynamicSingleton  from '../utils/dynamicSingleton';
+import Process, {ProcessType} from '../../api/Process';
 
 export default class InitializerManager {
 
@@ -18,6 +19,7 @@ export default class InitializerManager {
     private initializers: {target: any,func: (() => Promise<void>)}[] = [];
 
     addInitializer(target: any,func: () => any){
+        if(Process.type !== ProcessType.Worker) return;
         this.initializers.push({target,func});
     }
 
@@ -31,8 +33,8 @@ export default class InitializerManager {
         let initializer: {target: any,func: (() => Promise<void>)};
         for(let i = 0; i < this.initializers.length; i++) {
             initializer = this.initializers[i];
-            promises.push(initializer.func.call(initializer.target[singletonSymbol] ?
-                (DynamicSingleton.getInstance(initializer.target) || thisProxy) : thisProxy));
+            promises.push(initializer.func.call(initializer.target.constructor[singletonSymbol] ?
+                (DynamicSingleton.getInstance(initializer.target.constructor) || thisProxy) : thisProxy));
         }
         await Promise.all(promises);
     }

@@ -5,9 +5,9 @@ Copyright(c) Luca Scaringella
  */
 
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
-import {ValidationType}  from "../definitions/validationType";
+import {ValidationType}  from "../../definitions/validationType";
 import {ConverterUtils}  from "./typeConverterUtils";
-import {PartialRecord}   from '../utils/typeUtils';
+import {PartialRecord}   from '../../utils/typeUtils';
 
 export namespace TypeConverterLibrary {
     export const strict: PartialRecord<ValidationType,(input: any) => any> = {

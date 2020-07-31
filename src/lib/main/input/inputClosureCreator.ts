@@ -4,21 +4,20 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {InputConfig}                    from "../config/definitions/parts/inputConfig";
+import {Input}                          from '../config/definitions/parts/inputConfig';
 import BackErrorBag                     from "../../api/BackErrorBag";
 import ProcessTaskEngine, {ProcessTask} from "./processTaskEngine";
-import InputProcessor, {Processable}    from "./inputProcessorCreator";
+import {Processable}                    from "./inputProcessorCreator";
 import BackError                        from "../../api/BackError";
 import {MainBackErrors}                 from "../systemBackErrors/mainBackErrors";
 import InputUtils                       from "./inputUtils";
 import {ValidationCheckPair}            from "../controller/controllerDefinitions";
+import {ValidationBackErrors}           from '../systemBackErrors/validationBackErrors';
+import {ModelPreparationMem}            from '../config/utils/configPrecompiler';
+import CloneUtils                       from '../utils/cloneUtils';
 
 export type InputConsumeFunction = (input: any) => Promise<any>;
 export type InputValidationCheckFunction = (checkData: ValidationCheckPair[]) => Promise<void>;
-
-const DefaultParamProcessable: Processable = {
-    _process: InputProcessor.createParamInputProcessor({})
-};
 
 /**
  * A class that provides methods for creating closures to consume the input.
@@ -26,68 +25,73 @@ const DefaultParamProcessable: Processable = {
 export default class InputClosureCreator
 {
     /**
-     * Creates a closure to consume the input (validate and format) from a request to a component.
-     * @param inputConfig
+     * Creates a closure to consume the input (validate and format).
+     * @param inputDefinition
      */
-    static createInputConsumer(inputConfig: InputConfig): InputConsumeFunction {
-        if(inputConfig.allowAnyInput) {
-            return (input) => input;
+    static createInputConsumer(inputDefinition?: Input): InputConsumeFunction {
+        if(inputDefinition === 'any') return (input) => input;
+        else if(inputDefinition == null || inputDefinition === 'nothing') {
+            return async (input) => {
+                if(input !== undefined) throw new BackError(ValidationBackErrors.inputNotAllowed);
+            }
         }
+        else {
+            return async (input) => {
+                if(input !== undefined) {
+                    const taskList: ProcessTask[] = [];
+                    const backErrorBag: BackErrorBag = new BackErrorBag();
+                    const wrapper = {i: input};
 
-        const processable: Processable = typeof inputConfig.input === 'object' ?
-            (inputConfig.input as unknown as Processable): DefaultParamProcessable;
+                    await (inputDefinition as ModelPreparationMem)._process(wrapper,'i','',{
+                        processTaskList: taskList,
+                        errorBag: backErrorBag,
+                        createProcessTaskList: true
+                    });
 
-        return async (input) => {
-            const taskList: ProcessTask[] = [];
-            const backErrorBag: BackErrorBag = new BackErrorBag();
-            const wrapper = {i: input};
+                    //throw errors if any there
+                    backErrorBag.throwIfHasError();
 
-            await processable._process(wrapper,'i','',{
-                processTaskList: taskList,
-                errorBag: backErrorBag,
-                createProcessTaskList:  true
-            });
+                    //wait for process tasks
+                    await ProcessTaskEngine.processTasks(taskList);
 
-            //throw validation/structure errors if any there
-            backErrorBag.throwIfHasError();
-
-            //wait for process tasks
-            await ProcessTaskEngine.processTasks(taskList);
-
-            return wrapper.i;
+                    return wrapper.i;
+                }
+                else {
+                    const {defaultValue,optional} = (inputDefinition as ModelPreparationMem)._optionalInfo;
+                    if(!optional) throw new BackError(ValidationBackErrors.inputRequired);
+                    else return CloneUtils.deepClone(defaultValue);
+                }
+            }
         }
     }
 
     /**
      * Creates a closure to only validate the input from a validation request to a component.
-     * @param inputConfig
+     * @param inputDefinition
      */
-    static createValidationChecker(inputConfig: InputConfig): InputValidationCheckFunction
+    static createValidationChecker(inputDefinition?: Input): InputValidationCheckFunction
     {
-        if(inputConfig.allowAnyInput) {
-            return async () => {}
+        if(inputDefinition === 'any') return async () => {};
+        else if(inputDefinition == null || inputDefinition === 'nothing') {
+            return async (input) => {
+                if(input !== undefined) throw new BackError(ValidationBackErrors.inputNotAllowed);
+            }
         }
-
-        const inputDefinition: Processable = typeof inputConfig.input === 'object' ?
-            (inputConfig.input as unknown as Processable): DefaultParamProcessable;
-        const singleInputModel = Array.isArray(inputDefinition);
-
-        return async (checkData) => {
-
+        else return async (checkData) => {
             const promises: Promise<void>[] = [];
             const errorBag = new BackErrorBag();
-            for(let i = 0; i < checkData.length; i++)
+            const len = checkData.length;
+            for(let i = 0; i < len; i++)
             {
                 promises.push((async () => {
                     const iCheckData = checkData[i];
                     // noinspection SuspiciousTypeOfGuard
                     if (typeof iCheckData === 'object' && (Array.isArray(iCheckData['0']) || typeof iCheckData['0'] === 'string')) {
-
                         const {path,keyPath} = InputUtils.processPathInfo(iCheckData['0']);
 
                         let specificConfig: any = inputDefinition;
                         if(keyPath.length > 0){
-                            specificConfig = InputUtils.getModelAtPath(keyPath,inputDefinition as any,(!singleInputModel));
+                            specificConfig = InputUtils.getModelAtPath(keyPath,inputDefinition as any);
                             if(specificConfig === undefined){
                                 errorBag.add(new BackError(MainBackErrors.pathNotResolvable,
                                     {
@@ -98,11 +102,17 @@ export default class InputClosureCreator
                             }
                         }
 
-                        await (specificConfig as Processable)._process(iCheckData,'1',path,{
-                            errorBag: errorBag,
-                            createProcessTaskList: false,
-                            processTaskList: [],
-                        });
+                        const {optional} = (specificConfig as ModelPreparationMem)._optionalInfo;
+                        if(iCheckData['1'] !== undefined) {
+                            await (specificConfig as Processable)._process(iCheckData,'1',path,{
+                                errorBag: errorBag,
+                                createProcessTaskList: false,
+                                processTaskList: [],
+                            });
+                        }
+                        else if(!optional) errorBag.add(new BackError(
+                            keyPath.length > 0 ? ValidationBackErrors.valueRequired :
+                                ValidationBackErrors.inputRequired))
                     }
                     else {
                         errorBag.add(new BackError(MainBackErrors.invalidValidationCheckStructure,

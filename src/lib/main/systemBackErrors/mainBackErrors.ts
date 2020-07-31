@@ -4,11 +4,11 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-// noinspection TypeScriptPreferShortImport
+// noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ErrorType}        from "../definitions/errorType";
 import BackErrorConstruct from '../definitions/backErrorConstruct';
 
-export const MainBackErrors: Record<string, BackErrorConstruct> = {
+export const MainBackErrors = {
     unknownController: {
         name         : 'unknownController',
         description  : 'The controller is not found.',
@@ -17,29 +17,28 @@ export const MainBackErrors: Record<string, BackErrorConstruct> = {
         //INFO
         // identifier
         custom: false
-    },
+    } as BackErrorConstruct,
 
     unknownReceiver: {
         name         : 'unknownReceiver',
         description  : 'The receiver is not found.',
         type         : ErrorType.InputError,
         sendInfo     : true,
-        private      : true,
         //INFO
         // identifier
         custom: false
-    },
+    } as BackErrorConstruct,
 
     apiLevelIncompatible: {
         name         : 'apiLevelIncompatible',
-        description  : 'The API level of the client is incompatible with the request.',
+        description  : 'The API level of the client is incompatible.',
         type         : ErrorType.InputError,
         sendInfo     : true,
         //INFO
         // identifier
         // apiLevel
         custom: false
-    },
+    } as BackErrorConstruct,
 
     authControllerNotSet: {
         name         : 'authControllerNotSet',
@@ -47,28 +46,19 @@ export const MainBackErrors: Record<string, BackErrorConstruct> = {
         type         : ErrorType.InputError,
         sendInfo     : false,
         custom: false
-    },
+    } as BackErrorConstruct,
 
-    noAccessWithSystem : {
-        name         : 'noAccessWithSystem',
-        description  : 'No access with the current system to the controller.',
-        type         : ErrorType.NoAccessError,
+    accessDenied : {
+        name         : 'accessDenied',
+        description  : 'The access to the component was denied.',
+        type         : ErrorType.AccessError,
         sendInfo     : false,
         //INFO
-        // system
+        // reason
         custom: false
-    },
+    } as BackErrorConstruct,
 
-    noAccessWithVersion   : {
-        name         : 'noAccessWithVersion',
-        description  : 'No access with the current version to the controller.',
-        type         : ErrorType.NoAccessError,
-        sendInfo     : true,
-        //INFO
-        // version
-        custom: false
-    },
-
+    //Code errors
     serviceNotFound : {
         name         : 'serviceNotFound',
         description  : 'Service not found.',
@@ -79,203 +69,86 @@ export const MainBackErrors: Record<string, BackErrorConstruct> = {
         // serviceName (name of the service)
         // instanceName  (name of the instance)
         custom: false
-    },
-
-    inputIsIncompatible : {
-        name         : 'inputIsIncompatible',
-        description  : 'The input is incompatible with this operation.',
-        type         : ErrorType.CodeError,
-        sendInfo     : false,
-        private      : true,
-        custom: false
-    },
+    } as BackErrorConstruct,
 
     authenticationRequired : {
         name         : 'authenticationRequired',
         description  : 'Authentication is required.',
-        type         : ErrorType.SystemError,
+        type         : ErrorType.CodeError,
         sendInfo     : false,
         private      : true,
         //INFO
         // reason
         custom: false
-    },
+    } as BackErrorConstruct,
 
     undefinedUserId : {
         name         : 'undefinedUserId',
         description  : 'User id is undefined.',
-        type         : ErrorType.SystemError,
+        type         : ErrorType.CodeError,
         sendInfo     : false,
         private      : true,
         custom: false
-    },
+    } as BackErrorConstruct,
 
-    unknownChannel : {
-        name         : 'unknownChannel',
-        description  : 'Unknown channel',
-        type         : ErrorType.SystemError,
-        sendInfo     : false,
-        private      : true,
-        //INFO
-        // name
-        custom: false
-    },
-
-    componentNotFound : {
-        name         : 'componentNotFound',
-        description  : 'The Component is not found.',
-        type         : ErrorType.SystemError,
+    instanceNotFound : {
+        name         : 'instanceNotFound',
+        description  : 'The instance can not be found.',
+        type         : ErrorType.CodeError,
         sendInfo     : false,
         private      : true,
         //INFO
         // className
-        // componentType
         custom: false
-    },
+    } as BackErrorConstruct,
 
-    inputIsMissing   : {
-        name         : 'inputIsMissing',
-        description  : 'Input is missing.',
-        type         : ErrorType.InputError,
-        sendInfo     : true,
-        custom: false
-    },
-
-    inputParamIsMissing   : {
-        name         : 'inputParamIsMissing',
-        description  : 'Input param is missing.',
-        type         : ErrorType.InputError,
-        sendInfo     : true,
-        //INFO
-        // paramName (the name of the missing param)
-        custom: false
-    },
-
-    unknownInputParam: {
-        name         : 'unknownInputParam',
-        description  : 'Unknown input param was in the input.',
-        type         : ErrorType.InputError,
-        sendInfo     : true,
-        //INFO
-        // paramName (the unknown input param name)
-        custom: false
-    },
-
-    inputParamNotAssignable   : {
-        name         : 'inputParamNotAssignable',
-        description  : 'Input param is not assignable.',
-        type         : ErrorType.InputError,
-        sendInfo     : true,
-        //INFO
-        // index (index of the input param that is not assignable)
-        // value (input value of the input param that is not assignable)
-        custom: false
-    },
-
-    arrayWasExpected   : {
-        name         : 'arrayWasExpected',
-        description  : 'Array was expected.',
-        type         : ErrorType.InputError,
-        sendInfo     : true,
-        //INFO
-        // path (full path to the value where an array was expected)
-        // value (the input value that is not from type array)
-        custom: false
-    },
-
-    objectWasExpected   : {
-        name         : 'objectWasExpected',
-        description  : 'Object was expected.',
-        type         : ErrorType.InputError,
-        sendInfo     : true,
-        //INFO
-        // value (the input value that is not from type object)
-        // path (full path to the value where an object was expected)
-        custom: false
-    },
-
-    objectPropertyIsMissing : {
-        name         : 'objectPropertyIsMissing',
-        description  : 'Object property is missing (because its not optional).',
-        type         : ErrorType.InputError,
-        sendInfo     : true,
-        //INFO
-        // object (the input object where the property is missing)
-        // propertyName (name of missing property)
-        // path (the full input path to missing property)
-        custom: false
-    },
-
-    unknownObjectProperty: {
-        name         : 'unknownObjectProperty',
-        description  : 'Unknown object property was in an object input.',
-        type         : ErrorType.InputError,
-        sendInfo     : true,
-        //INFO
-        // propertyName (name of the unknown property)
-        // path (full input path to unknown property)
-        custom: false
-    },
-
-    inTokenSavedAuthUserGroupIsNotFound   : {
-        name         : 'inTokenSavedAuthUserGroupIsNotFound',
-        description  : 'The saved auth user group in the token is not found on the server config.',
+    tokenSavedAuthUserGroupNotFound : {
+        name         : 'tokenSavedAuthUserGroupNotFound',
+        description  : 'The saved auth user group in the token does not exists in the server config.',
         type         : ErrorType.TokenError,
-        private      : true,
         sendInfo     : false,
+        private      : true,
         //INFO
         // savedAuthUserGroup (the saved auth group in token)
         // authUserGroupsInZationConfig (auth groups in the zation config)
         custom: false
-    },
+    } as BackErrorConstruct,
 
     tokenWithoutAuthUserGroup : {
         name         : 'tokenWithoutAuthUserGroup',
-        description  : 'Token without auth user group.',
+        description  : 'Token without an auth user group.',
         type         : ErrorType.TokenError,
-        private      : true,
         sendInfo     : false,
+        private      : true,
         custom: false
-    },
+    } as BackErrorConstruct,
 
     tokenWithAuthUserGroupAndOnlyPanel : {
         name         : 'tokenWithAuthUserGroupAndOnlyPanel',
-        description  : 'Token with auth user group and only panel.',
+        description  : 'Token with an auth user group and only panel.',
         type         : ErrorType.TokenError,
-        private      : true,
         sendInfo     : false,
+        private      : true,
         custom: false
-    },
+    } as BackErrorConstruct,
 
     invalidPanelAuthData : {
         name         : 'invalidPanelAuthData',
         description  : 'Invalid panel auth data.',
-        type         : ErrorType.AuthError,
+        type         : ErrorType.AccessError,
         private      : false,
         sendInfo     : false,
         custom: false
-    },
+    } as BackErrorConstruct,
 
-    panelIsNotActivated : {
-        name         : 'panelIsNotActivated',
-        description  : 'Panel is not activated!',
+    panelDeactivated : {
+        name         : 'panelDeactivated',
+        description  : 'The panel is deactivated.',
         type         : ErrorType.InputError,
         private      : false,
         sendInfo     : false,
         custom: false
-    },
-
-    noAccessWithTokenState : {
-        name         : 'noAccessWithTokenState',
-        description  : 'You have no access with the token state, to this component.',
-        type         : ErrorType.NoAccessError,
-        sendInfo     : true,
-        //INFO
-        // authIn (show if you auth in system)
-        // authUserGroup (your auth type)
-        // userId (your user id)
-        custom: false
-    },
+    } as BackErrorConstruct,
 
     invalidRequest: {
         name         : 'invalidRequest',
@@ -284,26 +157,16 @@ export const MainBackErrors: Record<string, BackErrorConstruct> = {
         private      : false,
         sendInfo     : false,
         custom: false
-    },
+    } as BackErrorConstruct,
 
     invalidPackage: {
         name         : 'invalidPackage',
         description  : 'Invalid package.',
         type         : ErrorType.InputError,
-        private      : true,
+        private      : false,
         sendInfo     : false,
         custom: false
-    },
-
-    invalidInputTypeInParamBasedInput: {
-        name         : 'invalidInputTypeInParamBasedInput',
-        description  : 'Invalid input type in param based input. The type has to be an array or object.',
-        type         : ErrorType.InputError,
-        //INFO
-        // inputType
-        sendInfo     : true,
-        custom: false
-    },
+    } as BackErrorConstruct,
 
     JSONParseSyntaxError: {
         name         : 'JSONParseSyntaxError ',
@@ -312,18 +175,18 @@ export const MainBackErrors: Record<string, BackErrorConstruct> = {
         private      : false,
         sendInfo     : false,
         custom: false
-    },
+    } as BackErrorConstruct,
 
     invalidValidationCheckStructure: {
         name         : 'invalidValidationCheckStructure',
-        description  : 'Invalid validation check structure!',
+        description  : 'Invalid validation check structure.',
         type         : ErrorType.InputError,
         private      : false,
         sendInfo     : true,
         //INFO
         // checkIndex
         custom: false
-    },
+    } as BackErrorConstruct,
 
     pathNotResolvable: {
         name         : 'pathNotResolvable',
@@ -335,11 +198,11 @@ export const MainBackErrors: Record<string, BackErrorConstruct> = {
         // path
         // checkIndex
         custom: false
-    },
+    } as BackErrorConstruct,
 
     validationCheckLimitReached: {
         name         : 'validationCheckLimitReached',
-        description  : 'Validation check limit is reached!',
+        description  : 'Validation check limit is reached.',
         type         : ErrorType.InputError,
         private      : false,
         sendInfo     : true,
@@ -347,53 +210,15 @@ export const MainBackErrors: Record<string, BackErrorConstruct> = {
         // limit
         // checksCount
         custom: false
-    },
+    } as BackErrorConstruct,
 
     unknownError: {
         name         : 'unknownError',
-        description  : 'Look in info for more detail! To see run in debug!',
+        description  : 'If server runs in debug you can found more detail in the info.',
         type         : ErrorType.SystemError,
         sendInfo     : true,
         //INFO
-        // info (info from Exception only in Debug Mode!)
+        // info (the Exception only available when server runs in debug.)
         custom: false
-    },
-
-    unknownTokenVerifyError: {
-        name         : 'unknownTokenVerifyError',
-        description  : 'Look in info for more detail!',
-        type         : ErrorType.TokenError,
-        sendInfo     : false,
-        //INFO
-        custom: false
-    },
-
-    unknownTokenSignError: {
-        name         : 'unknownTokenSignError',
-        description  : 'Look in info for more detail!',
-        type         : ErrorType.TokenError,
-        sendInfo     : false,
-        //INFO
-        custom: false
-    },
-
-    tokenExpiredError: {
-        name         : 'tokenExpiredError',
-        description  : 'Jwt expired.',
-        type         : ErrorType.TokenError,
-        sendInfo     : true,
-        //INFO
-        // expiredAt
-        custom: false
-    },
-
-    jsonWebTokenError: {
-        name         : 'jsonWebTokenError',
-        description  : 'Json web token error.',
-        type         : ErrorType.TokenError,
-        sendInfo     : true,
-        //INFO
-        // message
-        custom: false
-    }
+    } as BackErrorConstruct,
 };

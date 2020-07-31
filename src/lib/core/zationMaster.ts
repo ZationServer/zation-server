@@ -25,7 +25,6 @@ import {processRawStartMode, StartMode, startModeSymbol} from './startMode';
 import ConfigBuildError                 from '../main/config/manager/configBuildError';
 import ConfigLoader                     from '../main/config/manager/configLoader';
 import BagExtensionConflictChecker      from '../main/bagExtension/bagExtensionConflictChecker';
-import {ProcessType, processTypeSymbol} from '../main/definitions/processType';
 // noinspection ES6PreferShortImport
 import {Events}                                    from '../main/config/definitions/parts/events';
 import StartDebugStopwatch                         from '../main/utils/startDebugStopwatch';
@@ -33,11 +32,13 @@ import {getMoment}                                 from '../main/utils/timeUtils
 import {MasterMessageAction, MasterMessagePackage} from '../main/definitions/masterMessage';
 // noinspection ES6PreferShortImport
 import {ConsoleColor}                              from '../main/log/logCategories';
+import Process, {ProcessType}                      from '../api/Process';
+import {Writeable}                                 from '../main/utils/typeUtils';
 const IP: any                                      = require('ip');
 
 const  SocketCluster: any = require('socketcluster');
 
-global[processTypeSymbol] = ProcessType.Master;
+(Process as Writeable<typeof Process>).type = ProcessType.Master;
 
 export default class ZationMaster {
     private static instance: ZationMaster | null = null;

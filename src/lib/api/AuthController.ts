@@ -19,4 +19,4 @@ import Controller from './Controller';
  * controller because it is much easier to use and provides the
  * functionality to keep the data up to date in real time.
  */
-export default class AuthController extends Controller {}
+export default class AuthController<PA extends object = any> extends Controller<PA> {}

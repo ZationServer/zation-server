@@ -8,10 +8,9 @@ Copyright(c) Luca Scaringella
 import {ReceiverConfig}   from '../main/config/definitions/parts/receiverConfig';
 import Bag                from "./Bag";
 import BackErrorBag       from "./BackErrorBag";
-import ConfigBuildError   from '../main/config/manager/configBuildError';
 import Socket             from './Socket';
 import Packet             from './Packet';
-import Component, {ComponentClass}        from './component/Component';
+import Component          from './component/Component';
 import {VersionSystemAccessCheckFunction} from '../main/systemVersion/systemVersionChecker';
 import {TokenStateAccessCheckFunction}    from '../main/controller/controllerAccessHelper';
 import {InputConsumeFunction}             from '../main/input/inputClosureCreator';
@@ -86,13 +85,8 @@ export default class Receiver<PA extends object = any> extends Component {
      * @Controller.Config({});
      */
     public static Config(receiverConfig: ReceiverConfig) {
-        return (target: ComponentClass) => {
-            if(target.prototype instanceof Receiver) {
-                (target as any)[nameof<ReceiverClass>(s => s.config)] = receiverConfig;
-            }
-            else {
-                throw new ConfigBuildError(`The ReceiverConfig decorator can only be used on a class that extends the Receiver class.`);
-            }
+        return (target: typeof Receiver) => {
+            (target as any)[nameof<ReceiverClass>(s => s.config)] = receiverConfig;
         }
     }
 }

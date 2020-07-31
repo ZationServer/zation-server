@@ -13,11 +13,12 @@ import Logger                 from "../main/log/logger";
 import ZationConfigFull       from "../main/config/manager/zationConfigFull";
 const SCBroker              = require('socketcluster/scbroker');
 const scClusterBrokerClient = require('scc-broker-client');
-import {ProcessType, processTypeSymbol} from '../main/definitions/processType';
 import {startModeSymbol}                from './startMode';
 import StartDebugStopwatch              from '../main/utils/startDebugStopwatch';
+import {Writeable}                      from '../main/utils/typeUtils';
+import Process, {ProcessType}           from '../api/Process';
 
-global[processTypeSymbol] = ProcessType.Broker;
+(Process as Writeable<typeof Process>).type = ProcessType.Broker;
 
 class ZationBroker extends SCBroker
 {

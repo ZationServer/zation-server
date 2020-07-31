@@ -6,11 +6,9 @@ Copyright(c) Luca Scaringella
 
 import {
     AnyOfModel,
-    InputConfig,
-    ParamInput,
     ObjectModel,
     ValueModel,
-    SingleModelInput, ImplicitModel, Model
+    ImplicitModel, Model, AnyModelTranslatable, Input
 } from '../definitions/parts/inputConfig';
 import ObjectUtils        from "../../utils/objectUtils";
 import Iterator           from "../../utils/iterator";
@@ -22,13 +20,11 @@ import {ControllerConfig}                                     from "../definitio
 import {ControllerClass}                                      from "../../../api/Controller";
 // noinspection ES6PreferShortImport
 import {DataboxConfig}                                        from "../definitions/parts/databoxConfig";
-import DbConfigUtils                                          from "../../databox/dbConfigUtils";
 import {PrecompiledEvents, Events}                            from '../definitions/parts/events';
 import FuncUtils                                              from '../../utils/funcUtils';
 import {PrecompiledMiddleware}                                from '../definitions/parts/middleware';
 import {modelPrototypeSymbol}                                 from '../../definitions/model';
-import {inputConfigTranslateSymbol, isInputConfigTranslatable}                                 from '../../../api/configTranslatable/inputConfigTranslatable';
-import {isModelTranslatable, modelTranslateSymbol, resolveIfModelTranslatable}                 from '../../../api/configTranslatable/modelTranslatable';
+import {resolveIfModelTranslatable}                           from '../../../api/configTranslatable/modelTranslatable';
 import {AnyFunction}                                                                           from '../../utils/typeUtils';
 import {setValueReplacer}                                                                      from '../../utils/valueReplacer';
 import {AnyDataboxClass}                                                                       from '../../../api/databox/AnyDataboxClass';
@@ -40,8 +36,8 @@ import {systemChannels}                                                         
 import {ReceiverConfig}                                                                        from '../definitions/parts/receiverConfig';
 import {systemReceivers}                                                                       from '../../receiver/systemReceivers/systemReceivers.config';
 import {ReceiverClass}                                                                         from '../../../api/Receiver';
-import {isMetaModel, unwrapIfMetaModel}                                                        from '../../models/metaModel';
-import {ExplicitModel, isExplicitModel}                                                        from '../../models/explicitModel';
+import {getModelMetaData, isMetaModel, unwrapIfMetaModel}                                      from '../../models/metaModel';
+import {ExplicitModel}                                                                         from '../../models/explicitModel';
 
 export interface ModelPreparationMem extends Processable{
     _optionalInfo: {optional: boolean,defaultValue: any};
@@ -49,10 +45,11 @@ export interface ModelPreparationMem extends Processable{
      * Pre compiled
      */
     _pc: boolean;
-    /**
-     * Resolved model translatable
-     */
-    _rmt: boolean;
+}
+
+export interface OptionalInfo {
+    optional: boolean,
+    defaultValue: any
 }
 
 export default class ConfigPrecompiler
@@ -178,8 +175,9 @@ export default class ConfigPrecompiler
         const directModel = unwrapIfMetaModel(model);
         if(typeof directModel !== "object") return;
 
+        const optionalInfo = this.processOptionalInfo(model,directModel);
         Object.defineProperty(model,nameof<ModelPreparationMem>(s => s._optionalInfo),{
-            value: this.processOptionalInfo(model,directModel),
+            value: optionalInfo,
             enumerable: false,
             writable: false,
             configurable: false
@@ -190,7 +188,8 @@ export default class ConfigPrecompiler
 
             if(!model.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
                 Object.defineProperty(model,nameof<ModelPreparationMem>(s => s._process),{
-                    value: InputProcessorCreator.createArrayModelProcessor(directModel),
+                    value: InputProcessorCreator.createArrayModelProcessor(directModel,
+                        getModelMetaData(model)),
                     enumerable: false,
                     writable: false,
                     configurable: false
@@ -272,7 +271,8 @@ export default class ConfigPrecompiler
 
                 if(!model.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
                     Object.defineProperty(model,nameof<ModelPreparationMem>(s => s._process),{
-                        value: InputProcessorCreator.createObjectModelProcessor(directModel as ObjectModel),
+                        value: InputProcessorCreator.createObjectModelProcessor(directModel as ObjectModel,
+                            getModelMetaData(model)),
                         enumerable: false,
                         writable: false,
                         configurable: false
@@ -286,7 +286,8 @@ export default class ConfigPrecompiler
 
                 if(!model.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
                     Object.defineProperty(model,nameof<ModelPreparationMem>(s => s._process),{
-                        value: InputProcessorCreator.createAnyOfModelProcessor(directModel as AnyOfModel),
+                        value: InputProcessorCreator.createAnyOfModelProcessor(directModel as AnyOfModel,
+                            getModelMetaData(model)),
                         enumerable: false,
                         writable: false,
                         configurable: false
@@ -298,7 +299,8 @@ export default class ConfigPrecompiler
 
                 if(!model.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
                     Object.defineProperty(model,nameof<ModelPreparationMem>(s => s._process),{
-                        value: InputProcessorCreator.createValueModelProcessor(directModel as ValueModel),
+                        value: InputProcessorCreator.createValueModelProcessor(directModel as ValueModel,
+                            getModelMetaData(model)),
                         enumerable: false,
                         writable: false,
                         configurable: false
@@ -322,7 +324,7 @@ export default class ConfigPrecompiler
         }
     }
 
-    private processOptionalInfo(model: Model, directModel: ImplicitModel | ExplicitModel): {optional: boolean,defaultValue: any} {
+    private processOptionalInfo(model: Model, directModel: ImplicitModel | ExplicitModel): OptionalInfo {
         //fallback
         let optional = false;
         let defaultValue = undefined;
@@ -333,8 +335,8 @@ export default class ConfigPrecompiler
         }
         else if(directModel.hasOwnProperty(nameof<AnyOfModel>(s => s.anyOf))) {
             Iterator.iterateSync((_, value) => {
-                if(isMetaModel(value)){
-                    optional = value.optional === true;
+                if(isMetaModel(value) && value.optional){
+                    optional = true;
                     defaultValue = value.default;
                     //break;
                     return true;
@@ -345,45 +347,33 @@ export default class ConfigPrecompiler
     }
 
     /**
-     * @param obj
-     * @param key
+     * @param model
      */
-    private resolveTranslatableModels(obj: object,key: string | number | symbol): void
-    {
-        const model = resolveIfModelTranslatable(obj[key]);
-        obj[key] = model;
-
-        if(model && (model as unknown as ModelPreparationMem)._rmt){return;}
-        Object.defineProperty(model,nameof<ModelPreparationMem>(s => s._rmt),{
-            value: true,
-            enumerable: false,
-            writable: false,
-            configurable: false
-        });
-
+    private resolveTranslatableModels(model: Model | AnyModelTranslatable): Model {
+        model = resolveIfModelTranslatable(model);
         const directModel = unwrapIfMetaModel(model);
-        if(typeof directModel !== 'object') return;
-        if(Array.isArray(directModel)) {
-           this.resolveTranslatableModels(directModel,0);
-        }
+
+        if(typeof directModel !== 'object') return model as any;
+        if(Array.isArray(directModel)) directModel[0] = this.resolveTranslatableModels(directModel[0]);
         else {
             if(directModel.hasOwnProperty(nameof<ObjectModel>(s => s.properties))) {
                 const properties = (directModel as ObjectModel).properties;
                 for(const propName in properties) {
                     if (properties.hasOwnProperty(propName)) {
-                        this.resolveTranslatableModels(properties,propName);
+                        properties[propName] = this.resolveTranslatableModels(properties[propName]);
                     }
                 }
             }
             else if(directModel.hasOwnProperty(nameof<AnyOfModel>(s => s.anyOf))) {
                 Iterator.iterateSync((key,value,src) => {
-                    this.resolveTranslatableModels(src,key);
+                    src[key] = this.resolveTranslatableModels(src[key]);
                 },directModel[nameof<AnyOfModel>(s => s.anyOf)]);
             }
             if(directModel[modelPrototypeSymbol]) {
-                this.resolveTranslatableModels(directModel,modelPrototypeSymbol);
+                directModel[modelPrototypeSymbol] = this.resolveTranslatableModels(directModel[modelPrototypeSymbol]);
             }
         }
+        return model as Model;
     }
 
     private precompileChannels(): void {
@@ -414,7 +404,7 @@ export default class ConfigPrecompiler
                     const config: ControllerConfig = controllerClass.config || {};
                     //set the defaults
                     ObjectUtils.mergeTwoObjects(config,this.controllerDefaults,false);
-                    this.precompileInputConfig(config);
+                    config.input = this.precompileInput(config.input);
 
                     (controllerClass as any)[nameof<ControllerClass>(s => s.config)] = config;
                 });
@@ -433,7 +423,7 @@ export default class ConfigPrecompiler
                     const config: ReceiverConfig = receiverClass.config || {};
                     //set the defaults
                     ObjectUtils.mergeTwoObjects(config,this.receiverDefaults,false);
-                    this.precompileInputConfig(config);
+                    config.input = this.precompileInput(config.input);
 
                     (receiverClass as any)[nameof<ReceiverClass>(s => s.config)] = config;
                 });
@@ -452,8 +442,8 @@ export default class ConfigPrecompiler
                     const config: DataboxConfig = databoxClass.config || {}
                     //set the defaults
                     ObjectUtils.mergeTwoObjects(config,this.databoxDefaults,false);
-                    this.precompileInputConfig(DbConfigUtils.convertDbInitInput(config));
-                    this.precompileInputConfig(DbConfigUtils.convertDbFetchInput(config));
+                    config.initInput = this.precompileInput(config.initInput);
+                    config.fetchInput = this.precompileInput(config.fetchInput);
 
                     (databoxClass as any)[nameof<AnyDataboxClass>(s => s.config)] = config;
                 });
@@ -461,57 +451,12 @@ export default class ConfigPrecompiler
         }
     }
 
-    private precompileInputConfig(inputConfig: InputConfig): void {
-        if(inputConfig.input) {
-            let input: object = inputConfig.input;
-            if(isInputConfigTranslatable(input)){
-                input = input[inputConfigTranslateSymbol]();
-            }
-            else if(isModelTranslatable(input)){
-                input = input[modelTranslateSymbol]();
-            }
-            if(isMetaModel(input) || isExplicitModel(input)){
-                input = [input];
-            }
-            inputConfig.input = input as any;
-
-            if(Array.isArray(input)) {
-                this.precompileSingleInput(input as unknown as SingleModelInput);
-            }
-            else {
-                this.precompileParamInput(input as ParamInput);
-            }
+    private precompileInput(input?: Input): any {
+        if(typeof input === 'object' || typeof input === 'function') {
+            input = this.resolveTranslatableModels(input);
+            this.modelPrecompile(input);
         }
-    }
-
-    private precompileParamInput(paramInput: ParamInput): void {
-        for(const inputName in paramInput) {
-            if(paramInput.hasOwnProperty(inputName)) {
-                this.resolveTranslatableModels(paramInput,inputName);
-                this.modelPrecompile(paramInput[inputName]);
-            }
-        }
-        if(!paramInput.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
-            Object.defineProperty(paramInput,nameof<ModelPreparationMem>(s => s._process),{
-                value: InputProcessorCreator.createParamInputProcessor(paramInput),
-                enumerable: false,
-                writable: false,
-                configurable: false
-            });
-        }
-    }
-
-    private precompileSingleInput(singleModelInput: SingleModelInput): void {
-        this.resolveTranslatableModels(singleModelInput,'0');
-        this.modelPrecompile(singleModelInput[0]);
-        if(!singleModelInput.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
-            Object.defineProperty(singleModelInput,nameof<ModelPreparationMem>(s => s._process),{
-                value: InputProcessorCreator.createSingleInputProcessor(singleModelInput),
-                enumerable: false,
-                writable: false,
-                configurable: false
-            });
-        }
+        return input;
     }
 
 }

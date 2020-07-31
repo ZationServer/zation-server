@@ -8,8 +8,7 @@ Copyright(c) Luca Scaringella
 import {ControllerConfig} from "../main/config/definitions/parts/controllerConfig";
 import Bag                from "./Bag";
 import BackErrorBag       from "./BackErrorBag";
-import ConfigBuildError   from '../main/config/manager/configBuildError';
-import Component, {ComponentClass}        from './component/Component';
+import Component          from './component/Component';
 import {VersionSystemAccessCheckFunction} from '../main/systemVersion/systemVersionChecker';
 import {TokenStateAccessCheckFunction}    from '../main/controller/controllerAccessHelper';
 import {InputConsumeFunction, InputValidationCheckFunction} from '../main/input/inputClosureCreator';
@@ -98,13 +97,8 @@ export default class Controller<PA extends object = any> extends Component {
      * @Controller.Config({});
      */
     public static Config(controllerConfig: ControllerConfig) {
-        return (target: ComponentClass) => {
-            if(target.prototype instanceof Controller) {
-                (target as any)[nameof<ControllerClass>(s => s.config)] = controllerConfig;
-            }
-            else {
-                throw new ConfigBuildError(`The ControllerConfig decorator can only be used on a class that extends the Controller class.`);
-            }
+        return (target: typeof Controller) => {
+            (target as any)[nameof<ControllerClass>(s => s.config)] = controllerConfig;
         }
     }
 }

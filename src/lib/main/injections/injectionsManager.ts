@@ -11,6 +11,7 @@ import {componentSymbol} from '../component/componentUtils';
 import {singletonSymbol} from '../../api/Singleton';
 // noinspection ES6PreferShortImport
 import {bag}             from '../../api/Bag';
+import Process, {ProcessType} from '../../api/Process';
 
 export default class InjectionsManager {
 
@@ -25,6 +26,7 @@ export default class InjectionsManager {
     addInjection(target: any,propKey: string,inject: AnyDataboxClass[] | AnyChannelClass[] | AnyClass[]
         | [(() => any | Promise<any>)])
     {
+        if(Process.type !== ProcessType.Worker) return;
         if(inject.length > 0){
             let valueGetter: () => Promise<any> | any;
 

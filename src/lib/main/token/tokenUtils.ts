@@ -35,20 +35,8 @@ export default class TokenUtils
         return new Promise((resolve, reject) =>
         {
             (Jwt.verify as JwtVerifyFunction)(signedToken,zc.getVerifyKey(),jwtOptions,(err, decoded) => {
-                if(err) {
-                    if(err.name === 'TokenExpiredError') {
-                        reject(new BackError(MainBackErrors.tokenExpiredError,{expiredAt: err.expiredAt}));
-                    }
-                    else if(err.name === 'JsonWebTokenError') {
-                        reject(new BackError(MainBackErrors.jsonWebTokenError,err));
-                    }
-                    else {
-                        reject(new BackError(MainBackErrors.unknownTokenVerifyError,{err: err.toString()}));
-                    }
-                }
-                else {
-                    resolve(decoded);
-                }
+                if (err) reject(err);
+                else resolve(decoded);
             });
         });
     }
@@ -67,12 +55,8 @@ export default class TokenUtils
             ObjectUtils.mergeTwoObjects(options,jwtOptions);
 
             (Jwt.sign as JwtSignFunction)(data,zc.getSignKey(),options,(err,signedToken) => {
-                if(err) {
-                    reject(new BackError(MainBackErrors.unknownTokenSignError,{err: err.toString()}));
-                }
-                else {
-                    resolve(signedToken);
-                }
+                if (err) reject(err);
+                else resolve(signedToken);
             });
         });
     }
@@ -91,7 +75,7 @@ export default class TokenUtils
                     throw new BackError(MainBackErrors.tokenWithAuthUserGroupAndOnlyPanel);
                 }
                 if (!ae.isValidAuthUserGroup(authUserGroup)) {
-                    throw new BackError(MainBackErrors.inTokenSavedAuthUserGroupIsNotFound,
+                    throw new BackError(MainBackErrors.tokenSavedAuthUserGroupNotFound,
                         {
                             savedAuthUserGroup: authUserGroup,
                             authUserGroupsInZationConfig: ae.getAuthUserGroups()

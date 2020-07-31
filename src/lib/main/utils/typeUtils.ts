@@ -22,3 +22,5 @@ export interface AnyClass {
 }
 
 export type Prototype<T> = T extends AnyClass ? T['prototype'] : never;
+
+export type Writeable<T> = { -readonly [P in keyof T]: T[P] };

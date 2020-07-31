@@ -108,11 +108,11 @@ export default class ControllerReqHandler
                 } = cInstance._preparedData;
 
                 if(!systemAccessCheck(socket)){
-                    throw new BackError(MainBackErrors.noAccessWithSystem,{system: socket.clientSystem});
+                    throw new BackError(MainBackErrors.accessDenied,{reason: 'system'});
                 }
 
                 if(!versionAccessCheck(socket)){
-                    throw new BackError(MainBackErrors.noAccessWithVersion,{version: socket.clientVersion});
+                    throw new BackError(MainBackErrors.accessDenied,{reason: 'version'});
                 }
 
                 //check access to controller
@@ -167,14 +167,7 @@ export default class ControllerReqHandler
 
                     return result;
                 }
-                else {
-                    throw new BackError(MainBackErrors.noAccessWithTokenState,
-                        {
-                            authUserGroup: socket.authUserGroup,
-                            authIn: socket.isAuthenticated(),
-                            userId: socket.userId
-                        });
-                }
+                else throw new BackError(MainBackErrors.accessDenied, {reason: 'tokenState'});
             }
         }
         else {

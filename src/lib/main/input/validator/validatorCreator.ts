@@ -5,14 +5,14 @@ Copyright(c) Luca Scaringella
  */
 
 // noinspection TypeScriptPreferShortImport
-import {ValidationTypeRecord}                              from '../definitions/validationType';
-import {ArraySettings, ValidateFunction, ValueModel}       from "../config/definitions/parts/inputConfig";
+import {ValidationTypeRecord}                              from '../../definitions/validationType';
+import {ArraySettings, ValidateFunction, ValueModel}       from "../../config/definitions/parts/inputConfig";
 // noinspection TypeScriptPreferShortImport
-import BackErrorBag          from "../../api/BackErrorBag";
-import BackError             from "../../api/BackError";
+import BackErrorBag          from "../../../api/BackErrorBag";
+import BackError             from "../../../api/BackError";
 import {FunctionValidator, ValidatorLibrary} from './validatorLibrary';
-import FuncUtils             from "../utils/funcUtils";
-import {ValidatorBackErrors} from "../systemBackErrors/validatorBackErrors";
+import FuncUtils             from "../../utils/funcUtils";
+import {ValidationBackErrors} from "../../systemBackErrors/validationBackErrors";
 
 const ValidatorFunctions   = ValidatorLibrary.Functions;
 const ValidatorTypes       = ValidatorLibrary.Types;
@@ -78,7 +78,7 @@ export default class ValidatorCreator
                     for(let i = 0; i < typeLength; i++) {
                         if(preparedTypeValidator[i](input)) return type[i];
                     }
-                    errorBag.add(new BackError(ValidatorBackErrors.valueNotMatchesWithType,
+                    errorBag.add(new BackError(ValidationBackErrors.valueNotMatchesWithType,
                         {
                             path: preparedErrorData.path,
                             value: preparedErrorData.value,
@@ -90,7 +90,7 @@ export default class ValidatorCreator
                 const typeValidate = ValidatorTypes[type](strictType);
                 return (input, errorBag, preparedErrorData) => {
                     if(typeValidate(input)) return type;
-                    errorBag.add(new BackError(ValidatorBackErrors.valueNotMatchesWithType,
+                    errorBag.add(new BackError(ValidationBackErrors.valueNotMatchesWithType,
                         {
                             path: preparedErrorData.path,
                             value: preparedErrorData.value,
@@ -117,7 +117,7 @@ export default class ValidatorCreator
             const length = arrayConfig.length;
             checks.push((input,errorBag,currentPath) =>  {
                 if(input.length !== length) {
-                    errorBag.add(new BackError(ValidatorBackErrors.arrayNotMatchesWithLength,
+                    errorBag.add(new BackError(ValidationBackErrors.arrayNotMatchesWithLength,
                         {
                             value: input,
                             path: currentPath,
@@ -131,7 +131,7 @@ export default class ValidatorCreator
             const minLength = arrayConfig.minLength;
             checks.push((input,errorBag,currentPath) => {
                 if(input.length < minLength) {
-                    errorBag.add(new BackError(ValidatorBackErrors.arrayNotMatchesWithMinLength,
+                    errorBag.add(new BackError(ValidationBackErrors.arrayNotMatchesWithMinLength,
                         {
                             value: input,
                             path: currentPath,
@@ -145,7 +145,7 @@ export default class ValidatorCreator
             const maxLength = arrayConfig.maxLength;
             checks.push((input,errorBag,currentPath) => {
                 if(input.length > maxLength) {
-                    errorBag.add(new BackError(ValidatorBackErrors.arrayNotMatchesWithMaxLength,
+                    errorBag.add(new BackError(ValidationBackErrors.arrayNotMatchesWithMaxLength,
                         {
                             value: input,
                             path: currentPath,

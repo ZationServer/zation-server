@@ -73,7 +73,7 @@ export default class ReceiverPrepare extends ComponentPrepare<Receiver>
             systemAccessCheck: SystemVersionChecker.createSystemChecker(config),
             tokenStateCheck: ReceiverAccessHelper.createAuthAccessChecker(config.access,identifier),
             handleMiddlewareInvoke: CompHandleMiddlewareUtils.createInvoker(config),
-            inputConsume: InputClosureCreator.createInputConsumer(config)
+            inputConsume: InputClosureCreator.createInputConsumer(config.input)
         };
 
         const rInstance: Receiver = DynamicSingleton.create<ReceiverClass,Receiver>

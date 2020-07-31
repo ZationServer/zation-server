@@ -17,7 +17,6 @@ import DataboxFamily                                            from "../../api/
 import Databox                                                  from "../../api/databox/Databox";
 import InputClosureCreator                                      from "../input/inputClosureCreator";
 import DataboxAccessHelper                                      from "./databoxAccessHelper";
-import DbConfigUtils                                            from "./dbConfigUtils";
 import {AnyDataboxClass}                                        from '../../api/databox/AnyDataboxClass';
 import ComponentPrepare                                         from '../component/componentPrepare';
 import DynamicSingleton                                         from '../utils/dynamicSingleton';
@@ -76,8 +75,8 @@ export default class DataboxPrepare extends ComponentPrepare<DataboxCore>
             versionAccessCheck: SystemVersionChecker.createVersionChecker(config),
             systemAccessCheck: SystemVersionChecker.createSystemChecker(config),
             accessCheck: DataboxAccessHelper.createAccessChecker(config.access,identifier),
-            initInputConsumer: InputClosureCreator.createInputConsumer(DbConfigUtils.convertDbInitInput(config)),
-            fetchInputConsumer: InputClosureCreator.createInputConsumer(DbConfigUtils.convertDbFetchInput(config)),
+            initInputConsumer: InputClosureCreator.createInputConsumer(config.initInput),
+            fetchInputConsumer: InputClosureCreator.createInputConsumer(config.fetchInput),
             parallelFetch: config.parallelFetch !== undefined ? config.parallelFetch: false,
             maxBackpressure: config.maxBackpressure !== undefined ? config.maxBackpressure: 30,
             maxSocketInputChannels: config.maxSocketInputChannels !== undefined ?

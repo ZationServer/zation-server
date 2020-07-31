@@ -89,8 +89,8 @@ export default class ControllerPrepare extends ComponentPrepare<Controller>
             systemAccessCheck: SystemVersionChecker.createSystemChecker(config),
             tokenStateCheck: ControllerAccessHelper.createAuthAccessChecker(config.access,identifier),
             handleMiddlewareInvoke: CompHandleMiddlewareUtils.createInvoker(config),
-            inputConsume: InputClosureCreator.createInputConsumer(config),
-            inputValidationCheck: InputClosureCreator.createValidationChecker(config)
+            inputConsume: InputClosureCreator.createInputConsumer(config.input),
+            inputValidationCheck: InputClosureCreator.createValidationChecker(config.input)
         };
 
         const cInstance: Controller = DynamicSingleton.create<ControllerClass,Controller>

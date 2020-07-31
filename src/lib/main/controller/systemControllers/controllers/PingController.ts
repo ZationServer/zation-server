@@ -14,7 +14,7 @@ export default class PingController extends Controller
     static config: ControllerConfig = {
         access: 'all',
         versionAccess: 'all',
-        input: {}
+        input: 'nothing'
     };
 
     async handle() {

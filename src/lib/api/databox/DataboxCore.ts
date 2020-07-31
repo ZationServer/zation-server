@@ -18,8 +18,7 @@ import {InputConsumeFunction}             from "../../main/input/inputClosureCre
 import ErrorUtils                         from "../../main/utils/errorUtils";
 import {DbAccessCheckFunction}            from "../../main/databox/databoxAccessHelper";
 import NoDataAvailableError               from "../../main/databox/noDataAvailable";
-import ConfigBuildError                   from "../../main/config/manager/configBuildError";
-import Component, {ComponentClass}        from '../component/Component';
+import Component                          from '../component/Component';
 import {AnyDataboxClass}                  from './AnyDataboxClass';
 import {componentTypeSymbol}              from '../../main/component/componentUtils';
 import Socket                             from '../Socket';
@@ -293,13 +292,8 @@ export default abstract class DataboxCore extends Component {
      * @Databox.Config({});
      */
     public static Config(databoxConfig: DataboxConfig) {
-        return (target: ComponentClass) => {
-            if(target.prototype instanceof DataboxCore) {
-                (target as any)[nameof<AnyDataboxClass>(s => s.config)] = databoxConfig;
-            }
-            else {
-                throw new ConfigBuildError(`The DataboxConfig decorator can only be used on a class that extends the DataboxCore (Databox or DataboxFamily class).`);
-            }
+        return (target: typeof DataboxCore) => {
+            (target as any)[nameof<AnyDataboxClass>(s => s.config)] = databoxConfig;
         }
     }
 }

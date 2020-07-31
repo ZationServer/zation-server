@@ -5,14 +5,14 @@ Copyright(c) Luca Scaringella
  */
 
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
-import {ValidationType}   from "../definitions/validationType";
-import {FormatLetters}    from "../definitions/validation";
-import {ValidatorBackErrors} from "../systemBackErrors/validatorBackErrors";
-import Base64Utils           from "../utils/base64Utils";
-import ByteUtils             from "../utils/byteUtils";
-import BackErrorBag          from "../../api/BackErrorBag";
+import {ValidationType}   from "../../definitions/validationType";
+import {FormatLetters}    from "../../definitions/validation";
+import {ValidationBackErrors} from "../../systemBackErrors/validationBackErrors";
+import Base64Utils           from "../../utils/base64Utils";
+import ByteUtils             from "../../utils/byteUtils";
+import BackErrorBag          from "../../../api/BackErrorBag";
 import {PreparedErrorData}   from "./validatorCreator";
-import {ValidationFunctions} from '../config/definitions/parts/validationFunctions';
+import {ValidationFunctions} from '../../config/definitions/parts/validationFunctions';
 import {ValidatorUtils}      from './validatorUtils';
 
 export type TypeValidator = (input: any) => boolean;
@@ -94,7 +94,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
             return (input, backErrorBag, prepareErrorData) => {
                 for(let i = 0; i < regexesLength; i++){
                     if(!regexes[i].test(input)) {
-                        backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithRegex,
+                        backErrorBag.addNewBackError(ValidationBackErrors.valueNotMatchesWithRegex,
                             {
                                 ...prepareErrorData,
                                 regexName: names[i],
@@ -108,7 +108,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
             const regex = typeof settings === 'string' ? new RegExp(settings) : settings;
             return (input, backErrorBag, prepareErrorData) => {
                 if(!regex.test(input)) {
-                    backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithRegex,
+                    backErrorBag.addNewBackError(ValidationBackErrors.valueNotMatchesWithRegex,
                         {
                             ...prepareErrorData,
                             regex: regex.toString()
@@ -122,7 +122,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
         const inChecker = ValidatorUtils.createInChecker(settings);
         return (input, backErrorBag, prepareErrorData) => {
             if(!inChecker(input)){
-                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithIn,
+                backErrorBag.addNewBackError(ValidationBackErrors.valueNotMatchesWithIn,
                     {
                         ...prepareErrorData,
                         values: settings
@@ -135,7 +135,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
         const inChecker = ValidatorUtils.createInChecker(settings);
         return (input, backErrorBag, prepareErrorData) => {
             if(!inChecker(input)){
-                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithPrivateIn,prepareErrorData);
+                backErrorBag.addNewBackError(ValidationBackErrors.valueNotMatchesWithPrivateIn,prepareErrorData);
             }
         }
     },
@@ -143,7 +143,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
     minLength: (settings) => {
         return (input, backErrorBag, prepareErrorData) => {
             if(typeof input === 'string' && input.length < settings) {
-                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMinLength,
+                backErrorBag.addNewBackError(ValidationBackErrors.valueNotMatchesWithMinLength,
                     {
                         ...prepareErrorData,
                         minLength: settings
@@ -155,7 +155,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
     maxLength: (settings) => {
         return (input, backErrorBag, prepareErrorData) => {
             if(typeof input === 'string' && input.length > settings) {
-                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMaxLength,
+                backErrorBag.addNewBackError(ValidationBackErrors.valueNotMatchesWithMaxLength,
                     {
                         ...prepareErrorData,
                         maxLength: settings
@@ -168,7 +168,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
     length: (settings) => {
         return (input, backErrorBag, prepareErrorData) => {
             if(typeof input === 'string' && input.length !== settings) {
-                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithLength,
+                backErrorBag.addNewBackError(ValidationBackErrors.valueNotMatchesWithLength,
                     {
                         ...prepareErrorData,
                         length: settings
@@ -183,7 +183,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
         return (input, backErrorBag, prepareErrorData) => {
             if(typeof input === 'string') {
                 if(!containsChecker(input)){
-                    backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithContains,
+                    backErrorBag.addNewBackError(ValidationBackErrors.valueNotMatchesWithContains,
                         {
                             ...prepareErrorData,
                             shouldContain: settings
@@ -196,7 +196,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
     equals: (settings) => {
         return (input, backErrorBag, prepareErrorData) => {
             if(input !== settings){
-                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithEquals,
+                backErrorBag.addNewBackError(ValidationBackErrors.valueNotMatchesWithEquals,
                     {
                         ...prepareErrorData,
                         shouldEquals: settings
@@ -208,7 +208,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
     minValue: (settings) => {
         return (input, backErrorBag, prepareErrorData) => {
             if(typeof input === 'number' && input < settings) {
-                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMinValue,
+                backErrorBag.addNewBackError(ValidationBackErrors.valueNotMatchesWithMinValue,
                     {
                         ...prepareErrorData,
                         minValue: settings
@@ -220,7 +220,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
     maxValue: (settings) => {
         return (input, backErrorBag, prepareErrorData) => {
             if(typeof input === 'number' && input > settings) {
-                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMaxValue,
+                backErrorBag.addNewBackError(ValidationBackErrors.valueNotMatchesWithMaxValue,
                     {
                         ...prepareErrorData,
                         maxValue: settings
@@ -232,7 +232,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
     startsWith: (settings) => {
         return (input, backErrorBag, prepareErrorData) => {
             if(typeof input === 'string' && !input.startsWith(settings)) {
-                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithStartsWith,
+                backErrorBag.addNewBackError(ValidationBackErrors.valueNotMatchesWithStartsWith,
                     {
                         ...prepareErrorData,
                         shouldStartWith: settings
@@ -244,7 +244,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
     endsWith: (settings) => {
         return (input, backErrorBag, prepareErrorData) => {
             if(typeof input === 'string' && !input.endsWith(settings)) {
-                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithEndsWith,
+                backErrorBag.addNewBackError(ValidationBackErrors.valueNotMatchesWithEndsWith,
                     {
                         ...prepareErrorData,
                         shouldEndWith: settings
@@ -259,7 +259,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
         return (input, backErrorBag, prepareErrorData) => {
             if(typeof input === 'string'){
                 if(input !== testFormat(input)) {
-                    backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithLettersFormat,{
+                    backErrorBag.addNewBackError(ValidationBackErrors.valueNotMatchesWithLettersFormat,{
                         ...prepareErrorData,
                         format: settings
                     });
@@ -273,7 +273,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
         return (input, backErrorBag, prepareErrorData) => {
             if(typeof input === 'string') {
                 if(!regex.test(input)) {
-                    backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithCharClass,
+                    backErrorBag.addNewBackError(ValidationBackErrors.valueNotMatchesWithCharClass,
                         {
                             ...prepareErrorData,
                             regex: regex.toString()
@@ -291,7 +291,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
             if((typeof input === "string" && isDate(input)) || input instanceof Date) {
                 const checkDate = await getCheckDate();
                 if((typeof input === 'string' ? new Date(input) : input) >= checkDate) {
-                    backErrorBag.addNewBackError(ValidatorBackErrors.dateIsNotBefore,
+                    backErrorBag.addNewBackError(ValidationBackErrors.dateIsNotBefore,
                         {
                             ...prepareErrorData,
                             shouldBefore: checkDate
@@ -309,7 +309,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
             if((typeof input === "string" && isDate(input)) || input instanceof Date) {
                 const checkDate = await getCheckDate();
                 if((typeof input === 'string' ? new Date(input) : input) <= checkDate) {
-                    backErrorBag.addNewBackError(ValidatorBackErrors.dateIsNotAfter,
+                    backErrorBag.addNewBackError(ValidationBackErrors.dateIsNotAfter,
                         {
                             ...prepareErrorData,
                             shouldAfter: checkDate
@@ -322,7 +322,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
     minByteSize: (settings) => {
         return (input, backErrorBag, prepareErrorData, type) => {
             if(typeof input === "string" && ByteUtils.getByteSize(input,type) < settings) {
-                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMinByteSize,
+                backErrorBag.addNewBackError(ValidationBackErrors.valueNotMatchesWithMinByteSize,
                     {
                         ...prepareErrorData,
                         minByteSize: settings
@@ -334,7 +334,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
     maxByteSize: (settings) => {
         return (input, backErrorBag, prepareErrorData, type) => {
             if(typeof input === "string" && ByteUtils.getByteSize(input,type) > settings) {
-                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMaxByteSize,
+                backErrorBag.addNewBackError(ValidationBackErrors.valueNotMatchesWithMaxByteSize,
                     {
                         ...prepareErrorData,
                         maxByteSize: settings
@@ -350,7 +350,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
                 if(typeof input === 'string'){
                     const inMimeType = Base64Utils.getMimeType(input);
                     for(let i = 0; i < length; i++) if(inMimeType === settings[i]) return;
-                    backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMimeType,
+                    backErrorBag.addNewBackError(ValidationBackErrors.valueNotMatchesWithMimeType,
                         {
                             ...prepareErrorData,
                             mimeType: settings
@@ -361,7 +361,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
         else {
             return (input, backErrorBag, prepareErrorData) => {
                 if(typeof input === 'string' && Base64Utils.getMimeType(input) !== settings){
-                    backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMimeType,
+                    backErrorBag.addNewBackError(ValidationBackErrors.valueNotMatchesWithMimeType,
                         {
                             ...prepareErrorData,
                             mimeType: settings
@@ -378,7 +378,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
                 if(typeof input === 'string'){
                     const inMimeSubType = Base64Utils.getMimeSubType(input);
                     for(let i = 0; i < length; i++) if(inMimeSubType === settings[i]) return;
-                    backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMimeSubType,
+                    backErrorBag.addNewBackError(ValidationBackErrors.valueNotMatchesWithMimeSubType,
                         {
                             ...prepareErrorData,
                             mimeSubType: settings
@@ -389,7 +389,7 @@ const functionLibrary: Record<keyof ValidationFunctions,(settings: any) => Funct
         else {
             return (input, backErrorBag, prepareErrorData) => {
                 if(typeof input === 'string' && Base64Utils.getMimeSubType(input) !== settings){
-                    backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMimeSubType,
+                    backErrorBag.addNewBackError(ValidationBackErrors.valueNotMatchesWithMimeSubType,
                         {
                             ...prepareErrorData,
                             mimeSubType: settings

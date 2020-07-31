@@ -8,7 +8,6 @@ import Receiver         from '../../../../api/Receiver';
 // noinspection ES6PreferShortImport
 import {ReceiverConfig} from '../../../config/definitions/parts/receiverConfig';
 // noinspection ES6PreferShortImport
-import {$single}                  from '../../../../api/input/Single';
 import {createTokenCheckFunction} from '../../../access/accessOptions';
 import {RawZationToken}           from '../../../definitions/internal';
 // noinspection ES6PreferShortImport
@@ -24,7 +23,7 @@ export default class PanelReceiver extends Receiver
         access: createTokenCheckFunction((token) =>
             token !== null && token[nameof<RawZationToken>(s => s.panelAccess)] === true),
         versionAccess: 'all',
-        input: $single($optional({type: 'boolean'},false))
+        input: $optional({type: 'boolean'},false)
     };
 
     private exchange: ScExchange;

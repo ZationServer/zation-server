@@ -67,8 +67,8 @@ export default abstract class ZationConfig {
     }
 
     // noinspection JSUnusedGlobalSymbols
-    isUsePanel(): boolean {
-        return this._mainConfig.usePanel
+    isPanelActive(): boolean {
+        return this._mainConfig.panel.active === true;
     }
 
     getVerifyKey(): any {

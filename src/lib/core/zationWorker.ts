@@ -75,7 +75,6 @@ import LicenseManager, {License}  from "../main/utils/licenseManager";
 import ConfigPrecompiler          from "../main/config/utils/configPrecompiler";
 import BagExtensionProcessor      from '../main/bagExtension/bagExtensionProcessor';
 import FunctionInitEngine         from '../main/functionInit/functionInitEngine';
-import {ProcessType, processTypeSymbol} from '../main/definitions/processType';
 import InjectionsManager                from '../main/injections/injectionsManager';
 import InitializerManager               from '../main/initializer/initializerManager';
 import {startModeSymbol}                from './startMode';
@@ -91,10 +90,12 @@ import {RECEIVER_EVENT}                 from '../main/receiver/receiverDefinitio
 import {CONTROLLER_EVENT}               from '../main/controller/controllerDefinitions';
 import ComponentUtils                   from '../main/component/componentUtils';
 import Socket                           from '../api/Socket';
+import {Writeable}                      from '../main/utils/typeUtils';
+import Process, {ProcessType}           from '../api/Process';
 
 const  SCWorker: any        = require('socketcluster/scworker');
 
-global[processTypeSymbol] = ProcessType.Worker;
+(Process as Writeable<typeof Process>).type = ProcessType.Worker;
 
 class ZationWorker extends SCWorker
 {

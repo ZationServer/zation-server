@@ -1747,6 +1747,30 @@ export default class Bag<WA extends object = any> {
      * get(ChatChannel_1,ChatChannel_2);
      * get(InfoChannel);
      */
+    get<T extends AnyDataboxClass | AnyChannelClass | AnyClass>(classDef: T): T['prototype'];
+
+    /**
+     * @description
+     * This function helps to access your Singletons, Channels and Databoxes.
+     * You only need to call this method with the class/es and it returns the specific instance/s.
+     * If you want to access multiple Databoxes or Channels, the method returns a Databox-/ChannelContainer
+     * or Databox-/ChannelFamilyContainer.
+     * With these containers, you can interact with multiple Databoxes or Channels.
+     * So, for example, if you have two Databoxes/Channels with different API levels
+     * from the same type, you can communicate directly with both.
+     * But notice that the containers only provides a limited scope of methods.
+     * If you provide multiple Singletons the function will return an array with all instances.
+     * It is recommended if you use this method in a component that you prepare the access
+     * in the initialize method.
+     * If you use this method in an event function, use an initEvent to prepare the access.
+     * @example
+     * get(NavigatorManager)
+     * get(NavigatorManager,DbManager)
+     * get(ProfileDatabox_1,ProfileDatabox_2);
+     * get(PublicChatDatabox);
+     * get(ChatChannel_1,ChatChannel_2);
+     * get(InfoChannel);
+     */
     get(...databoxes: DataboxFamilyClass[]): DataboxFamilyContainer;
 
     /**
@@ -1820,30 +1844,6 @@ export default class Bag<WA extends object = any> {
      * get(InfoChannel);
      */
     get(...channels: ChannelClass[]): ChannelContainer
-
-    /**
-     * @description
-     * This function helps to access your Singletons, Channels and Databoxes.
-     * You only need to call this method with the class/es and it returns the specific instance/s.
-     * If you want to access multiple Databoxes or Channels, the method returns a Databox-/ChannelContainer
-     * or Databox-/ChannelFamilyContainer.
-     * With these containers, you can interact with multiple Databoxes or Channels.
-     * So, for example, if you have two Databoxes/Channels with different API levels
-     * from the same type, you can communicate directly with both.
-     * But notice that the containers only provides a limited scope of methods.
-     * If you provide multiple Singletons the function will return an array with all instances.
-     * It is recommended if you use this method in a component that you prepare the access
-     * in the initialize method.
-     * If you use this method in an event function, use an initEvent to prepare the access.
-     * @example
-     * get(NavigatorManager)
-     * get(NavigatorManager,DbManager)
-     * get(ProfileDatabox_1,ProfileDatabox_2);
-     * get(PublicChatDatabox);
-     * get(ChatChannel_1,ChatChannel_2);
-     * get(InfoChannel);
-     */
-    get<T extends AnyDataboxClass | AnyChannelClass | AnyClass>(classDef: T): T['prototype'];
 
     /**
      * @description

@@ -4,7 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import DynamicSingleton from '../main/utils/dynamicSingleton';
+import DynamicSingleton       from '../main/utils/dynamicSingleton';
+import Process, {ProcessType} from './Process';
 
 export const singletonSymbol = Symbol();
 
@@ -25,6 +26,7 @@ export const singletonSymbol = Symbol();
  *   }
  */
 export default function Singleton(target: any) {
+    if(Process.type !== ProcessType.Worker) return;
     target[singletonSymbol] = true;
     DynamicSingleton.create(target);
 }
