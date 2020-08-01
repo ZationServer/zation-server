@@ -440,7 +440,7 @@ export default class ZationMaster {
         const path     = this.zc.mainConfig.path;
         const protocol = this.zc.mainConfig.secure ? 'https': 'http';
 
-        const urlHostname = (hostName === 'localhost' || hostName === '0.0.0.0') ? IP.address() : hostName;
+        const urlHostname = (hostName === '0.0.0.0') ? IP.address() : hostName;
         const server   = `${protocol}://${urlHostname}:${port}${path}`;
         const license = this.license ?
             `Licensed to ${this.license.h} (${LicenseLevel[this.license.l]})` :
