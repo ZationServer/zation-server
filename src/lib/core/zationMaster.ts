@@ -453,7 +453,7 @@ export default class ZationMaster {
         msg.push(`            Your app: ${this.zc.mainConfig.appName}`);
         msg.push(`            Hostname: ${hostName}`);
         msg.push(`            Port: ${port}`);
-        msg.push(` ️          Time️: ${getMoment(this.zc.mainConfig.timeZone)}`);
+        msg.push(`            Time️: ${getMoment(this.zc.mainConfig.timeZone)}`);
         msg.push(`            Time zone: ${this.zc.mainConfig.timeZone}`);
         msg.push(`            Instance id: ${this.master.options.instanceId}`);
         msg.push(`            Node.js version: ${process.version}`);
