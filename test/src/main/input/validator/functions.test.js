@@ -4,10 +4,10 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-const BackErrorBag       = require("../../../../dist/lib/api/BackErrorBag").default;
-const Base64TestData     = require("../../../testData/base64");
-const {FormatLetters}    = require("../../../../dist/lib/main/definitions/validation");
-const {ValidatorLibrary} = require("../../../../dist/lib/main/validator/validatorLibrary");
+const BackErrorBag       = require("../../../../../dist/lib/api/BackErrorBag").default;
+const Base64TestData     = require("../../../../testData/base64");
+const {FormatLetters}    = require("../../../../../dist/lib/main/definitions/validation");
+const {ValidatorLibrary} = require("../../../../../dist/lib/main/input/validator/validatorLibrary");
 const assert             = require("chai").assert;
 
 const ValidatorFunctions  = ValidatorLibrary.Functions;

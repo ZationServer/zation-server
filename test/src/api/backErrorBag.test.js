@@ -60,7 +60,7 @@ describe('Api.BackErrorBag',() => {
             assert.sameDeepMembers(json, [ { n: 'error1',
                 g: undefined,
                 t: 'NormalError',
-                z: 0,
+                c: 1,
                 i: {},
                 d: 'No Description defined in Error' } ]
             );
@@ -112,7 +112,7 @@ describe('Api.BackErrorBag',() => {
 
         it('toString',() => {
             const eb = new BackErrorBag(new BackError({name : 'test1'}));
-            assert.equal(eb.toString(),'BackErrorBag-> 1 BackErrors  ->\n     0: BackError  Name: test1 Group: undefined  Description: No Description defined in Error  Type: NormalError  Info: {}  isPrivate:false  isFromZationSystem:false \n');
+            assert.equal(eb.toString(),'BackErrorBag-> 1 BackErrors  ->\n     0: BackError  Name: test1 Group: undefined  Description: No Description defined in Error  Type: NormalError  Info: {}  Private: false  Custom: true \n');
         });
 
     });

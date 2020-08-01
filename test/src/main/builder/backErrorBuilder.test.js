@@ -29,13 +29,11 @@ describe('Main.BackErrorBuilder',() => {
             const te = BackErrorBuilder.build()
                 .name('error1')
                 .group('g1')
-                .typeDatabaseError()
                 .description('des')
                 .private(true)
                 .create();
 
             assert.equal(te.getName(),'error1');
-            assert.equal(te.getType(),'DatabaseError');
             assert.equal(te.getDescription(),'des');
             assert(te.isPrivate());
         });
@@ -45,9 +43,8 @@ describe('Main.BackErrorBuilder',() => {
             const te = BackErrorBuilder.build()
                 .name('error1')
                 .sendInfo(true)
-                .fromZationSystem(true)
+                .custom(false)
                 .setInfo({length : 1})
-                .typeAuthError()
                 .typeInputError()
                 .typeNormalError()
                 .create();
@@ -55,7 +52,7 @@ describe('Main.BackErrorBuilder',() => {
             assert.equal(te.getName(),'error1');
             assert.equal(te.getType(),'NormalError');
             assert(te.isSendInfo());
-            assert(te.isFromZationSystem());
+            assert(!te.isCustom());
         });
 
         it('BuildTest-3',() => {
@@ -65,8 +62,6 @@ describe('Main.BackErrorBuilder',() => {
                 .addInfo('length',1)
                 .addInfo('length',2,true)
                 .typeTokenError()
-                .typeTimeError()
-                .typeCompatibilityError()
                 .typeSystemError()
                 .typeValidationError()
                 .typeNormalError()

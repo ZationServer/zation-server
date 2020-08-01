@@ -51,21 +51,21 @@ describe('Api.BackError',() => {
                 assert.deepEqual(be._dehydrate(true),{ n: 'error1',
                     g: undefined,
                     t: 'NormalError',
-                    z: 0,
+                    c: 1,
                     i: {},
                     d: 'No Description defined in Error' });
 
                 assert.deepEqual(be._dehydrate(),{ n: 'error1',
                     g: undefined,
                     t: 'NormalError',
-                    z: 0,
+                    c: 1,
                     i: {}});
             });
 
             it('private',() => {
                 const be = new BackError({name: 'error1', private : true});
                 assert.deepEqual
-                (be._dehydrate(true),{ n: 'BackError', t: 'NormalError', z: 0 });
+                (be._dehydrate(true),{ n: 'BackError', t: 'NormalError', c: 1 });
             });
 
         });
@@ -106,10 +106,10 @@ describe('Api.BackError',() => {
             assert(be.isSendInfo());
         });
 
-        it('setIsFromZationSystem',() => {
-            const be = new BackError({fromZationSystem : false});
-            be.setFromZationSystem(true);
-            assert(be.isFromZationSystem());
+        it('setIsCustom',() => {
+            const be = new BackError({custom: true});
+            be.setCustom(false);
+            assert(!be.isCustom());
         });
 
         it('setInfo',() => {
@@ -127,7 +127,7 @@ describe('Api.BackError',() => {
 
         it('toString',() => {
             const eb = new BackError({name : 'error1'});
-            assert.equal(eb.toString(),'BackError  Name: error1 Group: undefined  Description: No Description defined in Error  Type: NormalError  Info: {}  isPrivate:false  isFromZationSystem:false');
+            assert.equal(eb.toString(),'BackError  Name: error1 Group: undefined  Description: No Description defined in Error  Type: NormalError  Info: {}  Private: false  Custom: true');
         });
     });
 
