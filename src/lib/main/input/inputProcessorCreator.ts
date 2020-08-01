@@ -228,6 +228,8 @@ export default class InputProcessorCreator
         const processConvert = typeof objectModel.convert === 'function';
         const processPrototype = typeof objectModel.prototype === 'object';
 
+        const hasProcessTask = (processBaseConstruct || processConstruct || processConvert || processPrototype);
+
         const expected = canBeNull ? ['array','null'] : 'null';
 
         return async (srcObj, srcKey, currentPath, processInfo) => {
@@ -293,9 +295,7 @@ export default class InputProcessorCreator
                 await Promise.all(promises);
 
                 //process prototype,construct,convert
-                if(processInfo.createProcessTaskList && errorBag.isEmpty() &&
-                    (processBaseConstruct || processConstruct || processConvert || processPrototype)
-                )
+                if(hasProcessTask && processInfo.createProcessTaskList && errorBag.isEmpty())
                 {
                     processInfo.processTaskList.push(async  () => {
                         //1.prototype
