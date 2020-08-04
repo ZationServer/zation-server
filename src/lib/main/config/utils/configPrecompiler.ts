@@ -8,10 +8,16 @@ import {
     AnyOfModel,
     ObjectModel,
     ValueModel,
-    ImplicitModel, Model, AnyModelTranslatable, Input
-} from '../definitions/parts/inputConfig';
+    DefinitionModel
+} from '../../models/definitionModel';
+import {Model}            from '../../models/model';
+import {Input}            from '../definitions/parts/inputConfig';
 import ObjectUtils        from "../../utils/objectUtils";
 import Iterator           from "../../utils/iterator";
+// noinspection ES6PreferShortImport
+import {DirectModel}      from '../../models/model';
+// noinspection ES6PreferShortImport
+import {ChannelConfig}    from '../definitions/parts/channelConfig';
 import {OtherLoadedConfigSet, OtherPrecompiledConfigSet} from "../manager/configSets";
 import InputProcessorCreator, {Processable}              from '../../input/inputProcessorCreator';
 import ZationConfig                                      from "../manager/zationConfig";
@@ -28,7 +34,6 @@ import {resolveIfModelTranslatable}                           from '../../../api
 import {AnyFunction}                                                                           from '../../utils/typeUtils';
 import {setValueReplacer}                                                                      from '../../utils/valueReplacer';
 import {AnyDataboxClass}                                                                       from '../../../api/databox/AnyDataboxClass';
-import {ChannelConfig}                                                                         from '../../../..';
 import {AnyChannelClass}                                                                       from '../../../api/channel/AnyChannelClass';
 import {systemControllers}                                                                     from '../../controller/systemControllers/systemControllers.config';
 import {systemChannels}                                                                        from '../../channel/systemChannels/systemChannels.config';
@@ -37,7 +42,6 @@ import {ReceiverConfig}                                                         
 import {systemReceivers}                                                                       from '../../receiver/systemReceivers/systemReceivers.config';
 import {ReceiverClass}                                                                         from '../../../api/Receiver';
 import {getModelMetaData, isMetaModel, unwrapIfMetaModel}                                      from '../../models/metaModel';
-import {ExplicitModel}                                                                         from '../../models/explicitModel';
 
 export interface ModelPreparationMem extends Processable{
     _optionalInfo: {optional: boolean,defaultValue: any};
@@ -324,7 +328,7 @@ export default class ConfigPrecompiler
         }
     }
 
-    private processOptionalInfo(model: Model, directModel: ImplicitModel | ExplicitModel): OptionalInfo {
+    private processOptionalInfo(model: DefinitionModel, directModel: DirectModel): OptionalInfo {
         //fallback
         let optional = false;
         let defaultValue = undefined;
@@ -349,7 +353,7 @@ export default class ConfigPrecompiler
     /**
      * @param model
      */
-    private resolveTranslatableModels(model: Model | AnyModelTranslatable): Model {
+    private resolveTranslatableModels(model: Model): DefinitionModel {
         model = resolveIfModelTranslatable(model);
         const directModel = unwrapIfMetaModel(model);
 
@@ -373,7 +377,7 @@ export default class ConfigPrecompiler
                 directModel[modelPrototypeSymbol] = this.resolveTranslatableModels(directModel[modelPrototypeSymbol]);
             }
         }
-        return model as Model;
+        return model as DefinitionModel;
     }
 
     private precompileChannels(): void {

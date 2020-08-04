@@ -20,8 +20,7 @@ import Iterator                              from '../../utils/iterator';
 import ObjectUtils                           from '../../utils/objectUtils';
 import ConfigLoader                          from '../manager/configLoader';
 import {resolveIfModelTranslatable}          from '../../../api/configTranslatable/modelTranslatable';
-import {modelPrototypeSymbol}                                                    from '../../definitions/model';
-import {AnyModelTranslatable, AnyOfModel, Input, Model, ObjectModel, ValueModel} from '../definitions/parts/inputConfig';
+import {modelPrototypeSymbol}                from '../../definitions/model';
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig}               from '../definitions/parts/controllerConfig';
 // noinspection ES6PreferShortImport
@@ -35,7 +34,8 @@ import {processAnyOfKey}                                       from '../../model
 import AuthController                                          from '../../../api/AuthController';
 import {AnyDataboxClass}                                       from '../../../api/databox/AnyDataboxClass';
 import {AnyChannelClass}                                       from '../../../api/channel/AnyChannelClass';
-import {ChannelConfig}                                         from '../../../..';
+// noinspection ES6PreferShortImport
+import {ChannelConfig}                                         from '../definitions/parts/channelConfig';
 import Channel                                                 from '../../../api/channel/Channel';
 import ChannelFamily                                           from '../../../api/channel/ChannelFamily';
 import {ComponentClass}                                        from '../../../api/component/Component';
@@ -44,8 +44,11 @@ import Receiver, {ReceiverClass}                               from '../../../ap
 import {ReceiverConfig}                                        from '../definitions/parts/receiverConfig';
 import ComponentUtils                                          from '../../component/componentUtils';
 import {isDefaultImpl}                                         from '../../utils/defaultImplUtils';
-import {explicitModelNameSymbol}                               from '../../models/explicitModel';
 import {isOptionalMetaModel, unwrapIfMetaModel}                from '../../models/metaModel';
+import {AnyOfModel, DefinitionModel, ObjectModel, ValueModel}  from '../../models/definitionModel';
+import {getModelName}                                          from '../../models/modelName';
+import {Input}                                                 from '../definitions/parts/inputConfig';
+import {Model}                                                 from '../../models/model';
 
 export interface ModelCheckedMem {
     _checked: boolean
@@ -211,9 +214,10 @@ export default class ConfigChecker
         }
     }
 
-    private checkObjectModel(obj: ObjectModel, target: Target, rememberCache: Model[], inheritanceCheck: boolean = true, skipTargetPathAdd: boolean = false, skipProps: string[] = []) {
-        if(!skipTargetPathAdd && typeof obj[explicitModelNameSymbol] === 'string'){
-            target = target.addPath(`(${obj[explicitModelNameSymbol]})`);
+    private checkObjectModel(obj: ObjectModel, target: Target, rememberCache: DefinitionModel[], inheritanceCheck: boolean = true, skipTargetPathAdd: boolean = false, skipProps: string[] = []) {
+        const modelName = getModelName(obj);
+        if(!skipTargetPathAdd && typeof modelName === 'string'){
+            target = target.addPath(`(${modelName})`);
         }
 
         const prototype = typeof obj.prototype === 'object' ? obj.prototype: {};
@@ -262,8 +266,8 @@ export default class ConfigChecker
                                    srcTarget: Target,
                                    baseModel: ObjectModel,
                                    model: ObjectModel,
-                                   rememberCache: Model[],
-                                   inheritanceRemCache: Model[] = [],
+                                   rememberCache: DefinitionModel[],
+                                   inheritanceRemCache: DefinitionModel[] = [],
                                    propsOverwritten: string[] = []
     ): void
     {
@@ -272,8 +276,9 @@ export default class ConfigChecker
         if(prototypeType === 'object' || prototypeType === 'function') {
             const resModel = resolveIfModelTranslatable(prototype);
 
-            target = target.addPath(`extends=>${typeof resModel[explicitModelNameSymbol] === 'string' ? 
-                resModel[explicitModelNameSymbol] : 'Anonymous'}`);
+            const resModelName = getModelName(resModel);
+            target = target.addPath(`extends=>${typeof resModelName === 'string' ? 
+                resModelName : 'Anonymous'}`);
 
             if(inheritanceRemCache.includes(resModel) || resModel === baseModel){
                 this.ceb.addError(new ConfigError(ConfigNames.App,`${target.toString()} creates a circular object model inheritance.`));
@@ -607,7 +612,7 @@ export default class ConfigChecker
         if(typeof input === 'object' || typeof input === 'function') this.checkModel(input,target);
     }
 
-    private checkArrayModel(value, target: Target, rememberCache: Model[]) {
+    private checkArrayModel(value, target: Target, rememberCache: DefinitionModel[]) {
         if (value.length === 0) {
             this.ceb.addError(new ConfigError(ConfigNames.App,
                 `${target.toString()} you have to specify an array body.`));
@@ -638,7 +643,7 @@ export default class ConfigChecker
      * @param target
      * @param rememberCache
      */
-    private checkModel(value: Model | AnyModelTranslatable, target: Target, rememberCache: Model[] = []) {
+    private checkModel(value: Model, target: Target, rememberCache: DefinitionModel[] = []) {
         value = unwrapIfMetaModel(resolveIfModelTranslatable(value));
 
         if(typeof value === 'object'){
@@ -758,8 +763,8 @@ export default class ConfigChecker
 
     private checkValueModel(model: ValueModel, target: Target, inheritanceCheck: boolean = true)
     {
-        target = target.addPath(`(${typeof model[explicitModelNameSymbol] === 'string' ? 
-            model[explicitModelNameSymbol] : 'Anonymous'})`);
+        const modelName = getModelName(model);
+        target = target.addPath(`(${typeof modelName === 'string' ? modelName : 'Anonymous'})`);
 
         if(inheritanceCheck){
             if(this.checkAndProcessValueModelInheritance(target,model,model)){
@@ -779,7 +784,7 @@ export default class ConfigChecker
         target: Target,
         baseModel: ValueModel,
         model: ValueModel,
-        inheritanceRemCache: Model[] = []
+        inheritanceRemCache: DefinitionModel[] = []
     ): boolean
     {
         const prototype = model[modelPrototypeSymbol];
@@ -787,8 +792,8 @@ export default class ConfigChecker
         if(prototypeType === 'object' || prototypeType === 'function') {
             const resModel = unwrapIfMetaModel(resolveIfModelTranslatable(prototype));
 
-            target = target.addPath(`extends=>${typeof resModel[explicitModelNameSymbol] === 'string' ?
-                resModel[explicitModelNameSymbol] : 'Anonymous'}`);
+            const resModelName = getModelName(resModel);
+            target = target.addPath(`extends=>${typeof resModelName === 'string' ? resModelName : 'Anonymous'}`);
 
             if(inheritanceRemCache.includes(resModel) || resModel === baseModel){
                 this.ceb.addError(new ConfigError(ConfigNames.App,`${target.toString()} creates a circular value model inheritance.`));

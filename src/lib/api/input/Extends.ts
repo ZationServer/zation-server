@@ -5,13 +5,12 @@ Copyright(c) Luca Scaringella
  */
 
 import {modelPrototypeSymbol}           from '../../main/definitions/model';
-// noinspection TypeScriptPreferShortImport,ES6PreferShortImport
-import {AnyModelTranslatable, Model}    from '../../main/config/definitions/parts/inputConfig';
 import {resolveIfModelTranslatable}     from '../configTranslatable/modelTranslatable';
 import {isClassObjectModel}             from './decorator/ObjectModel';
 import ConfigBuildError                 from '../../main/config/manager/configBuildError';
-import {AnyReadonly}                    from '../../main/utils/typeUtils';
-import {unwrapIfMetaModel}              from '../../main/models/metaModel';
+import {MetaModel, unwrapIfMetaModel}   from '../../main/models/metaModel';
+import {Model}                          from '../../main/models/model';
+import {DefinitionModel}                from '../../main/models/definitionModel';
 
 /**
  * This function can be used to let a value model extends another
@@ -34,13 +33,15 @@ import {unwrapIfMetaModel}              from '../../main/models/metaModel';
  * @param subModel
  * @param superModel
  */
-export function $extends<S extends Model | AnyModelTranslatable>(subModel: S | Model,superModel: Model): S extends Model ? S : AnyReadonly {
+export function $extends<S extends Model>(subModel: S, superModel: Model):
+    S extends DefinitionModel | MetaModel ? S : any
+{
     if(isClassObjectModel(subModel) || isClassObjectModel(superModel)){
         throw new ConfigBuildError('The $extends function can not be used with class object models. Please use the es6 class extends keyword.')
     }
     const tmpSubModel = subModel;
 
-    subModel = unwrapIfMetaModel(resolveIfModelTranslatable(subModel));
+    subModel = unwrapIfMetaModel(resolveIfModelTranslatable(subModel)) as any;
     superModel = unwrapIfMetaModel(resolveIfModelTranslatable(superModel));
 
     if(Array.isArray(subModel)){

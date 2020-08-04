@@ -4,11 +4,10 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {AnyModelTranslatable, ImplicitModel, Model}                from '../../main/config/definitions/parts/inputConfig';
-import {AnyReadonly}                                               from '../../main/utils/typeUtils';
-import {resolveIfModelTranslatable}                                from '../configTranslatable/modelTranslatable';
-import {addNewMetaToModel, MetaModel}                              from '../../main/models/metaModel';
-import {ExplicitModel}                                             from '../../main/models/explicitModel';
+import {resolveIfModelTranslatable}                 from '../configTranslatable/modelTranslatable';
+import {addNewMetaToModel, MetaModel}               from '../../main/models/metaModel';
+import {Model}                                      from '../../main/models/model';
+import {DefinitionModel}                            from '../../main/models/definitionModel';
 
 /**
  * @description
@@ -20,7 +19,10 @@ import {ExplicitModel}                                             from '../../m
  * Define a default value that will be used
  * if the input had not provided the value.
  */
-export function $optional<T extends Model | AnyModelTranslatable>(model: T,defaultValue?: any): T extends ExplicitModel | ImplicitModel ? MetaModel<T> : MetaModel<AnyReadonly> {
+export function $optional<T extends Model>(model: T, defaultValue?: any):
+    T extends DefinitionModel ? MetaModel<T> :
+        T extends MetaModel ? T : MetaModel<any>
+{
     return addNewMetaToModel(resolveIfModelTranslatable(model) as any,
         {optional: true, ...(defaultValue !== undefined ? {default: defaultValue} : {})});
 }

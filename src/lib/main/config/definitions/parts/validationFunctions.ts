@@ -5,7 +5,8 @@ Copyright(c) Luca Scaringella
  */
 
 import {FormatLetters}   from '../../../definitions/validation';
-import {GetDateFunction} from './inputConfig';
+
+export type GetDateFunction = () => Promise<Date> | Date;
 
 export interface ValidationFunctions {
     /**

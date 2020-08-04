@@ -8,10 +8,10 @@ import {
     AnyOfModel,
     ArrayModel, ConstructObjectFunction, ConvertArrayFunction, ConvertObjectFunction,
     ConvertValueFunction,
-    Model,
+    DefinitionModel,
     ObjectModel,
     ValueModel,
-} from '../config/definitions/parts/inputConfig';
+} from '../models/definitionModel';
 import BackErrorBag          from "../../api/BackErrorBag";
 import ValidatorCreator      from "./validator/validatorCreator";
 import TypeConverterCreator  from "./typeConvert/typeConverterCreator";
@@ -99,7 +99,7 @@ export default class InputProcessorCreator
      */
     static createArrayModelProcessor(arrayModel: ArrayModel, meta: ModelMetaData): InputProcessFunction
     {
-        const arrayInner = (arrayModel[0] as Model & ModelPreparationMem);
+        const arrayInner = (arrayModel[0] as DefinitionModel & ModelPreparationMem);
         const arraySettings = arrayModel[1] || {};
         const hasConvert = typeof arraySettings.convert === 'function';
         const arrayValidate = ValidatorCreator.createArrayValidator(arraySettings);

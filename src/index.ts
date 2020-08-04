@@ -23,10 +23,9 @@ import Router                       from "./lib/api/Router";
 import {Register}                   from "./lib/api/component/decorator/Register";
 import {$value, $key, $pair, $all, $any, $contains, $matches}   from './lib/api/databox/DbApiUtils';
 import {$tokenPayloadIncludes, $tokenPayloadMatches, $userId}   from './lib/api/AccessApiUtils';
-import {updateModelTranslatable}                  from './lib/api/configTranslatable/modelTranslatable';
-import {Model as AnyModel, ImplicitModel}         from './lib/main/config/definitions/parts/inputConfig';
-import {ModelMetaData, MetaModel}                 from './lib/main/models/metaModel';
-import {ExplicitModel}              from './lib/main/models/explicitModel';
+import {updateModelTranslatable}                                from './lib/api/configTranslatable/modelTranslatable';
+import {Model as AnyModel, DirectModel, AnyModelTranslatable}   from "./lib/main/models/model";
+import {MetaModel, ModelMetaData}   from "./lib/main/models/metaModel";
 import {Model}                      from "./lib/api/input/decorator/Model";
 import {ObjectModel}                from "./lib/api/input/decorator/ObjectModel";
 import {Constructor}                from "./lib/api/input/decorator/Constructor";
@@ -151,9 +150,9 @@ export {
     Events,
     Middleware,
     updateModelTranslatable,
+    AnyModelTranslatable,
     AnyModel,
     MetaModel,
     ModelMetaData,
-    ImplicitModel,
-    ExplicitModel
+    DirectModel
 };

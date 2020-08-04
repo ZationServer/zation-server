@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {Model} from '../../main/config/definitions/parts/inputConfig';
+import {DirectModel} from '../../main/models/model';
 
 export const modelTranslateSymbol = Symbol();
 
@@ -12,7 +12,7 @@ export const modelTranslateSymbol = Symbol();
  * Interface for define that the object can be translated to a model.
  */
 export interface ModelTranslatable {
-    [modelTranslateSymbol]: () => Model
+    [modelTranslateSymbol]: () => DirectModel
 }
 
 /**
@@ -20,7 +20,7 @@ export interface ModelTranslatable {
  * @param object
  * @param value
  */
-export function updateModelTranslatable<T>(object: T, value?: undefined | (() => Model)) {
+export function updateModelTranslatable<T>(object: T, value?: undefined | (() => DirectModel)) {
     object[modelTranslateSymbol] = value;
 }
 
@@ -36,7 +36,7 @@ export const isModelTranslatable = (obj: any): obj is ModelTranslatable => {
  * In case of a ModelTranslatable object,
  * it will return the resolved model otherwise, it returns the object self.
  */
-export function resolveIfModelTranslatable<T>(obj: T): T extends ModelTranslatable ? Model : T {
+export function resolveIfModelTranslatable<T>(obj: T): T extends ModelTranslatable ? DirectModel : T {
     if(isModelTranslatable(obj)) return obj[modelTranslateSymbol]() as any;
     return obj as any;
 }

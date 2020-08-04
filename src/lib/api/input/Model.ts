@@ -4,20 +4,18 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ImplicitModel}         from '../../main/config/definitions/parts/inputConfig';
-import {ExplicitModel, markAsExplicitModel, setExplicitModelName} from '../../main/models/explicitModel';
+import {DefinitionModel} from '../../main/models/definitionModel';
+import {setModelName}    from '../../main/models/modelName';
 
 /**
  * @description
- * This function creates an explicit model.
- * Explicit models can be directly used in the input config as single model input.
- * You also can attach a name to an explicit model that
- * will help to identify this model in case of errors.
+ * This function helps you to create a new model.
+ * If you pass a name as a second parameter, the created model is not anonymous.
+ * This will help you to identify this model in case of errors easier.
  * @param model
  * @param name
  */
-export function $model<T extends ImplicitModel>(model: T, name?: string): ExplicitModel<T> {
-    markAsExplicitModel(model);
-    if(name){setExplicitModelName(model,name);}
+export function $model<T extends DefinitionModel>(model: T, name?: string): DefinitionModel {
+    if(name) setModelName(model,name);
     return model;
 }

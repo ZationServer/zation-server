@@ -6,13 +6,13 @@ Copyright(c) Luca Scaringella
 
 // noinspection TypeScriptPreferShortImport
 import {ValidationTypeRecord}                              from '../../definitions/validationType';
-import {ArraySettings, ValidateFunction, ValueModel}       from "../../config/definitions/parts/inputConfig";
+import {ArraySettings, ValidateFunction, ValueModel}       from "../../models/definitionModel";
 // noinspection TypeScriptPreferShortImport
-import BackErrorBag          from "../../../api/BackErrorBag";
-import BackError             from "../../../api/BackError";
+import BackErrorBag                          from "../../../api/BackErrorBag";
+import BackError                             from "../../../api/BackError";
 import {FunctionValidator, ValidatorLibrary} from './validatorLibrary';
-import FuncUtils             from "../../utils/funcUtils";
-import {ValidationBackErrors} from "../../systemBackErrors/validationBackErrors";
+import FuncUtils                             from "../../utils/funcUtils";
+import {ValidationBackErrors}                from "../../systemBackErrors/validationBackErrors";
 
 const ValidatorFunctions   = ValidatorLibrary.Functions;
 const ValidatorTypes       = ValidatorLibrary.Types;

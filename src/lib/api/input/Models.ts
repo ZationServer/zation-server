@@ -4,15 +4,14 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ImplicitModel}             from '../../main/config/definitions/parts/inputConfig';
-import {ExplicitModel, markAsExplicitModel, setExplicitModelName} from '../../main/models/explicitModel';
+import {DefinitionModel} from '../../main/models/definitionModel';
+import {setModelName}    from '../../main/models/modelName';
 
 /**
  * @description
- * This function creates several explicit models.
- * Explicit models can be directly used in the input config as single model input.
- * The key of each pair will be used as an explicit model name.
- * This will help you to identify the models in case of errors.
+ * This function helps you to create several models.
+ * The key of each pair will be used as a model name.
+ * The names will help you to identify the models in case of errors easier.
  * @param models
  * @example
  * const formModels = $models({
@@ -26,16 +25,10 @@ import {ExplicitModel, markAsExplicitModel, setExplicitModelName} from '../../ma
  *    }
  * });
  */
-export function $models<T extends Record<string,ImplicitModel>>(models: T): {readonly [k in keyof T]: ExplicitModel<T[k]>} {
-    const result: Record<string,ExplicitModel> = {};
-    let tmpModelConfig;
+export function $models<T extends Record<string,DefinitionModel>>(models: T): T {
     for(const k in models){
-        if(models.hasOwnProperty(k)){
-            tmpModelConfig = models[k];
-            markAsExplicitModel(tmpModelConfig);
-            setExplicitModelName(tmpModelConfig,k);
-            result[k] = tmpModelConfig;
-        }
+        if(models.hasOwnProperty(k))
+            setModelName(models[k],k)
     }
-    return result as {readonly [k in keyof T]: ExplicitModel<T[k]>};
+    return models;
 }

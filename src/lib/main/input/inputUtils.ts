@@ -4,8 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {AnyOfModel, ObjectModel, Model} from '../config/definitions/parts/inputConfig';
-import {unwrapIfMetaModel}              from '../models/metaModel';
+import {AnyOfModel, ObjectModel, DefinitionModel} from '../models/definitionModel';
+import {unwrapIfMetaModel}                        from '../models/metaModel';
 
 export default class InputUtils
 {
@@ -14,7 +14,7 @@ export default class InputUtils
      * @param path
      * @param input
      */
-    static getModelAtPath(path: string[], input: Model): object | undefined {
+    static getModelAtPath(path: string[], input: DefinitionModel): object | undefined {
 
         if(path.length <= 0) return input;
 

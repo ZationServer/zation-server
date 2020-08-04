@@ -4,9 +4,10 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ImplicitModel}                          from '../config/definitions/parts/inputConfig';
-import {ExplicitModel, explicitModelNameSymbol} from './explicitModel';
+import {DefinitionModel} from './definitionModel';
+import {getModelName}    from './modelName';
 
-export function processAnyOfKey(key: string, value: ExplicitModel | ImplicitModel, isArray: boolean): string {
-    return isArray ? (typeof value[explicitModelNameSymbol] === 'string' ? value[explicitModelNameSymbol]: key) : key;
+export function processAnyOfKey(key: string, value: DefinitionModel, isArray: boolean): string {
+    const modelName = getModelName(value);
+    return isArray ? (typeof modelName === 'string' ? modelName : key) : key;
 }
