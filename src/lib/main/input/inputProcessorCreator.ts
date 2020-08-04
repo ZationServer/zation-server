@@ -50,7 +50,7 @@ export default class InputProcessorCreator
     {
         let type = valueModel.type;
         if(meta.canBeNull && type !== undefined &&
-            type !== 'null' && (Array.isArray(type) && type.indexOf('null') === -1)) {
+            ((Array.isArray(type) && type.indexOf('null') === -1) || type !== 'null')) {
             type = Array.isArray(type) ? [...type,'null'] : [type,'null'];
         }
 
