@@ -14,37 +14,45 @@ export default class InputUtils
      * @param path
      * @param input
      */
-    static getModelAtPath(path: string[], input: DefinitionModel): object | undefined {
-
+    static getModelAtPath(path: string[], input: DefinitionModel): object | undefined
+    {
         if(path.length <= 0) return input;
 
         let tempConfig: any = input;
         let i = 0;
         let k: string;
 
+        let inInnerModelDef = false;
+
         while (i < path.length) {
             k = path[i];
-            tempConfig = unwrapIfMetaModel(tempConfig);
-            if(tempConfig.hasOwnProperty(nameof<ObjectModel>(s => s.properties))){
-                tempConfig = tempConfig[nameof<ObjectModel>(s => s.properties)];
-                continue;
-            }
-            else if(tempConfig.hasOwnProperty(nameof<AnyOfModel>(s => s.anyOf))){
-                tempConfig = tempConfig[nameof<AnyOfModel>(s => s.anyOf)];
-                continue;
-            }
-            else if(Array.isArray(tempConfig)){
-                if(k === 'type'){
-                    tempConfig = tempConfig[0];
-                    i++;
+            if(!inInnerModelDef){
+                tempConfig = unwrapIfMetaModel(tempConfig);
+                if(tempConfig.hasOwnProperty(nameof<ObjectModel>(s => s.properties))){
+                    tempConfig = tempConfig[nameof<ObjectModel>(s => s.properties)];
+                    inInnerModelDef = true;
                     continue;
+                }
+                else if(tempConfig.hasOwnProperty(nameof<AnyOfModel>(s => s.anyOf))){
+                    tempConfig = tempConfig[nameof<AnyOfModel>(s => s.anyOf)];
+                    inInnerModelDef = true;
+                    continue;
+                }
+                else if(Array.isArray(tempConfig)){
+                    if(k === 'type'){
+                        tempConfig = tempConfig[0];
+                        i++;
+                        continue;
+                    }
+                    else return undefined;
                 }
                 else return undefined;
             }
-            if(typeof tempConfig[k] === 'object') {
+            else if(typeof tempConfig[k] === 'object') {
                 tempConfig = tempConfig[k];
             }
             else return undefined;
+            inInnerModelDef = false;
             i++;
         }
         return tempConfig;
