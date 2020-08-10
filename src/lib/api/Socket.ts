@@ -5,14 +5,12 @@ Copyright(c) Luca Scaringella
  */
 
 import {ZATION_CUSTOM_EVENT_NAMESPACE, RawZationToken, PrepareZationToken} from '../main/definitions/internal';
-import {OnHandlerFunction, RawSocket}                  from "../main/sc/socket";
 import TokenUtils       from "../main/token/tokenUtils";
 import DataboxFamily    from "./databox/DataboxFamily";
 import Databox          from "./databox/Databox";
 import useragent           = require('useragent');
 const  IP                  = require('ip');
 import CloneUtils            from "../main/utils/cloneUtils";
-import ObjectPathSequenceImp from "../main/internalApi/objectPathSequence/objectPathSequenceImp";
 // noinspection ES6PreferShortImport
 import {ObjectPathSequence}  from "../main/internalApi/objectPathSequence/objectPathSequence";
 import ChannelFamily         from './channel/ChannelFamily';
@@ -22,12 +20,15 @@ import AuthConfig            from '../main/auth/authConfig';
 import ObjectPathSequenceBoxImp from '../main/internalApi/objectPathSequence/objectPathSequenceBoxImp';
 import {bag}                    from './Bag';
 import * as ObjectPath          from 'object-path';
+import {OnHandlerFunction, RawSocket}         from "../main/sc/socket";
 import AuthenticationRequiredError            from '../main/error/authenticationRequiredError';
 import UndefinedUserIdError                   from '../main/error/undefinedUserIdError';
 import {IncomingHttpHeaders, IncomingMessage} from 'http';
 import ApiLevelUtils                          from '../main/apiLevel/apiLevelUtils';
 import {Agent}                                from 'useragent';
 import {DeepReadonly}                         from 'ts-essentials';
+import {EditType, ObjectEditAction}           from '../main/definitions/objectEditAction';
+import ObjectPathSequenceActionsImpl          from '../main/internalApi/objectPathSequence/objectPathSequenceActionsImpl';
 
 type TokenUpdateListener = (oldToken: null | RawZationToken, newToken: null | RawZationToken) => void
 
@@ -171,6 +172,7 @@ export default class Socket<A extends object = any, TP extends object = any>
         });
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * @description
      * Authenticate this socket.
@@ -416,16 +418,31 @@ export default class Socket<A extends object = any, TP extends object = any>
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Clears the token payload.
-     * Every change on the token will update the
-     * authentication of this socket. (Like a new authentication on top).
-     * You can access the token payload on the client and server-side.
-     * But only change, delete or set from the server-side.
-     * Notice that this socket must be authenticated.
-     * @throws AuthenticationRequiredError if the client is not authenticated.
+     * Applies edit actions on the token payload.
+     * Only for advance use cases.
+     * Is used internally.
+     * @param operations
+     * @throws AuthenticationRequiredError if this socket is not authenticated.
      */
-    clearTokenPayload(): Promise<void> {
-        return this.setTokenPayload({});
+    async applyEditActionsOnTokenPayload(operations: ObjectEditAction[]) {
+        let payload = this.getTokenPayloadClone();
+        let op: ObjectEditAction;
+        const len = operations.length;
+        for(let i = 0; i < len; i++) {
+            op = operations[i];
+            switch (op[0]) {
+                case EditType.Set:
+                    ObjectPath.set(payload,op[1],op[2]);
+                    break;
+                case EditType.Delete:
+                    ObjectPath.del(payload,op[1]);
+                    break;
+                case EditType.Clear:
+                    payload = {};
+                    break;
+            }
+        }
+        return this.setTokenPayload(payload);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -477,6 +494,22 @@ export default class Socket<A extends object = any, TP extends object = any>
 
     // noinspection JSUnusedGlobalSymbols
     /**
+     * Clears the token payload.
+     * Every change on the token will update the
+     * authentication of this socket. (Like a new authentication on top).
+     * You can access the token payload on the client and server-side.
+     * But only change, delete or set from the server-side.
+     * Notice that this socket must be authenticated.
+     * @example
+     * await clearTokenPayload();
+     * @throws AuthenticationRequiredError if the client is not authenticated.
+     */
+    clearTokenPayload(): Promise<void> {
+        return this.setTokenPayload({});
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
      * @description
      * Sequence edit the token payload.
      * Useful if you want to make several changes because it
@@ -495,8 +528,8 @@ export default class Socket<A extends object = any, TP extends object = any>
      * @throws AuthenticationRequiredError if the client is not authenticated.
      */
     seqEditTokenPayload(): ObjectPathSequence {
-        return new ObjectPathSequenceImp(this.getTokenPayloadClone(), (payload) =>
-            this.setTokenPayload(payload));
+        return new ObjectPathSequenceActionsImpl((actions) =>
+            this.applyEditActionsOnTokenPayload(actions));
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -546,6 +579,26 @@ export default class Socket<A extends object = any, TP extends object = any>
         await this.deleteTokenPayloadProp(path);
         const id = this._userId;
         if(id !== undefined) return bag.deleteTokenPayloadPropOnUserId(id,path,this.sid);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Clears the token payload on every token with the
+     * current userId (synchronized on user-id).
+     * Every change on the token will update the
+     * authentication of this socket. (Like a new authentication on top).
+     * You can access the token payload on the client and server-side.
+     * But only change, delete or set from the server-side.
+     * Notice that this socket must be authenticated.
+     * @example
+     * await clearTokenPayloadUserIdSync();
+     * @throws AuthenticationRequiredError if the client is not authenticated.
+     */
+    async clearTokenPayloadUserIdSync(): Promise<void> {
+        await this.clearTokenPayload();
+        const id = this._userId;
+        if(id !== undefined) return bag.clearTokenPayloadOnUserId(id,this.sid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -623,6 +676,26 @@ export default class Socket<A extends object = any, TP extends object = any>
         await this.deleteTokenPayloadProp(path);
         const group = this.authUserGroup;
         if(group !== undefined) return bag.deleteTokenPayloadPropOnGroup(group,path,this.sid);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Clears the token payload on every token with the
+     * current auth user group (synchronized on auth user group).
+     * Every change on the token will update the
+     * authentication of this socket. (Like a new authentication on top).
+     * You can access the token payload on the client and server-side.
+     * But only change, delete or set from the server-side.
+     * Notice that this socket must be authenticated.
+     * @example
+     * await clearTokenPayloadGroupSync();
+     * @throws AuthenticationRequiredError if the client is not authenticated.
+     */
+    async clearTokenPayloadGroupSync(): Promise<void> {
+        await this.clearTokenPayload();
+        const group = this.authUserGroup;
+        if(group !== undefined) return bag.clearTokenPayloadOnGroup(group,this.sid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -754,6 +827,7 @@ export default class Socket<A extends object = any, TP extends object = any>
         this._rawSocket.on(ZATION_CUSTOM_EVENT_NAMESPACE + event, handler);
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * Respond on an emit-event of the client socket but only once.
      * @param event
@@ -765,6 +839,7 @@ export default class Socket<A extends object = any, TP extends object = any>
         this._rawSocket.once(ZATION_CUSTOM_EVENT_NAMESPACE + event, handler);
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * Removes a specific or all handlers of an emit-event of the client socket.
      * @param event

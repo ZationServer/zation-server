@@ -28,7 +28,7 @@ const crypto2: any                                         = require("crypto2");
 const uuidV4                                               = require('uuid/v4');
 const uniqid                                               = require('uniqid');
 import ZationWorker                                         = require("../core/zationWorker");
-import {SyncTokenOperationType}                             from "../main/definitions/syncTokenDefinitions";
+import {EditType}                                           from "../main/definitions/objectEditAction";
 import OsUtils                                              from "../main/utils/osUtils";
 import SystemInfo                                           from "../main/utils/systemInfo";
 import ChannelPublisher                                     from "../main/internalChannels/internalChannelEngine";
@@ -37,11 +37,11 @@ import ZationConfig                                         from "../main/config
 import Logger                                               from "../main/log/logger";
 import SidBuilder                                           from "../main/utils/sidBuilder";
 import TokenUtils                                           from "../main/token/tokenUtils";
-import ObjectPathTokenRemoteSequenceImp                     from "../main/internalApi/objectPathSequence/objectPathTokenRemoteSequenceImp";
 import Base64Utils                                          from "../main/utils/base64Utils";
 import ZationConfigFull                                     from "../main/config/manager/zationConfigFull";
 import CloneUtils                                           from "../main/utils/cloneUtils";
 import {JwtSignOptions,JwtVerifyOptions}                    from "../main/definitions/jwt";
+import ObjectPathSequenceActionsImpl                        from '../main/internalApi/objectPathSequence/objectPathSequenceActionsImpl';
 import ApiLevelUtils, {ApiLevelSwitch, ApiLevelSwitchFunction} from "../main/apiLevel/apiLevelUtils";
 import {DataboxFamilyClass}                                    from "./databox/DataboxFamily";
 import DataboxFamilyContainer                                  from "./databox/container/databoxFamilyContainer";
@@ -1241,7 +1241,7 @@ export default class Bag<WA extends object = any> {
      */
     setTokenPayloadPropOnUserId(userId: string | number, path: string | string[], value: any, exceptSocketSids: string[] | string = []): Promise<void> {
         return this.exchangeEngine.publishUpdateUserTokenWorkerTask
-        ([{t: SyncTokenOperationType.Set,p: path,v: value}], userId, exceptSocketSids);
+        ([[EditType.Set,path,value]], userId, exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1261,9 +1261,28 @@ export default class Bag<WA extends object = any> {
      * In case of a string, the keys are split with dots.
      * @param exceptSocketSids
      */
-    deleteTokenPayloadPropOnUserId(userId: string | number, path?: string | string[], exceptSocketSids: string[] | string = []): Promise<void> {
+    deleteTokenPayloadPropOnUserId(userId: string | number, path: string | string[], exceptSocketSids: string[] | string = []): Promise<void> {
         return this.exchangeEngine.publishUpdateUserTokenWorkerTask
-        ([{t: SyncTokenOperationType.Delete,p: path}], userId, exceptSocketSids);
+        ([[EditType.Delete,path]], userId, exceptSocketSids);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Clears the token payload on all tokens
+     * with a specific user id.
+     * Every change on the token of a socket will
+     * update the authentication of this socket. (Like a new authentication on top).
+     * You can access the token payload on the client and server-side.
+     * But only change, delete or set from the server-side.
+     * @example
+     * await clearTokenPayloadOnUserId('USER_ID');
+     * @param userId
+     * @param exceptSocketSids
+     */
+    clearTokenPayloadOnUserId(userId: string | number, exceptSocketSids: string[] | string = []): Promise<void> {
+        return this.exchangeEngine.publishUpdateUserTokenWorkerTask
+        ([[EditType.Clear]], userId, exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1289,11 +1308,9 @@ export default class Bag<WA extends object = any> {
      * @param exceptSocketSids
      */
     seqEditTokenPayloadOnUserId(userId: string | number, exceptSocketSids: string[] | string = []): ObjectPathSequence {
-        return new ObjectPathTokenRemoteSequenceImp(async (operations) => {
-            if (operations.length > 0) {
-                await this.exchangeEngine.publishUpdateUserTokenWorkerTask
-                (operations, userId, exceptSocketSids);
-            }
+        return new ObjectPathSequenceActionsImpl(async (operations) => {
+            await this.exchangeEngine.publishUpdateUserTokenWorkerTask
+            (operations, userId, exceptSocketSids);
         });
     }
 
@@ -1317,7 +1334,7 @@ export default class Bag<WA extends object = any> {
      */
     setTokenPayloadPropOnGroup(authUserGroup: string, path: string | string[], value: any, exceptSocketSids: string[] | string = []): Promise<void> {
         return this.exchangeEngine.publishUpdateGroupTokenWorkerTask
-        ([{t: SyncTokenOperationType.Set,p: path,v: value}], authUserGroup, exceptSocketSids);
+        ([[EditType.Set,path,value]], authUserGroup, exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1337,9 +1354,28 @@ export default class Bag<WA extends object = any> {
      * In case of a string, the keys are split with dots.
      * @param exceptSocketSids
      */
-    deleteTokenPayloadPropOnGroup(authUserGroup: string, path?: string | string[], exceptSocketSids: string[] | string = []): Promise<void> {
+    deleteTokenPayloadPropOnGroup(authUserGroup: string, path: string | string[], exceptSocketSids: string[] | string = []): Promise<void> {
         return this.exchangeEngine.publishUpdateGroupTokenWorkerTask
-        ([{t: SyncTokenOperationType.Delete,p: path}], authUserGroup, exceptSocketSids);
+        ([[EditType.Delete,path]], authUserGroup, exceptSocketSids);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Clears the token payload on all tokens
+     * with a specific auth user group.
+     * Every change on the token of a socket will
+     * update the authentication of this socket. (Like a new authentication on top).
+     * You can access the token payload on the client and server-side.
+     * But only change, delete or set from the server-side.
+     * @example
+     * await clearTokenPayloadOnGroup('AUTH-USER-GROUP');
+     * @param authUserGroup
+     * @param exceptSocketSids
+     */
+    clearTokenPayloadOnGroup(authUserGroup: string, exceptSocketSids: string[] | string = []): Promise<void> {
+        return this.exchangeEngine.publishUpdateGroupTokenWorkerTask
+        ([[EditType.Clear]], authUserGroup, exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1365,11 +1401,9 @@ export default class Bag<WA extends object = any> {
      * @param exceptSocketSids
      */
     seqEditTokenPayloadOnGroup(authUserGroup: string, exceptSocketSids: string[] | string = []): ObjectPathSequence {
-        return new ObjectPathTokenRemoteSequenceImp(async (operations) => {
-            if (operations.length > 0) {
-                await this.exchangeEngine.publishUpdateGroupTokenWorkerTask
-                (operations, authUserGroup, exceptSocketSids);
-            }
+        return new ObjectPathSequenceActionsImpl(async (operations) => {
+            await this.exchangeEngine.publishUpdateGroupTokenWorkerTask
+            (operations, authUserGroup, exceptSocketSids);
         });
     }
 

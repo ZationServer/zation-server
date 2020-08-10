@@ -21,11 +21,8 @@ import {WorkerMessageAction}  from "../main/definitions/workerMessageAction";
 import {ChannelPrepare}       from "../main/channel/channelPrepare";
 import NodeInfo               from "../main/utils/nodeInfo";
 import SocketSet              from "../main/utils/socketSet";
+import {ObjectEditAction}     from "../main/definitions/objectEditAction";
 import OriginsUtils, {OriginChecker} from "../main/origins/originsUtils";
-import {
-    SyncTokenDefinitions,
-    SyncTokenOperationType,
-} from "../main/definitions/syncTokenDefinitions";
 
 import express      = require('express');
 import {Request , Response} from "express";
@@ -791,23 +788,12 @@ class ZationWorker extends SCWorker
      * @param target
      * @param exceptSocketSids
      */
-    private async updateTokens(map: SocketMapper<Socket>, operations: SyncTokenDefinitions[], target, exceptSocketSids: string[]) {
+    private async updateTokens(map: SocketMapper<Socket>, operations: ObjectEditAction[], target, exceptSocketSids: string[]) {
         const filterExceptSocketIds: string[] = this.socketSidsFilter(exceptSocketSids);
         const promises: Promise<void>[] = [];
         map.forEach(target,(socket: Socket) => {
             if(!filterExceptSocketIds.includes(socket.id)) {
-                const edit = socket.seqEditTokenPayload();
-                for(let i = 0; i < operations.length; i++) {
-                    switch (operations[i].t) {
-                        case SyncTokenOperationType.Set :
-                            edit.set(operations[i].p as string | string[],operations[i].v);
-                            break;
-                        case SyncTokenOperationType.Delete :
-                            edit.delete(operations[i].p);
-                            break;
-                    }
-                }
-                promises.push(edit.commit());
+                promises.push(socket.applyEditActionsOnTokenPayload(operations));
             }
         });
         await Promise.all(promises);

@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {UpdateTokenMainData} from "./syncTokenDefinitions";
+import {EditTokenPayloadDescription} from './editTokenPayloadDescription';
 
 export const enum WorkerChTaskType
 {
@@ -76,7 +76,7 @@ interface WorkerChSpecialTaskMark {
 
 export interface WorkerChSpecialTaskToken extends WorkerChSpecialTaskMark {
     action: WorkerChSpecialTaskAction.UpdateUserTokens | WorkerChSpecialTaskAction.UpdateGroupTokens,
-    data: UpdateTokenMainData
+    data: EditTokenPayloadDescription
 }
 
 export interface WorkerChSpecialTaskMessage extends WorkerChSpecialTaskMark {

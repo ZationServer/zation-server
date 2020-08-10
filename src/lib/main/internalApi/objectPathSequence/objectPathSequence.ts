@@ -8,7 +8,7 @@ export interface ObjectPathSequence {
 
     /**
      * @description
-     * Set a value.
+     * Sets a value.
      * @example
      * set('email','example@gmail.com');
      * @param path
@@ -20,7 +20,7 @@ export interface ObjectPathSequence {
 
     /**
      * @description
-     * Delete a value.
+     * Deletes a value.
      * @example
      * delete('email');
      * @param path
@@ -28,6 +28,20 @@ export interface ObjectPathSequence {
      * In case of a string, the keys are split with dots.
      */
     delete(path?: string | string[]): ObjectPathSequence
+
+    /**
+     * @description
+     * Clears the object.
+     * @example
+     * clear();
+     */
+    clear(): ObjectPathSequence
+
+    /**
+     * @description
+     * Returns if the sequence has uncommitted changes.
+     */
+    hasUncommittedChanges(): boolean
 
     /**
      * @description

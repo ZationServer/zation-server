@@ -4,11 +4,6 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-/*
-Class Description :
-This class is to publish into channels with the scServer.exchange object.
- */
-
 import {
     WorkerChMapTaskAction, WorkerChSpecialTask,
     WorkerChSpecialTaskAction,
@@ -16,8 +11,9 @@ import {
     WorkerChTaskType, WorkerChAbstractMapTask, WorkerChMapTask
 } from "../definitions/workerChTaskDefinitions";
 import ScServer             from "../sc/scServer";
-import {SyncTokenDefinitions, UpdateTokenMainData} from "../definitions/syncTokenDefinitions";
+import {ObjectEditAction}   from "../definitions/objectEditAction";
 import Logger               from "../log/logger";
+import {EditTokenPayloadDescription} from '../definitions/editTokenPayloadDescription';
 
 export const INTERNAL_WORKER_CH = 'W>';
 export const INTERNAL_PANEL_CH = 'P>';
@@ -81,15 +77,15 @@ export default class InternalChannelEngine
         });
     }
 
-    async publishSpecialTaskToWorker(action: WorkerChSpecialTaskAction.UpdateGroupTokens, data: UpdateTokenMainData): Promise<void>
-    async publishSpecialTaskToWorker(action: WorkerChSpecialTaskAction.UpdateUserTokens, data: UpdateTokenMainData): Promise<void>
+    async publishSpecialTaskToWorker(action: WorkerChSpecialTaskAction.UpdateGroupTokens, data: EditTokenPayloadDescription): Promise<void>
+    async publishSpecialTaskToWorker(action: WorkerChSpecialTaskAction.UpdateUserTokens, data: EditTokenPayloadDescription): Promise<void>
     async publishSpecialTaskToWorker(action: WorkerChSpecialTaskAction.Message, data: any): Promise<void>
     /**
      * Publish special task to worker.
      * @param action
      * @param data
      */
-    async publishSpecialTaskToWorker(action: WorkerChSpecialTaskAction, data: UpdateTokenMainData | any): Promise<void> {
+    async publishSpecialTaskToWorker(action: WorkerChSpecialTaskAction, data: EditTokenPayloadDescription | any): Promise<void> {
         await this.publishToWorker<WorkerChSpecialTask>({
             taskType: WorkerChTaskType.SpecialTask,
             action: action,
@@ -104,7 +100,7 @@ export default class InternalChannelEngine
      * @param exceptSocketSids
      */
     async publishUpdateUserTokenWorkerTask(
-            operations: SyncTokenDefinitions[],
+            operations: ObjectEditAction[],
             userId,
             exceptSocketSids: string[] | string): Promise<void>
     {
@@ -124,7 +120,7 @@ export default class InternalChannelEngine
      * @param exceptSocketSids
      */
     async publishUpdateGroupTokenWorkerTask(
-            operations: SyncTokenDefinitions[],
+            operations: ObjectEditAction[],
             authUserGroup,
             exceptSocketSids: string[] | string): Promise<void>
     {

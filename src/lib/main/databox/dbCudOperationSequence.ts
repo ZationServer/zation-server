@@ -141,6 +141,16 @@ export default class DbCudOperationSequence
         return this;
     }
 
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns if the sequence has uncommitted changes.
+     */
+    hasUncommittedChanges(): boolean {
+        return this.operations.length > 0;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
     /**
      * Apply all changes on the Databox.
      * Notice that this method will only update the Databox and invoke the before-events.
@@ -148,6 +158,9 @@ export default class DbCudOperationSequence
      * so you have to do it in the before-events or before calling this method.
      */
     async commit() {
-        await this.commitFunction(this.operations);
+        if(this.operations.length > 0) {
+            await this.commitFunction(this.operations);
+            this.operations = [];
+        }
     }
 }
