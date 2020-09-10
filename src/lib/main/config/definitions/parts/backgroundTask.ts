@@ -13,7 +13,7 @@ export interface BackgroundTask
     /**
      * Defines when the background task should be invoked.
      * At will invoke the background task only one time.
-     * You can use a number to define the milliseconds or a TimeObj to define a Time.
+     * You can use a number to define the milliseconds or an object to define a Time.
      * @example
      * // Will invoke the background task when the hour is 10.
      * at: {hour: 10}
@@ -24,11 +24,11 @@ export interface BackgroundTask
      * // Will invoke the background task after 30 seconds.
      * at: 30000
      */
-    at ?: number | TimeObj | TimeObj[] | number[];
+    at ?: number | Time | Time[] | number[];
     /**
      * Defines when the background task should be invoked.
      * Every will invoke the background task every time.
-     * You can use a number to define the milliseconds or a TimeObj to define a Time.
+     * You can use a number to define the milliseconds or an object to define a Time.
      * @example
      * // Will invoke the background task whenever the hour is 10.
      * every: {hour: 10}
@@ -39,7 +39,7 @@ export interface BackgroundTask
      * // Will invoke the background task every 30 seconds.
      * every: 30000
      */
-    every ?: number | TimeObj | TimeObj[] | number[];
+    every ?: number | Time | Time[] | number[];
     /**
      * The task method defines the general task of the background task.
      * Optionally you can pass an array of tasks.
@@ -59,7 +59,7 @@ export interface BackgroundTask
     clusterSafe?: boolean;
 }
 
-export interface TimeObj
+export interface Time
 {
     /**
      * The specific hour when the background task should be executed.
