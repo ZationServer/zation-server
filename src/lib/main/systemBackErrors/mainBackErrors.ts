@@ -10,7 +10,7 @@ import BackErrorConstruct from '../definitions/backErrorConstruct';
 
 export const MainBackErrors = {
     unknownController: {
-        name         : 'unknownController',
+        name         : 'UnknownController',
         description  : 'The controller is not found.',
         type         : ErrorType.InputError,
         sendInfo     : true,
@@ -20,7 +20,7 @@ export const MainBackErrors = {
     } as BackErrorConstruct,
 
     unknownReceiver: {
-        name         : 'unknownReceiver',
+        name         : 'UnknownReceiver',
         description  : 'The receiver is not found.',
         type         : ErrorType.InputError,
         sendInfo     : true,
@@ -30,7 +30,7 @@ export const MainBackErrors = {
     } as BackErrorConstruct,
 
     apiLevelIncompatible: {
-        name         : 'apiLevelIncompatible',
+        name         : 'ApiLevelIncompatible',
         description  : 'The API level of the client is incompatible.',
         type         : ErrorType.InputError,
         sendInfo     : true,
@@ -41,7 +41,7 @@ export const MainBackErrors = {
     } as BackErrorConstruct,
 
     authControllerNotSet: {
-        name         : 'authControllerNotSet',
+        name         : 'AuthControllerNotSet',
         description  : 'Auth controller not set.',
         type         : ErrorType.InputError,
         sendInfo     : false,
@@ -49,7 +49,7 @@ export const MainBackErrors = {
     } as BackErrorConstruct,
 
     accessDenied : {
-        name         : 'accessDenied',
+        name         : 'AccessDenied',
         description  : 'The access to the component was denied.',
         type         : ErrorType.AccessError,
         sendInfo     : false,
@@ -60,7 +60,7 @@ export const MainBackErrors = {
 
     //Code errors
     serviceNotFound : {
-        name         : 'serviceNotFound',
+        name         : 'ServiceNotFound',
         description  : 'Service not found.',
         type         : ErrorType.CodeError,
         sendInfo     : false,
@@ -72,7 +72,7 @@ export const MainBackErrors = {
     } as BackErrorConstruct,
 
     authenticationRequired : {
-        name         : 'authenticationRequired',
+        name         : 'AuthenticationRequired',
         description  : 'Authentication is required.',
         type         : ErrorType.CodeError,
         sendInfo     : false,
@@ -83,7 +83,7 @@ export const MainBackErrors = {
     } as BackErrorConstruct,
 
     undefinedUserId : {
-        name         : 'undefinedUserId',
+        name         : 'UndefinedUserId',
         description  : 'User id is undefined.',
         type         : ErrorType.CodeError,
         sendInfo     : false,
@@ -92,7 +92,7 @@ export const MainBackErrors = {
     } as BackErrorConstruct,
 
     instanceNotFound : {
-        name         : 'instanceNotFound',
+        name         : 'InstanceNotFound',
         description  : 'The instance can not be found.',
         type         : ErrorType.CodeError,
         sendInfo     : false,
@@ -103,7 +103,7 @@ export const MainBackErrors = {
     } as BackErrorConstruct,
 
     tokenSavedAuthUserGroupNotFound : {
-        name         : 'tokenSavedAuthUserGroupNotFound',
+        name         : 'TokenSavedAuthUserGroupNotFound',
         description  : 'The saved auth user group in the token does not exists in the server config.',
         type         : ErrorType.TokenError,
         sendInfo     : false,
@@ -115,7 +115,7 @@ export const MainBackErrors = {
     } as BackErrorConstruct,
 
     tokenWithoutAuthUserGroup : {
-        name         : 'tokenWithoutAuthUserGroup',
+        name         : 'TokenWithoutAuthUserGroup',
         description  : 'Token without an auth user group.',
         type         : ErrorType.TokenError,
         sendInfo     : false,
@@ -124,7 +124,7 @@ export const MainBackErrors = {
     } as BackErrorConstruct,
 
     tokenWithAuthUserGroupAndOnlyPanel : {
-        name         : 'tokenWithAuthUserGroupAndOnlyPanel',
+        name         : 'TokenWithAuthUserGroupAndOnlyPanel',
         description  : 'Token with an auth user group and only panel.',
         type         : ErrorType.TokenError,
         sendInfo     : false,
@@ -133,7 +133,7 @@ export const MainBackErrors = {
     } as BackErrorConstruct,
 
     invalidPanelAuthData : {
-        name         : 'invalidPanelAuthData',
+        name         : 'InvalidPanelAuthData',
         description  : 'Invalid panel auth data.',
         type         : ErrorType.AccessError,
         private      : false,
@@ -142,7 +142,7 @@ export const MainBackErrors = {
     } as BackErrorConstruct,
 
     panelDeactivated : {
-        name         : 'panelDeactivated',
+        name         : 'PanelDeactivated',
         description  : 'The panel is deactivated.',
         type         : ErrorType.InputError,
         private      : false,
@@ -151,7 +151,7 @@ export const MainBackErrors = {
     } as BackErrorConstruct,
 
     invalidRequest: {
-        name         : 'invalidRequest',
+        name         : 'InvalidRequest',
         description  : 'Invalid request.',
         type         : ErrorType.InputError,
         private      : false,
@@ -160,7 +160,7 @@ export const MainBackErrors = {
     } as BackErrorConstruct,
 
     invalidPackage: {
-        name         : 'invalidPackage',
+        name         : 'InvalidPackage',
         description  : 'Invalid package.',
         type         : ErrorType.InputError,
         private      : true,
@@ -178,7 +178,7 @@ export const MainBackErrors = {
     } as BackErrorConstruct,
 
     invalidValidationCheckStructure: {
-        name         : 'invalidValidationCheckStructure',
+        name         : 'InvalidValidationCheckStructure',
         description  : 'Invalid validation check structure.',
         type         : ErrorType.InputError,
         private      : false,
@@ -189,7 +189,7 @@ export const MainBackErrors = {
     } as BackErrorConstruct,
 
     pathNotResolvable: {
-        name         : 'pathNotResolvable',
+        name         : 'PathNotResolvable',
         description  : 'Input path is not resolvable.',
         type         : ErrorType.InputError,
         private      : false,
@@ -201,7 +201,7 @@ export const MainBackErrors = {
     } as BackErrorConstruct,
 
     validationCheckLimitReached: {
-        name         : 'validationCheckLimitReached',
+        name         : 'ValidationCheckLimitReached',
         description  : 'Validation check limit is reached.',
         type         : ErrorType.InputError,
         private      : false,
@@ -213,7 +213,7 @@ export const MainBackErrors = {
     } as BackErrorConstruct,
 
     unknownError: {
-        name         : 'unknownError',
+        name         : 'UnknownError',
         description  : 'If server runs in debug you can found more detail in the info.',
         type         : ErrorType.SystemError,
         sendInfo     : true,
