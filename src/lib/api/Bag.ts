@@ -769,6 +769,7 @@ export default class Bag<WA extends object = any> {
         return createAsyncTimeout(milliseconds)
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * Creates an asynchronous interval iterator.
      * @example

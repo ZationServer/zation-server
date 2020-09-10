@@ -44,7 +44,7 @@ export default class BackgroundTasksLoader
 
    private static timeSetter(func: SetTask,key: string,task,name: string,bkt: BackgroundTask)
    {
-       const clusterSafe = typeof bkt.clusterSafe === 'boolean' ? bkt.clusterSafe: true;
+       const clusterSafe = typeof bkt.clusterSafe === 'boolean' ? bkt.clusterSafe : true;
        if(Array.isArray(bkt[key])) {
            for(let i = 0; i < bkt[key].length; i ++) {
                func(name,bkt[key][i],clusterSafe,task);
