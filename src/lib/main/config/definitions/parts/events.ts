@@ -46,6 +46,7 @@ export interface Events
 {
     /**
      * An event which that you can initialize an additional HTTP rest API using express.
+     * Body-parser is already added to the express middleware.
      * Runs on a worker process.
      * The Bag instance can be securely accessed with the variable 'bag'.
      * @example (app,express) => {}

@@ -27,12 +27,9 @@ import OriginsUtils, {OriginChecker} from "../main/origins/originsUtils";
 import express      = require('express');
 import {Request , Response} from "express";
 import * as path            from 'path';
-import cookieParser = require('cookie-parser');
 import bodyParser   = require('body-parser');
-import fileUpload   = require('express-fileupload');
 import url          = require('url');
 
-import process          = require("process");
 import treeify          = require('treeify');
 import ControllerReqHandler from "../main/controller/handle/controllerReqHandler";
 import AuthConfig           from "../main/auth/authConfig";
@@ -451,10 +448,6 @@ class ZationWorker extends SCWorker
             }
         });
 
-        //StartCookieParser
-        this.app.use(cookieParser());
-        //FileParser
-        this.app.use(fileUpload());
         //BodyParser
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({extended: true}));
