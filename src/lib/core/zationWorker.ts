@@ -435,7 +435,7 @@ class ZationWorker extends SCWorker
         this.app.use((req, res, next) => {
             if(this.originCheck(req.hostname,req.protocol,serverPort)){
                 res.setHeader('Access-Control-Allow-Origin', `${req.protocol}://${req.hostname}`);
-                res.header('Access-Control-Allow-Methods', 'GET, POST');
+                res.header('Access-Control-Allow-Methods', '*');
                 res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,contenttype');
                 res.header('Access-Control-Allow-Credentials', true);
                 return next();
