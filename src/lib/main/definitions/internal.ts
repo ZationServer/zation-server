@@ -7,14 +7,14 @@ Copyright(c) Luca Scaringella
 export type ZationAccessRecord = Record<ZationAccess,any>;
 export type ZationAccess = 'all' | 'allAuth' | 'allNotAuth';
 
-export interface RawZationToken extends PrepareZationToken {
+export interface RawZationToken<P = any> extends PrepareZationToken<P> {
     tid: string,
     userId?: string | number,
     exp: number,
     authUserGroup: string
 }
 
-export interface PrepareZationToken {
+export interface PrepareZationToken<P = any> {
     authUserGroup?: string,
     userId?: string | number | undefined,
     /**
@@ -25,7 +25,7 @@ export interface PrepareZationToken {
     onlyPanelToken?: boolean,
     exp?: number,
     clusterKey?: string,
-    payload?: object
+    payload?: P
 }
 
 export const DEFAULT_USER_GROUP_FALLBACK = 'default';

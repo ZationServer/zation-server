@@ -202,8 +202,10 @@ export default class Socket<A extends object = any, TP extends object = any>
 
         token.authUserGroup = authUserGroup;
         token.payload = payload;
-        if(userId != undefined) {token.userId = userId;}
-        if(this.authConfig.hasAuthUserGroupPanelAccess(authUserGroup)) {token.panelAccess = true;}
+        if(userId != undefined)
+            token.userId = userId;
+        if(this.authConfig.hasAuthUserGroupPanelAccess(authUserGroup))
+            token.panelAccess = true;
 
         return this._setToken(token,jwtOptions);
     }

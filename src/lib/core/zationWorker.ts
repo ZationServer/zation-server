@@ -596,6 +596,8 @@ class ZationWorker extends SCWorker
         this.scServer.addMiddleware(this.scServer.MIDDLEWARE_AUTHENTICATE, async (req: AuthMiddlewareReq, next) =>
         {
             const token = req.authToken;
+            if(token == null || typeof token !== 'object') return next(true);
+
             //check if the token is valid
             try {
                 TokenUtils.checkToken(token,this.authConfig);

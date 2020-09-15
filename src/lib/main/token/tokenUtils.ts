@@ -30,13 +30,10 @@ export default class TokenUtils
      * @param zc
      * @param jwtOptions
      */
-    static async verifyToken(signedToken,zc: ZationConfigFull,jwtOptions: JwtVerifyOptions = {}): Promise<Record<string,any>>
-    {
-        return new Promise((resolve, reject) =>
-        {
+    static async verifyToken(signedToken,zc: ZationConfigFull,jwtOptions: JwtVerifyOptions = {}): Promise<Record<string,any>> {
+        return new Promise((resolve, reject) => {
             (Jwt.verify as JwtVerifyFunction)(signedToken,zc.getVerifyKey(),jwtOptions,(err, decoded) => {
-                if (err) reject(err);
-                else resolve(decoded);
+                err ? reject(err) : resolve(decoded);
             });
         });
     }
@@ -47,10 +44,8 @@ export default class TokenUtils
      * @param zc
      * @param jwtOptions
      */
-    static async signToken(data: object,zc: ZationConfig,jwtOptions: JwtSignOptions): Promise<string>
-    {
-        return new Promise((resolve, reject) =>
-        {
+    static async signToken(data: object,zc: ZationConfig,jwtOptions: JwtSignOptions): Promise<string> {
+        return new Promise((resolve, reject) => {
             const options = zc.getJwtSignOptions();
             ObjectUtils.mergeTwoObjects(options,jwtOptions);
 
@@ -66,26 +61,25 @@ export default class TokenUtils
      * @param token
      * @param ae
      */
-    static checkToken(token: RawZationToken | null, ae: AuthConfig) {
-        if(token != null)
-        {
-            const authUserGroup = token.authUserGroup;
-            if(authUserGroup !== undefined) {
-                if(token.onlyPanelToken){
-                    throw new BackError(MainBackErrors.tokenWithAuthUserGroupAndOnlyPanel);
-                }
-                if (!ae.isValidAuthUserGroup(authUserGroup)) {
-                    throw new BackError(MainBackErrors.tokenSavedAuthUserGroupNotFound,
-                        {
-                            savedAuthUserGroup: authUserGroup,
-                            authUserGroupsInZationConfig: ae.getAuthUserGroups()
-                        });
-                }
+    static checkToken<T extends object>(token: T, ae: AuthConfig) {
+        const authUserGroup = (token as RawZationToken).authUserGroup;
+        if(authUserGroup != null) {
+            if((token as RawZationToken).onlyPanelToken){
+                throw new BackError(MainBackErrors.tokenWithAuthUserGroupAndOnlyPanel);
             }
-            else {
-                if(!(typeof token.onlyPanelToken === 'boolean' && token.onlyPanelToken)) {
-                    throw new BackError(MainBackErrors.tokenWithoutAuthUserGroup);
-                }
+            if (!ae.isValidAuthUserGroup(authUserGroup)) {
+                throw new BackError(MainBackErrors.tokenSavedAuthUserGroupNotFound,
+                    {
+                        savedAuthUserGroup: authUserGroup,
+                        authUserGroupsInZationConfig: ae.getAuthUserGroups()
+                    });
+            }
+        }
+        else {
+            // noinspection SuspiciousTypeOfGuard
+            if(!(typeof (token as RawZationToken).onlyPanelToken === 'boolean' &&
+                (token as RawZationToken).onlyPanelToken)) {
+                throw new BackError(MainBackErrors.tokenWithoutAuthUserGroup);
             }
         }
     }
@@ -101,9 +95,7 @@ export default class TokenUtils
                 }
             }
         }
-        else {
-            return () => {};
-        }
+        else return () => {};
     }
 
 }

@@ -9,7 +9,7 @@ import base64url                                            from "base64url"
 import PortChecker                                          from "../main/utils/portChecker";
 import AsymmetricKeyPairs                                   from "../main/internalApi/asymmetricKeyPairs";
 import {WorkerMessageAction}                                from "../main/definitions/workerMessageAction";
-import {ZATION_CUSTOM_EVENT_NAMESPACE}                      from "../main/definitions/internal";
+import {PrepareZationToken, RawZationToken, ZATION_CUSTOM_EVENT_NAMESPACE} from '../main/definitions/internal';
 import {InternalMainConfig}                                 from "../main/config/definitions/main/mainConfig";
 import {PrecompiledAppConfig}                               from "../main/config/definitions/main/appConfig";
 import {PrecompiledServiceConfig}                           from "../main/config/definitions/main/serviceConfig";
@@ -62,6 +62,9 @@ import Socket                                                  from './Socket';
 import {AnyClass, Prototype}                                   from '../main/utils/typeUtils';
 import DataboxCore                                             from './databox/DataboxCore';
 import ChannelCore                                             from './channel/ChannelCore';
+import AuthenticationRequiredError from '../main/error/authenticationRequiredError';
+import AuthConfig from '../main/auth/authConfig';
+import ZationToken from '../main/internalApi/zationToken';
 
 /**
  * The bag instance of this process.
@@ -92,6 +95,7 @@ export default class Bag<WA extends object = any> {
     protected readonly serviceEngine: ServiceEngine;
     protected readonly zc: ZationConfigFull;
     protected readonly worker: ZationWorker;
+    protected readonly authConfig: AuthConfig;
 
     private static _instance: Bag;
     private static readyPromise: Promise<void> = new Promise<void>(resolve => {Bag.readyResolve = resolve});
@@ -103,6 +107,7 @@ export default class Bag<WA extends object = any> {
         this.serviceEngine = worker.getServiceEngine();
         this.zc = worker.getZationConfig();
         this.worker = worker;
+        this.authConfig = worker.getAuthConfig();
     }
 
     //PART singleton access
@@ -785,6 +790,75 @@ export default class Bag<WA extends object = any> {
         return createIntervalAsyncIterator(milliseconds);
     }
 
+    //Part Zation tokens verify/sign
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Creates a raw zation token.
+     * Can be signed by using the sign token method on the bag.
+     * @example
+     * createRawZationToken('user','tom12',{email: 'example@gmail.com'});
+     * @param authUserGroup
+     * The authUserGroup must exist in the app config.
+     * Otherwise, an error will be thrown.
+     * @param userId
+     * @param payload
+     * Sets the payload of the token.
+     * @throws AuthenticationRequiredError
+     */
+    createRawZationToken<TP>(authUserGroup: string, userId?: string | number,payload: Partial<TP> = {}): RawZationToken<Partial<TP>> {
+        if(!this.authConfig.isValidAuthUserGroup(authUserGroup))
+            throw new AuthenticationRequiredError(`Auth user group '${authUserGroup}' is not defined in the server config.`);
+
+        const token: PrepareZationToken<Partial<TP>> = TokenUtils.generateToken(this.authConfig.getTokenClusterCheckKey());
+        token.authUserGroup = authUserGroup;
+        token.payload = payload;
+        if(userId != undefined)
+            token.userId = userId;
+        if(this.authConfig.hasAuthUserGroupPanelAccess(authUserGroup))
+            token.panelAccess = true;
+
+        return token as RawZationToken<Partial<TP>>;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Signs a zation token.
+     * A perfect use case for this method is to sign tokens in an express endpoint.
+     * But use this method carefully and only sign authorized clients.
+     * Because the token can also be used for zation components on WebSocket base.
+     * @param authUserGroup
+     * @param userId
+     * @param payload
+     * @param jwtOptions
+     */
+    async signZationToken(authUserGroup: string, userId?: string | number,payload: object = {},jwtOptions: JwtSignOptions = {}): Promise<string> {
+        return this.signToken(this.createRawZationToken(authUserGroup, userId, payload),jwtOptions);
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Verify a Zation token.
+     * This method will also check the structure of the token and
+     * converts the raw token to a ZationToken instance.
+     * A perfect use case for this method is to verify tokens in an express middleware.
+     * @param signedToken
+     * @throws TokenExpiredError, JsonWebTokenError, NotBeforeError, InvalidTokenType or
+     * BackError with names: TokenWithAuthUserGroupAndOnlyPanel, TokenSavedAuthUserGroupNotFound or TokenWithoutAuthUserGroup.
+     */
+    async verifyZationToken<TP extends object>(signedToken: string): Promise<ZationToken<TP>> {
+        const rawToken = await this.verifyToken(signedToken);
+        if(rawToken == null || typeof rawToken !== 'object') {
+            const err = new Error('Token is not an object.');
+            err.name = 'InvalidTokenType';
+            throw err;
+        }
+        TokenUtils.checkToken(rawToken,this.authConfig);
+        return new ZationToken<TP>(rawToken as RawZationToken);
+    }
+
     //Part sign and verify token
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
@@ -810,14 +884,16 @@ export default class Bag<WA extends object = any> {
     /**
      * @description
      * Verify a token.
-     * This method can be used to verify signed tokens based on the secret key of the server.
-     * A use case for this method could be to verify tokens in an express middleware.
+     * This method can be used to verify signed tokens.
+     * This method is only for advanced use cases.
+     * It will use the default server settings,
+     * but you can override some options by providing jwt verify options as a second argument.
      * The return value is the plain decrypted token.
      * @example
      * await verifyToken('djf09ejd103je32ije0');
      * @param signedToken
      * @param jwtOptions
-     * @throws BackError with names: tokenExpiredError, jsonWebTokenError or unknownTokenVerifyError.
+     * @throws TokenExpiredError, JsonWebTokenError or NotBeforeError.
      */
     async verifyToken(signedToken: string, jwtOptions: JwtVerifyOptions = {}): Promise<Record<string, any>> {
         return TokenUtils.verifyToken(signedToken, this.zc, jwtOptions);
