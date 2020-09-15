@@ -7,7 +7,6 @@ Copyright(c) Luca Scaringella
 import 'source-map-support/register'
 
 import {BrokerMessageAction}  from "../main/definitions/brokerMessageAction";
-import SystemInfo             from "../main/utils/systemInfo";
 import ZationConfig           from "../main/config/manager/zationConfig";
 import Logger                 from "../main/log/logger";
 import ZationConfigFull       from "../main/config/manager/zationConfigFull";
@@ -17,6 +16,7 @@ import {startModeSymbol}                from './startMode';
 import StartDebugStopwatch              from '../main/utils/startDebugStopwatch';
 import {Writeable}                      from '../main/utils/typeUtils';
 import Process, {ProcessType}           from '../api/Process';
+import OsUtils                          from '../main/utils/osUtils';
 
 (Process as Writeable<typeof Process>).type = ProcessType.Broker;
 
@@ -80,7 +80,7 @@ class ZationBroker extends SCBroker
                     id: this.id,
                     broker: {
                         pid   : process.pid,
-                        system: (await SystemInfo.getPidInfo()),
+                        system: (await OsUtils.getPidInfo()),
                         brokerStartedTimestamp : this.brokerStartedTimeStamp
                     },
                     cBrokers: this.clusterClient ? this.clusterClient.sccBrokerURIList: []

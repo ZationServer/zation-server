@@ -46,7 +46,7 @@ import Logger               from "../main/log/logger";
 import PanelEngine          from "../main/panel/panelEngine";
 import SidBuilder           from "../main/utils/sidBuilder";
 import TokenUtils, {TokenClusterKeyCheckFunction} from "../main/token/tokenUtils";
-import SystemInfo           from "../main/utils/systemInfo";
+import PanelOsInfo          from "../main/utils/panelOsInfo";
 import BackgroundTasksWorkerSaver from "../main/background/backgroundTasksWorkerSaver";
 import MiddlewareUtils      from "../main/utils/middlewareUtils";
 import ZationConfigFull     from "../main/config/manager/zationConfigFull";
@@ -1051,11 +1051,11 @@ class ZationWorker extends SCWorker
             workerStartedTimestamp: this.workerStartedTimeStamp,
             serverStartedTimestamp: this.serverStartedTimeStamp,
             panelAuthUserMap: this.panelEngine.getPanelUserMap(),
-            generalSystemInfo: (await SystemInfo.getGeneralInfo()),
+            generalSystemInfo: (await PanelOsInfo.getGeneralInfo()),
             defaultUserName: this.authConfig.getDefaultUserGroup(),
             //dynamic properties
             clientCount: this.scServer.clientsCount,
-            systemInfo : (await SystemInfo.getUpdatedInfo()),
+            systemInfo : (await PanelOsInfo.getUpdatedInfo()),
             user: {
                 panelUserCount: this.getPanelUserSet().getLength(),
                 defaultUserGroupCount: this.getPreparedBag().getWorkerDefaultUserGroupCount(),
@@ -1081,7 +1081,7 @@ class ZationWorker extends SCWorker
         setInterval(async () => {
             if(this.panelEngine.isPanelInUse()) {
                 this.panelEngine.update({
-                    systemInfo  : (await SystemInfo.getUpdatedInfo()),
+                    systemInfo  : (await PanelOsInfo.getUpdatedInfo()),
                     clientCount : this.scServer.clientsCount,
                     user: {
                         panelUserCount: bag.getWorkerPanelClientsCount(),

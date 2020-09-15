@@ -8,12 +8,13 @@ import * as os from 'os';
 import * as fs from "fs";
 import co from 'co';
 const cp = require('child_process');
+const pidUsage = require('pidusage');
 
 const DISK_PATTERN = /^(\S+)\n?\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(.+?)\n/mg;
 
 export default class OsUtils {
 
-    static async getDriveUsed(): Promise<{ totalGb: number, usedGb: number, usedPercentage: number }> {
+    static async getHardDriveInfo(): Promise<{ totalGb: number, usedGb: number, usedPercentage: number }> {
         try {
             return await OsUtils.processDriveInfo()
                 .then((res) => {
@@ -253,6 +254,30 @@ export default class OsUtils {
                 }
             })
         })
+    }
+
+    private static async getPidUsage(): Promise<any>
+    {
+        return new Promise<object>((resolve, reject) => {
+            pidUsage(process.pid, (err, stats) => {
+                if(err){reject(err);}
+                resolve(stats);
+            });
+        });
+    }
+
+    /**
+     * @return
+     * The CPU usage in percentage.
+     * The memory usage in MB.
+     */
+    static async getPidInfo(): Promise<{cpu: number,memory: number}>
+    {
+        const pidUsage = await OsUtils.getPidUsage();
+        return {
+            cpu: pidUsage.cpu,
+            memory: pidUsage.memory / 1e+6
+        }
     }
 }
 

@@ -30,7 +30,6 @@ const uniqid                                               = require('uniqid');
 import ZationWorker                                         = require("../core/zationWorker");
 import {EditType}                                           from "../main/definitions/objectEditAction";
 import OsUtils                                              from "../main/utils/osUtils";
-import SystemInfo                                           from "../main/utils/systemInfo";
 import ChannelPublisher                                     from "../main/internalChannels/internalChannelEngine";
 import ServiceEngine                                        from "../main/services/serviceEngine";
 import ZationConfig                                         from "../main/config/manager/zationConfig";
@@ -482,7 +481,7 @@ export default class Bag<WA extends object = any> {
      * the memory usage in MB of this process.
      */
     async getPidUsage(): Promise<{cpu: number, memory: number}> {
-        return SystemInfo.getPidInfo();
+        return OsUtils.getPidInfo();
     }
 
     // noinspection JSUnusedGlobalSymbols
