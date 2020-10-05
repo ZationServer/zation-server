@@ -82,7 +82,7 @@ export default class ComponentUtils {
         return parts[parts.length -1];
     }
 
-    static buildTreeInfoStructure(includeSystemComp: boolean, ...compPrepares: ComponentPrepare<any>[]) {
+    static buildTreeInfoStructure(includeSystemComp: boolean, ...compPrepares: ComponentPrepare<any,any>[]) {
         const structure = {};
         let tmpSplit;
         let tmpInfo: ComponentInfo;

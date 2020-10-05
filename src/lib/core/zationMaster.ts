@@ -10,13 +10,12 @@ import {StarterConfig}          from '../main/config/definitions/main/starterCon
 import StringSet                from '../main/utils/stringSet';
 import StateServerEngine        from '../main/cluster/stateServerEngine';
 import Logger                   from '../main/log/logger';
-import ConfigChecker            from '../main/config/utils/configChecker';
+import ConfigChecker            from '../main/config/check/configChecker';
 import ClientPrepare            from '../main/client/clientPrepare';
 import PortChecker              from '../main/utils/portChecker';
 import BackgroundTasksSender    from '../main/background/backgroundTasksSender';
 import BackgroundTasksLoader    from '../main/background/backgroundTasksLoader';
 import ZationConfigMaster       from '../main/config/manager/zationConfigMaster';
-import ConfigPrecompiler                       from '../main/config/utils/configPrecompiler';
 import LicenseManager, {License, LicenseLevel} from '../main/utils/licenseManager';
 // noinspection ES6PreferShortImport
 import {StartErrorName}                        from '../main/definitions/startErrorName';
@@ -33,12 +32,13 @@ import {MasterMessageAction, MasterMessagePackage} from '../main/definitions/mas
 // noinspection ES6PreferShortImport
 import {ConsoleColor}                              from '../main/log/logCategories';
 import Process, {ProcessType}                      from '../api/Process';
-import {Writeable}                                 from '../main/utils/typeUtils';
+import {Writable}                                  from '../main/utils/typeUtils';
+import EventPreparer                               from '../main/events/eventPreparer';
 const IP: any                                      = require('ip');
 
 const  SocketCluster: any = require('socketcluster');
 
-(Process as Writeable<typeof Process>).type = ProcessType.Master;
+(Process as Writable<typeof Process>).type = ProcessType.Master;
 
 export default class ZationMaster {
     private static instance: ZationMaster | null = null;
@@ -222,7 +222,7 @@ export default class ZationMaster {
         this.debugStopwatch.start();
         const masterInitEvent = (this.zcLoader.appConfig.events || {}).masterInit;
         if(masterInitEvent){
-            await ConfigPrecompiler.precompileEvent(nameof<Events>(s => s.masterInit),
+            await EventPreparer.prepareEvent(nameof<Events>(s => s.masterInit),
                 masterInitEvent || (() => {}))(this.zc.getServerInfo());
         }
         this.debugStopwatch.stop(`The Master invoked init event.`);
@@ -362,7 +362,7 @@ export default class ZationMaster {
 
             const startedEvent = (this.zcLoader.appConfig.events || {}).started;
             if(startedEvent){
-                await ConfigPrecompiler.precompileEvent(nameof<Events>(s => s.started),
+                await EventPreparer.prepareEvent(nameof<Events>(s => s.started),
                     startedEvent || (() => {}))(this.zc.getServerInfo());
             }
         });

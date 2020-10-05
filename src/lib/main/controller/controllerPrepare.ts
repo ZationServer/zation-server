@@ -8,25 +8,30 @@ import ZationWorker     = require("../../core/zationWorker");
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig} from "../config/definitions/parts/controllerConfig";
 import BackError          from "../../api/BackError";
-import SystemVersionChecker from "../systemVersion/systemVersionChecker";
+import SystemVersionChecker   from "../systemVersion/systemVersionChecker";
 import ControllerAccessHelper from "./controllerAccessHelper";
-import Controller, {ControllerClass, ControllerPreparedData} from '../../api/Controller';
 import {MainBackErrors}              from "../systemBackErrors/mainBackErrors";
 import Bag                           from "../../api/Bag";
 import ZationConfigFull              from "../config/manager/zationConfigFull";
 import InputClosureCreator           from "../input/inputClosureCreator";
+import Controller, {ControllerClass, ControllerPreparedData}                     from '../../api/Controller';
 import ApiLevelUtils, {ApiLevelSwitch}                                           from "../apiLevel/apiLevelUtils";
 import AuthController                                                            from '../../api/AuthController';
 import ComponentPrepare                                                          from '../component/componentPrepare';
 import DynamicSingleton                                                          from '../utils/dynamicSingleton';
 import CompHandleMiddlewareUtils                                                 from '../compHandleMiddleware/compHandleMiddlewareUtils';
+import ObjectUtils                                                               from '../utils/objectUtils';
+import {Writable}                                                                from '../utils/typeUtils';
+import {systemControllers}                                                       from './systemControllers/systemControllers.config';
 
-export default class ControllerPrepare extends ComponentPrepare<Controller>
+export default class ControllerPrepare extends ComponentPrepare<Controller,ControllerConfig>
 {
     private _authControllerIdentifier: string;
 
     constructor(zc: ZationConfigFull,worker: ZationWorker,bag: Bag) {
-        super(zc,worker,bag,'Controller',zc.appConfig.controllers || {});
+        super(zc,worker,bag,'Controller',
+            Object.assign(systemControllers,zc.appConfig.controllers || {}),
+            zc.appConfig.controllerDefaults);
     }
 
     /**
@@ -82,6 +87,8 @@ export default class ControllerPrepare extends ComponentPrepare<Controller>
     private processController(controller: ControllerClass,identifier: string,apiLevel?: number): Controller
     {
         const config: ControllerConfig = controller.config || {};
+        ObjectUtils.mergeTwoObjects(config, this.componentDefaultConfig, false);
+        (controller as Writable<ControllerClass>).config = config;
 
         const preparedData: ControllerPreparedData = {
             controllerConfig: config,

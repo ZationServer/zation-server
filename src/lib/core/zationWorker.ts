@@ -66,7 +66,6 @@ import {CHANNEL_START_INDICATOR}  from '../main/channel/channelDefinitions';
 import DataboxHandler             from "../main/databox/handle/databoxHandler";
 import DataboxPrepare             from "../main/databox/databoxPrepare";
 import LicenseManager, {License}  from "../main/utils/licenseManager";
-import ConfigPrecompiler          from "../main/config/utils/configPrecompiler";
 import BagExtensionProcessor      from '../main/bagExtension/bagExtensionProcessor';
 import FunctionInitEngine         from '../main/functionInit/functionInitEngine';
 import InjectionsManager                from '../main/injections/injectionsManager';
@@ -84,12 +83,12 @@ import {RECEIVER_EVENT}                 from '../main/receiver/receiverDefinitio
 import {CONTROLLER_EVENT}               from '../main/controller/controllerDefinitions';
 import ComponentUtils                   from '../main/component/componentUtils';
 import Socket                           from '../api/Socket';
-import {Writeable}                      from '../main/utils/typeUtils';
+import {Writable}                       from '../main/utils/typeUtils';
 import Process, {ProcessType}           from '../api/Process';
 
 const  SCWorker: any        = require('socketcluster/scworker');
 
-(Process as Writeable<typeof Process>).type = ProcessType.Worker;
+(Process as Writable<typeof Process>).type = ProcessType.Worker;
 
 class ZationWorker extends SCWorker
 {
@@ -186,16 +185,11 @@ class ZationWorker extends SCWorker
         startPromises.push(this.viewEngine.loadViews());
 
         debugStopwatch.start();
-        const otherConfigsLoadedSet = ConfigLoader.loadOtherConfigsSafe(this.zc.configLocations);
+        this.zc.setOtherConfigs(ConfigLoader.loadOtherConfigsSafe(this.zc.configLocations));
         debugStopwatch.stop(`The Worker with id ${this.id} has loaded other zation configuration files.`);
 
         //start loading client js
         startPromises.push(this.loadClientJsData());
-
-        debugStopwatch.start();
-        const precompiler = new ConfigPrecompiler(otherConfigsLoadedSet);
-        this.zc.setOtherConfigs(precompiler.precompile(this.zc,this.zc.mainConfig.showPrecompiledConfigs && this.isLeader));
-        debugStopwatch.stop(`The Worker with id ${this.id} has pre compiled configurations.`);
 
         //Set error event
         ErrorEventHolder.set(this.zc.event.error);

@@ -11,19 +11,19 @@ import {
     DefinitionModel,
     ObjectModel,
     ValueModel,
-} from '../models/definitionModel';
+} from './definitionModel';
 import BackErrorBag          from "../../api/BackErrorBag";
 import ValidatorCreator      from "./validator/validatorCreator";
 import TypeConverterCreator  from "./typeConvert/typeConverterCreator";
 import BackError             from "../../api/BackError";
 import Iterator              from "../utils/iterator";
 import {ValidationBackErrors} from "../systemBackErrors/validationBackErrors";
-import CloneUtils            from "../utils/cloneUtils";
-import {ProcessTask}         from "./processTaskEngine";
-import {ModelPreparationMem} from '../config/utils/configPrecompiler';
-import {processAnyOfKey}     from '../models/anyOfModelUtils';
+import CloneUtils             from "../utils/cloneUtils";
+import {ProcessTask}          from "./processTaskEngine";
+import {processAnyOfKey}      from '../models/anyOfModelUtils';
 // noinspection ES6PreferShortImport
-import {ModelMetaData}       from '../models/metaModel';
+import {ModelMetaData}        from '../models/metaModel';
+import {CompiledModel}        from '../models/modelCompiler';
 // noinspection ES6PreferShortImport
 
 export interface ProcessInfo {
@@ -39,7 +39,7 @@ export interface Processable {
     _process: InputProcessFunction
 }
 
-export default class InputProcessorCreator
+export default class ModelProcessCreator
 {
     /**
      * Creates a closure to process a value model.
@@ -99,7 +99,7 @@ export default class InputProcessorCreator
      */
     static createArrayModelProcessor(arrayModel: ArrayModel, meta: ModelMetaData): InputProcessFunction
     {
-        const arrayInner = (arrayModel[0] as DefinitionModel & ModelPreparationMem);
+        const arrayInner = (arrayModel[0] as DefinitionModel & CompiledModel);
         const arraySettings = arrayModel[1] || {};
         const hasConvert = typeof arraySettings.convert === 'function';
         const arrayValidate = ValidatorCreator.createArrayValidator(arraySettings);
@@ -172,7 +172,7 @@ export default class InputProcessorCreator
             let found = false;
             let tmpBackErrorBag;
             const tmpBackErrorBags: BackErrorBag[] = [];
-            await breakIterator(async (key, value: ModelPreparationMem) =>
+            await breakIterator(async (key, value: CompiledModel) =>
             {
                 key = preparedNames[key];
 
@@ -265,14 +265,14 @@ export default class InputProcessorCreator
                         propName: `${currentPath}.${propName}`;
 
                     if(input[propName] !== undefined) {
-                        promises.push((props[propName] as ModelPreparationMem)._process
+                        promises.push((props[propName] as CompiledModel)._process
                         (input,propName,currentPathNew,processInfo));
                     }
                     else
                     {
                         //is this input optional?
                         //or is it really missing?
-                        const {defaultValue,optional} = (props[propName] as ModelPreparationMem)._optionalInfo;
+                        const {defaultValue,optional} = (props[propName] as CompiledModel)._optionalInfo;
                         if(!optional){
                             //oh its missing!
                             errorBag.add(new BackError

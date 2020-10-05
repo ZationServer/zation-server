@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import Logger from '../log/logger';
-import {PrecompiledEvents} from '../config/definitions/parts/events';
+import {PreparedEvents} from '../config/definitions/parts/events';
 
 type AnyFunction = (...args: any[]) => any
 
@@ -98,7 +98,7 @@ export default class FuncUtils
      * @param errorEvent
      * @param beforeErrorMsg
      */
-    static createSafeCaller<T extends AnyFunction>(func: T,beforeErrorMsg: string = '',errorEvent?: PrecompiledEvents['error']): EventInvokerAsync<T> {
+    static createSafeCaller<T extends AnyFunction>(func: T,beforeErrorMsg: string = '',errorEvent?: PreparedEvents['error']): EventInvokerAsync<T> {
         if(errorEvent){
             return async (...args) => {
                 try {

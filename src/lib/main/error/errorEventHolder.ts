@@ -4,24 +4,24 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {PrecompiledEvents} from '../config/definitions/parts/events';
+import {PreparedEvents} from '../config/definitions/parts/events';
 
 export class ErrorEventHolder {
 
-    private static event: PrecompiledEvents['error'];
+    private static event: PreparedEvents['error'];
 
     /**
      * Sets the error event.
      * @param event
      */
-    static set(event: PrecompiledEvents['error']): void {
+    static set(event: PreparedEvents['error']): void {
         ErrorEventHolder.event = event;
     }
 
     /**
      * Returns the error event.
      */
-    static get(): PrecompiledEvents['error']  {
+    static get(): PreparedEvents['error']  {
         if(ErrorEventHolder.event){
             return ErrorEventHolder.event;
         }

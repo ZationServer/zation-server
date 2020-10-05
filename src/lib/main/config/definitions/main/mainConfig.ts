@@ -245,12 +245,6 @@ export interface MainConfig
      */
     logComponentApi?: boolean;
 
-    /**
-     * Specifies if the worker leader should console log the precompiled configs.
-     * @default false
-     */
-    showPrecompiledConfigs?: boolean;
-
     //Cluster
     /**
      * The cluster auth key defines a key that
@@ -680,6 +674,5 @@ export interface InternalMainConfig extends MainConfig {
     killServerOnServicesCreateError: boolean;
     log: DeepRequired<LogOptions>;
     logComponentApi: boolean;
-    showPrecompiledConfigs: boolean;
     variables: any;
 }

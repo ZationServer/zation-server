@@ -11,8 +11,6 @@ import AsymmetricKeyPairs                                   from "../main/intern
 import {WorkerMessageAction}                                from "../main/definitions/workerMessageAction";
 import {PrepareZationToken, RawZationToken, ZATION_CUSTOM_EVENT_NAMESPACE} from '../main/definitions/internal';
 import {InternalMainConfig}                                 from "../main/config/definitions/main/mainConfig";
-import {PrecompiledAppConfig}                               from "../main/config/definitions/main/appConfig";
-import {PrecompiledServiceConfig}                           from "../main/config/definitions/main/serviceConfig";
 import {byteLength}                                         from "byte-length";
 import * as ecc                                             from 'eosjs-ecc';
 import SimpleLogger                                         from '../main/log/simpleLogger';
@@ -62,9 +60,11 @@ import Socket                                                  from './Socket';
 import {AnyClass, Prototype}                                   from '../main/utils/typeUtils';
 import DataboxCore                                             from './databox/DataboxCore';
 import ChannelCore                                             from './channel/ChannelCore';
-import AuthenticationRequiredError from '../main/error/authenticationRequiredError';
-import AuthConfig from '../main/auth/authConfig';
-import ZationToken from '../main/internalApi/zationToken';
+import AuthenticationRequiredError                             from '../main/error/authenticationRequiredError';
+import AuthConfig                                              from '../main/auth/authConfig';
+import ZationToken                                             from '../main/internalApi/zationToken';
+import {AppConfig}                                             from '../main/config/definitions/main/appConfig';
+import {ServiceConfig}                                         from '../main/config/definitions/main/serviceConfig';
 
 /**
  * The bag instance of this process.
@@ -196,18 +196,18 @@ export default class Bag<WA extends object = any> {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the precompiled app config.
+     * Returns the app config.
      */
-    getAppConfig(): PrecompiledAppConfig {
+    getAppConfig(): AppConfig {
         return this.zc.appConfig;
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the precompiled service config.
+     * Returns the service config.
      */
-    getServiceConfig(): PrecompiledServiceConfig {
+    getServiceConfig(): ServiceConfig {
         return this.zc.serviceConfig;
     }
 

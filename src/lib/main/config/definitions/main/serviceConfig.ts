@@ -52,6 +52,3 @@ export interface ServiceConfig {
      */
     [serviceName: string]: Service<any,any>;
 }
-
-export interface PrecompiledServiceConfig extends ServiceConfig{
-}

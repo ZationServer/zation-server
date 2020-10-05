@@ -19,11 +19,16 @@ import Receiver, {ReceiverClass, ReceiverPreparedData}                          
 import {ReceiverConfig}                                                          from '../../main/config/definitions/parts/receiverConfig';
 import ReceiverAccessHelper                                                      from './receiverAccessHelper';
 import CompHandleMiddlewareUtils                                                 from '../compHandleMiddleware/compHandleMiddlewareUtils';
+import {systemReceivers}                                                         from './systemReceivers/systemReceivers.config';
+import ObjectUtils                                                               from '../utils/objectUtils';
+import {Writable}                                                                from '../utils/typeUtils';
 
-export default class ReceiverPrepare extends ComponentPrepare<Receiver>
+export default class ReceiverPrepare extends ComponentPrepare<Receiver,ReceiverConfig>
 {
     constructor(zc: ZationConfigFull,worker: ZationWorker,bag: Bag) {
-        super(zc,worker,bag,'Receiver',zc.appConfig.receivers || {});
+        super(zc,worker,bag,'Receiver',
+            Object.assign(systemReceivers,zc.appConfig.receivers || {}),
+            zc.appConfig.receiverDefaults);
     }
 
     protected createIncompatibleAPILevelError(identifier: string, apiLevel: number): Error {
@@ -66,6 +71,8 @@ export default class ReceiverPrepare extends ComponentPrepare<Receiver>
     private processReceiver(receiver: ReceiverClass,identifier: string,apiLevel?: number): Receiver
     {
         const config: ReceiverConfig = receiver.config || {};
+        ObjectUtils.mergeTwoObjects(config, this.componentDefaultConfig, false);
+        (receiver as Writable<ReceiverClass>).config = config;
 
         const preparedData: ReceiverPreparedData = {
             receiverConfig: config,

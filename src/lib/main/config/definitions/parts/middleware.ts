@@ -73,7 +73,7 @@ export interface Middleware {
     panelAuth?: MiddlewareValue<MiddlewarePanelAuthFunction>;
 }
 
-export interface PrecompiledMiddleware extends Middleware{
+export interface PreparedMiddleware extends Middleware{
     authenticate ?: MiddlewareAuthenticationFunction;
     socket?: MiddlewareSocketFunction;
     panelAuth?: MiddlewarePanelAuthFunction;

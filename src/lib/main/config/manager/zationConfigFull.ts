@@ -6,22 +6,24 @@ Copyright(c) Luca Scaringella
 
 import ZationConfig                from "./zationConfig";
 import ZcTransport                 from "./zcTransport";
-import {PrecompiledEvents}    from "../definitions/parts/events";
-import {PrecompiledAppConfig}      from "../definitions/main/appConfig";
-import {PrecompiledServiceConfig}  from "../definitions/main/serviceConfig";
-import {OtherPrecompiledConfigSet} from "./configSets";
-import {PrecompiledMiddleware} from '../definitions/parts/middleware';
+import {PreparedEvents}            from "../definitions/parts/events";
+import {OtherLoadedConfigSet}      from './configSets';
+import {PreparedMiddleware}        from '../definitions/parts/middleware';
+import {AppConfig}                 from '../definitions/main/appConfig';
+import {ServiceConfig}             from '../definitions/main/serviceConfig';
+import EventPreparer               from '../../events/eventPreparer';
+import MiddlewaresPreparer         from '../../middlewares/middlewaresPreparer';
 
 /**
  * Zation config for active process (worker,broker).
  */
 export default class ZationConfigFull extends ZationConfig {
 
-    protected _appConfig: PrecompiledAppConfig;
-    protected _serviceConfig: PrecompiledServiceConfig;
+    protected _appConfig: AppConfig;
+    protected _serviceConfig: ServiceConfig;
 
-    protected _events: PrecompiledEvents;
-    protected _middleware: PrecompiledMiddleware;
+    protected _events: PreparedEvents;
+    protected _middleware: PreparedMiddleware;
 
     constructor(zcTransport: ZcTransport) {
         super();
@@ -35,33 +37,33 @@ export default class ZationConfigFull extends ZationConfig {
         this._preLoadJwtSignOptions = zcTransport.preLoadJwtSignOptions;
     }
 
-    setOtherConfigs(precompiledOtherConfigSet: OtherPrecompiledConfigSet) {
-        this._appConfig = precompiledOtherConfigSet.appConfig;
-        this._serviceConfig = precompiledOtherConfigSet.serviceConfig;
+    setOtherConfigs(otherConfigSet: OtherLoadedConfigSet) {
+        this._appConfig = otherConfigSet.appConfig;
+        this._serviceConfig = otherConfigSet.serviceConfig;
 
-        this._events = this.appConfig.events;
-        this._middleware = this.appConfig.middleware;
+        this._events = EventPreparer.prepare(this.appConfig.events);
+        this._middleware = MiddlewaresPreparer.prepare(this.appConfig.middleware);
     }
 
-    get appConfig(): PrecompiledAppConfig {
+    get appConfig(): AppConfig {
         return this._appConfig;
     }
 
-    get serviceConfig(): PrecompiledServiceConfig {
+    get serviceConfig(): ServiceConfig {
         return this._serviceConfig;
     }
 
     /**
      * This getter is used to access an event.
      */
-    get event(): PrecompiledEvents {
+    get event(): PreparedEvents {
         return this._events;
     }
 
     /**
      * This getter is used to access an middleware.
      */
-    get middleware(): PrecompiledMiddleware {
+    get middleware(): PreparedMiddleware {
         return this._middleware;
     }
 }

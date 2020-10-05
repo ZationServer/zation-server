@@ -13,7 +13,7 @@ import ComponentUtils                                           from './componen
 
 export type ComponentInfo = {apiLevels: number[] | null,family: boolean};
 
-export default abstract class ComponentPrepare<T extends Object>
+export default abstract class ComponentPrepare<T extends Object,C extends Object>
 {
     protected readonly zc: ZationConfigFull;
     protected readonly worker: ZationWorker;
@@ -23,8 +23,11 @@ export default abstract class ComponentPrepare<T extends Object>
     protected readonly config: Record<string,any | ApiLevelSwitch<any>>;
     protected readonly components: Record<string,ApiLevelSwitchFunction<T>>;
     protected readonly componentInits: (() => Promise<void> | void)[] = [];
+    protected readonly componentDefaultConfig: C | {};
 
-    protected constructor(zc: ZationConfigFull,worker: ZationWorker,bag: Bag,type: string,config: Record<string,any | ApiLevelSwitch<any>>) {
+    protected constructor(zc: ZationConfigFull,worker: ZationWorker,bag: Bag,
+                          type: string,config: Record<string,any | ApiLevelSwitch<any>>,
+                          componentDefaultConfig?: C) {
         this.zc = zc;
         this.worker = worker;
         this.bag = bag;
@@ -32,6 +35,7 @@ export default abstract class ComponentPrepare<T extends Object>
         this.componentType = type;
         this.components = {};
         this.config = config;
+        this.componentDefaultConfig = componentDefaultConfig || {};
     }
 
     /**

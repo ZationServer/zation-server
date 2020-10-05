@@ -230,7 +230,7 @@ export interface Events
     socketBadAuthToken?: Event<SocketBadAuthTokenFunction>;
 }
 
-export interface PrecompiledEvents extends Events {
+export interface PreparedEvents extends Events {
     express: ExpressFunction;
     socketServer: SocketServerFunction;
     workerInit: WorkerInitFunction;

@@ -11,8 +11,10 @@ import {ControllerConfig}     from "../parts/controllerConfig";
 import {BackgroundTask}       from "../parts/backgroundTask";
 // noinspection ES6PreferShortImport
 import {DataboxConfig}        from "../parts/databoxConfig";
-import {Events, PrecompiledEvents}         from '../parts/events';
-import {Middleware, PrecompiledMiddleware} from '../parts/middleware';
+// noinspection ES6PreferShortImport
+import {Events}               from '../parts/events';
+// noinspection ES6PreferShortImport
+import {Middleware}           from '../parts/middleware';
 import {UserGroupsConfig}                  from '../parts/userGroupsConfig';
 import {AnyDataboxClass}                   from '../../../../api/databox/AnyDataboxClass';
 import {AnyChannelClass}                   from '../../../../api/channel/AnyChannelClass';
@@ -173,9 +175,4 @@ export interface AppConfig
      * },
      */
     backgroundTasks?: Record<string,BackgroundTask>,
-}
-
-export interface PrecompiledAppConfig extends AppConfig{
-    events: PrecompiledEvents,
-    middleware: PrecompiledMiddleware
 }

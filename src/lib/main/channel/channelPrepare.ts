@@ -19,11 +19,16 @@ import ComponentPrepare                    from '../component/componentPrepare';
 import DynamicSingleton                    from '../utils/dynamicSingleton';
 import Channel                             from '../../api/channel/Channel';
 import ChannelFamily                       from '../../api/channel/ChannelFamily';
+import {systemChannels}                    from './systemChannels/systemChannels.config';
+import ObjectUtils                         from '../utils/objectUtils';
+import {Writable}                          from '../utils/typeUtils';
 
-export class ChannelPrepare extends ComponentPrepare<ChannelCore>
+export class ChannelPrepare extends ComponentPrepare<ChannelCore,ChannelConfig>
 {
     constructor(zc: ZationConfigFull,worker: ZationWorker,bag: Bag) {
-        super(zc,worker,bag,'Channel',zc.appConfig.channels || {});
+        super(zc,worker,bag,'Channel',
+            Object.assign(systemChannels,zc.appConfig.channels || {}),
+            zc.appConfig.channelDefaults);
     }
 
     protected createIncompatibleAPILevelError(): Error {
@@ -69,6 +74,8 @@ export class ChannelPrepare extends ComponentPrepare<ChannelCore>
     private processChannel(channel: AnyChannelClass, identifier: string, apiLevel?: number): ChannelCore
     {
         const config: ChannelConfig = channel.config || {};
+        ObjectUtils.mergeTwoObjects(config, this.componentDefaultConfig, false);
+        (channel as Writable<AnyChannelClass>).config = config;
 
         const chPreparedData: ChPreparedData = {
             versionAccessCheck: SystemVersionChecker.createVersionChecker(config),

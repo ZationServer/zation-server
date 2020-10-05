@@ -14,17 +14,21 @@ import {ClientErrorName}                                        from "../definit
 // noinspection ES6PreferShortImport
 import {DataboxConfig}                                          from "../config/definitions/parts/databoxConfig";
 import DataboxFamily                                            from "../../api/databox/DataboxFamily";
-import Databox                                                  from "../../api/databox/Databox";
+import Databox                                                  from '../../api/databox/Databox';
 import InputClosureCreator                                      from "../input/inputClosureCreator";
 import DataboxAccessHelper                                      from "./databoxAccessHelper";
 import {AnyDataboxClass}                                        from '../../api/databox/AnyDataboxClass';
 import ComponentPrepare                                         from '../component/componentPrepare';
 import DynamicSingleton                                         from '../utils/dynamicSingleton';
+import ObjectUtils                                              from '../utils/objectUtils';
+import {Writable}                                               from '../utils/typeUtils';
 
-export default class DataboxPrepare extends ComponentPrepare<DataboxCore>
+export default class DataboxPrepare extends ComponentPrepare<DataboxCore,DataboxConfig>
 {
     constructor(zc: ZationConfigFull,worker: ZationWorker,bag: Bag) {
-        super(zc,worker,bag,'Databox',zc.appConfig.databoxes || {});
+        super(zc,worker,bag,'Databox',
+            zc.appConfig.databoxes || {},
+            zc.appConfig.databoxDefaults);
     }
 
     protected createIncompatibleAPILevelError(): Error {
@@ -70,6 +74,8 @@ export default class DataboxPrepare extends ComponentPrepare<DataboxCore>
     private processDatabox(databox: AnyDataboxClass, identifier: string, apiLevel?: number): DataboxCore
     {
         const config: DataboxConfig = databox.config || {};
+        ObjectUtils.mergeTwoObjects(config, this.componentDefaultConfig, false);
+        (databox as Writable<AnyDataboxClass>).config = config;
 
         const dbPreparedData: DbPreparedData = {
             versionAccessCheck: SystemVersionChecker.createVersionChecker(config),

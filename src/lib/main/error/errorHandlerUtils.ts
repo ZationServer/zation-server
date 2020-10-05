@@ -8,9 +8,9 @@ import BackErrorBag        from '../../api/BackErrorBag';
 import BackError           from '../../api/BackError';
 import {isCodeError}       from './codeError';
 import Logger              from '../log/logger';
-import {PrecompiledEvents} from '../config/definitions/parts/events';
+import {PreparedEvents}    from '../config/definitions/parts/events';
 
-export async function handleError(err: any,events: PrecompiledEvents) {
+export async function handleError(err: any,events: PreparedEvents) {
     const promises: (Promise<void> | void)[] = [];
 
     const backErrors = (err instanceof BackErrorBag) ? err.getBackErrors() :
