@@ -4,8 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ServiceConfig} from "../main/config/definitions/main/serviceConfig";
-import {AppConfig}     from "../main/config/definitions/main/appConfig";
+import {ServiceConfig}  from "../main/config/definitions/main/serviceConfig";
+import {AppConfig}      from "../main/config/definitions/main/appConfig";
 import {StarterConfig}  from "../main/config/definitions/main/starterConfig";
 import {MainConfig}     from "../main/config/definitions/main/mainConfig";
 import ObjectUtils      from "../main/utils/objectUtils";
@@ -16,10 +16,8 @@ import ConfigBuildError from "../main/config/manager/configBuildError";
 import {
     ControllerConfig
 } from "../main/config/definitions/parts/controllerConfig";
-import {createTokenCheckFunction, TokenCheckFunction}     from "../main/access/accessOptions";
 import DataboxFamily                        from "./databox/DataboxFamily";
 import Databox                              from "./databox/Databox";
-import {RawZationToken}                     from "../main/definitions/internal";
 import {registerBagExtension,BagExtension}  from 'zation-bag-extension';
 import {ComponentClass}                     from './component/Component';
 import {AnyDataboxClass}                    from './databox/AnyDataboxClass';
@@ -202,22 +200,4 @@ export default class Config
     static starterConfig(config: StarterConfig): StarterConfig {return config;}
     // noinspection JSUnusedGlobalSymbols
     static serviceConfig(config: ServiceConfig): ServiceConfig {return config;}
-
-    //Advanced utils
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * Creates a token check function.
-     * It can be used for more advanced use cases.
-     * With the token check-function, you can check the access with the token of a client.
-     * You can use it in the access check properties,
-     * for example, in the controller, databox, or custom channel config.
-     * @example
-     * access: Config.createTokenCheckFunction((token) => token !== null)
-     * @param checkFunction
-     */
-    static createTokenCheckFunction(checkFunction: (token: RawZationToken | null) => boolean): TokenCheckFunction {
-        return createTokenCheckFunction(checkFunction);
-    }
-
 }

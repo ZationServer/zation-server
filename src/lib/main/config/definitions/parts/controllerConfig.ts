@@ -4,8 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {AuthAccessConfig}                                          from "./accessConfigs";
+import {AccessConfig}                                              from "./accessConfigs";
 import {InputConfig}                                               from "./inputConfig";
 import {CompHandleMiddlewareConfig}                                from './compHandleMiddlewareConfig';
 
-export interface ControllerConfig extends InputConfig, AuthAccessConfig, CompHandleMiddlewareConfig {}
+export interface ControllerConfig extends InputConfig, AccessConfig, CompHandleMiddlewareConfig {}

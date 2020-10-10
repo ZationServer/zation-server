@@ -44,7 +44,7 @@ import DbCudOperationSequence       from "./lib/main/databox/dbCudOperationSeque
 import {ObjectPathSequence}         from "./lib/main/internalApi/objectPathSequence/objectPathSequence";
 import {StartErrorName}             from "./lib/main/definitions/startErrorName";
 import NoDataAvailableError         from "./lib/main/databox/noDataAvailable";
-import {$not}                       from './lib/api/Notable';
+import {$not}                       from './lib/api/Not';
 import {Server}                     from './lib/api/Server';
 import BackErrorConstruct           from './lib/main/definitions/backErrorConstruct';
 import {$init}                      from './lib/api/InitApiUtils';
@@ -71,6 +71,7 @@ import {Inject}                     from './lib/api/Inject';
 import Initializer                  from './lib/api/Initializer';
 import Singleton                    from './lib/api/Singleton';
 import Process, {ProcessType}       from './lib/api/Process';
+import {$and, $or}                  from './lib/api/RelationArrays';
 
 //Refresh bag instance export
 Bag._addReadyRefresher((bag) => exports.bag = bag);
@@ -115,6 +116,8 @@ export {
     $any,
     $matches,
     $userId,
+    $and,
+    $or,
     $tokenPayloadIncludes,
     $tokenPayloadMatches,
     AuthController,

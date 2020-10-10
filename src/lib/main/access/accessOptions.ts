@@ -4,30 +4,10 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ZationAccess, RawZationToken} from '../definitions/internal';
-import {DeepReadonly}                 from 'ts-essentials';
+import {notValueSymbol} from '../../api/Not';
 
-//TokenCheckFunction
-export const tokenCheckFunctionSymbol = Symbol();
-export type TokenCheckFunction = {(token: DeepReadonly<RawZationToken> | null): boolean,[tokenCheckFunctionSymbol]: boolean};
-
-/**
- * Creates a token check function.
- * It can be used for more advanced use cases.
- * @param checkFunction
- */
-export function createTokenCheckFunction(checkFunction: (token: DeepReadonly<RawZationToken> | null) => boolean): TokenCheckFunction {
-    checkFunction[tokenCheckFunctionSymbol] = true;
-    return checkFunction as TokenCheckFunction;
-}
-
-/**
- * Returns if the function is a token check function.
- * @param func
- */
-export function isTokenCheckFunction(func: Function): func is TokenCheckFunction {
-    return func[tokenCheckFunctionSymbol];
-}
+export type AccessKeywordRecord = Record<AccessKeyword,any>;
+export type AccessKeyword = 'all' | 'allAuth' | 'allNotAuth';
 
 //UserIdCheck
 export type UserIdCheck = {id: number | string,strictTypeCheck: boolean};
@@ -41,5 +21,6 @@ export function createUserIdCheck(id: number | string,strictTypeCheck: boolean):
     return {id,strictTypeCheck};
 }
 
-export type AccessCheckItem<T extends Function> = ZationAccess | string | UserIdCheck | T | TokenCheckFunction | boolean;
-export type AccessConfigValue<T extends Function> = AccessCheckItem<T> | (AccessCheckItem<T> | AccessCheckItem<T>[])[];
+export type AccessRules<T extends Function> = AccessKeyword |
+    string | UserIdCheck | T | boolean |
+    {[notValueSymbol]: AccessRules<T>} | AccessRules<T>[];

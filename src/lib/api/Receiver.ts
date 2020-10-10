@@ -10,10 +10,10 @@ import BackErrorBag       from "./BackErrorBag";
 import Socket             from './Socket';
 import Packet             from './Packet';
 import Component          from './component/Component';
-import {TokenStateAccessCheckFunction}    from '../main/controller/controllerAccessHelper';
 import {InputConsumeFunction}             from '../main/input/inputClosureCreator';
 import {componentTypeSymbol}              from '../main/component/componentUtils';
 import {CompHandleMiddlewareInvoker}      from '../main/compHandleMiddleware/compHandleMiddlewareUtils';
+import {NormalAccessCustomFunction}       from '../main/config/definitions/parts/accessConfigs';
 
 /**
  * The Receiver is a component that can be compared with the controller component,
@@ -95,7 +95,7 @@ export type ReceiverClass = typeof Receiver;
 
 export interface ReceiverPreparedData {
     receiverConfig: ReceiverConfig,
-    tokenStateCheck: TokenStateAccessCheckFunction,
+    accessCheck: NormalAccessCustomFunction,
     handleMiddlewareInvoke: CompHandleMiddlewareInvoker,
     inputConsume: InputConsumeFunction
 }

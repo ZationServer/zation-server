@@ -7,8 +7,6 @@ Copyright(c) Luca Scaringella
 import Receiver         from '../../../../api/Receiver';
 // noinspection ES6PreferShortImport
 import {ReceiverConfig} from '../../../config/definitions/parts/receiverConfig';
-// noinspection ES6PreferShortImport
-import {createTokenCheckFunction} from '../../../access/accessOptions';
 import {RawZationToken}           from '../../../definitions/internal';
 // noinspection ES6PreferShortImport
 import {bag}                      from '../../../../api/Bag';
@@ -20,8 +18,10 @@ import {$optional}                from '../../../../api/input/Optional';
 export default class PanelReceiver extends Receiver
 {
     static config: ReceiverConfig = {
-        access: createTokenCheckFunction((token) =>
-            token !== null && token[nameof<RawZationToken>(s => s.panelAccess)] === true),
+        access: (socket) => {
+            const token = socket.rawToken;
+            return token != null && token[nameof<RawZationToken>(s => s.panelAccess)] === true;
+        },
         input: $optional({type: 'boolean'},false)
     };
 

@@ -4,14 +4,14 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {AuthAccessConfig}                                          from "./accessConfigs";
+import {AccessConfig}                                              from "./accessConfigs";
 import {DataboxInfo}                                               from "../../../databox/dbDefinitions";
 import Socket                                                      from "../../../../api/Socket";
 import {Input}                                                     from "./inputConfig";
 
 export type DbAccessFunction = (socket: Socket, dbInfo: DataboxInfo) => Promise<boolean> | boolean;
 
-export interface DataboxConfig extends AuthAccessConfig<DbAccessFunction>
+export interface DataboxConfig extends AccessConfig<DbAccessFunction>
 {
     /**
      * This property defines the fetch input.

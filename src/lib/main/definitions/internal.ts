@@ -4,9 +4,6 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-export type ZationAccessRecord = Record<ZationAccess,any>;
-export type ZationAccess = 'all' | 'allAuth' | 'allNotAuth';
-
 export interface RawZationToken<P = any> extends PrepareZationToken<P> {
     tid: string,
     userId?: string | number,

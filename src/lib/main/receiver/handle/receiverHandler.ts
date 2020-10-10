@@ -58,13 +58,13 @@ export default class ReceiverHandler
             const rInstance = this.receiverPrepare.get(pack.r, (packetApiLevel || socket.connectionApiLevel || this.defaultApiLevel));
 
             const {
-                tokenStateCheck,
+                accessCheck,
                 handleMiddlewareInvoke,
                 inputConsume
             } = rInstance._preparedData;
 
             //check access to receiver
-            if(await tokenStateCheck(socket)) {
+            if(await accessCheck(socket)) {
                 const packet = new Packet(pack.d,packetApiLevel);
                 let input: object;
                 try {

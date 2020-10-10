@@ -6,13 +6,12 @@ Copyright(c) Luca Scaringella
 
 import ZationConfigFull                    from "../config/manager/zationConfigFull";
 import Bag                                 from "../../api/Bag";
-import ChAccessHelper                      from "./chAccessHelper";
 import ApiLevelUtils, {ApiLevelSwitch}     from '../apiLevel/apiLevelUtils';
 import ChannelCore, {ChPreparedData}       from '../../api/channel/ChannelCore';
 import {ClientErrorName}                   from '../definitions/clientErrorName';
 import {AnyChannelClass}                   from '../../api/channel/AnyChannelClass';
 // noinspection ES6PreferShortImport
-import {ChannelConfig}                     from '../config/definitions/parts/channelConfig';
+import {ChannelConfig, ChSubAccessFunction} from '../config/definitions/parts/channelConfig';
 import ZationWorker                      = require('../../core/zationWorker');
 import ComponentPrepare                    from '../component/componentPrepare';
 import DynamicSingleton                    from '../utils/dynamicSingleton';
@@ -21,6 +20,7 @@ import ChannelFamily                       from '../../api/channel/ChannelFamily
 import {systemChannels}                    from './systemChannels/systemChannels.config';
 import ObjectUtils                         from '../utils/objectUtils';
 import {Writable}                          from '../utils/typeUtils';
+import AccessUtils                         from '../access/accessUtils';
 
 export class ChannelPrepare extends ComponentPrepare<ChannelCore,ChannelConfig>
 {
@@ -77,7 +77,8 @@ export class ChannelPrepare extends ComponentPrepare<ChannelCore,ChannelConfig>
         (channel as Writable<AnyChannelClass>).config = config;
 
         const chPreparedData: ChPreparedData = {
-            accessCheck: ChAccessHelper.createSubAccessChecker(config.access,identifier)
+            accessCheck: AccessUtils.createAccessChecker<ChSubAccessFunction>
+                (config.access,`Channel: ${identifier}`)
         };
 
         const chInstance = DynamicSingleton.create<AnyChannelClass,Channel | ChannelFamily>

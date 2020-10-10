@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ConfigNames, DEFAULT_USER_GROUP_FALLBACK, ZationAccessRecord} from '../../definitions/internal';
+import {ConfigNames, DEFAULT_USER_GROUP_FALLBACK}     from '../../definitions/internal';
 import {AppConfig}                                    from '../definitions/main/appConfig';
 import {PanelUserConfig}                              from '../definitions/main/mainConfig';
 // noinspection TypeScriptPreferShortImport
@@ -27,8 +27,8 @@ import {ControllerConfig}               from '../definitions/parts/controllerCon
 import {DataboxConfig}                  from '../definitions/parts/databoxConfig';
 import DataboxFamily                    from '../../../api/databox/DataboxFamily';
 import Databox                          from '../../../api/databox/Databox';
-import {AuthAccessConfig}               from '../definitions/parts/accessConfigs';
-import {getNotableValue}                       from '../../../api/Notable';
+import {AccessConfig}                   from '../definitions/parts/accessConfigs';
+import {getNotValue, isNot}             from '../../../api/Not';
 import ErrorBag                                from '../../error/errorBag';
 import {processAnyOfKey}                                       from '../../models/anyOfModelUtils';
 import AuthController                                          from '../../../api/AuthController';
@@ -49,6 +49,7 @@ import {AnyOfModel, DefinitionModel, ObjectModel, ValueModel}  from '../../model
 import {getModelName}                                          from '../../models/modelName';
 import {Input}                                                 from '../definitions/parts/inputConfig';
 import {Model}                                                 from '../../models/model';
+import {AccessKeywordRecord}                                   from '../../access/accessOptions';
 
 export interface ModelCheckedMem {
     _checked: boolean
@@ -94,9 +95,9 @@ export default class ConfigChecker
 
         let groups: any = [];
         const extraKeys: any = [
-            nameof<ZationAccessRecord>(s => s.all),
-            nameof<ZationAccessRecord>(s => s.allNotAuth),
-            nameof<ZationAccessRecord>(s => s.allAuth)
+            nameof<AccessKeywordRecord>(s => s.all),
+            nameof<AccessKeywordRecord>(s => s.allNotAuth),
+            nameof<AccessKeywordRecord>(s => s.allAuth)
         ];
 
         if (typeof this.zcLoader.appConfig.userGroups === 'object') {
@@ -203,11 +204,11 @@ export default class ConfigChecker
     }
 
     private checkChannelConfig(config: ChannelConfig, target: Target) {
-        this.checkAuthAccessConfig(config, target);
+        this.checkAccessConfig(config, target);
     }
 
     private checkAccessControllerDefaultIsSet() {
-        const accessValue = getNotableValue(ObjectPath.get(this.zcLoader.appConfig,
+        const accessValue = getNotValue(ObjectPath.get(this.zcLoader.appConfig,
             [nameof<AppConfig>(s => s.controllerDefaults), nameof<ControllerConfig>(s => s.access)]));
         if (accessValue === undefined) {
             Logger.consoleLogConfigWarning(ConfigNames.App, 'It is recommended to set a controller default value for access or notAccess.');
@@ -469,7 +470,7 @@ export default class ConfigChecker
 
     // noinspection JSMethodCanBeStatic
     private checkAuthControllerAccess(controllerClass: ControllerClass,target: Target) {
-        if (controllerClass.config.access !== nameof<ZationAccessRecord>(s => s.all)) {
+        if (controllerClass.config.access !== nameof<AccessKeywordRecord>(s => s.all)) {
             Logger.consoleLogConfigWarning
             (ConfigNames.App, `${target.toString()} It is recommended to set the access of the authController directly to 'all'.`);
         }
@@ -488,7 +489,7 @@ export default class ConfigChecker
     }
 
     private checkControllerConfig(config: ControllerConfig,target: Target) {
-        this.checkAuthAccessConfig(config, target);
+        this.checkAccessConfig(config, target);
         this.checkInput(config.input,target.addPath('input'));
     }
 
@@ -533,7 +534,7 @@ export default class ConfigChecker
     }
 
     private checkReceiverConfig(config: ReceiverConfig,target: Target) {
-        this.checkAuthAccessConfig(config, target);
+        this.checkAccessConfig(config, target);
         this.checkInput(config.input,target.addPath('input'));
     }
 
@@ -597,7 +598,7 @@ export default class ConfigChecker
                 `${target.toString()} the maximum socket input channels must be greater than 0.`));
         }
 
-        this.checkAuthAccessConfig(config, target);
+        this.checkAccessConfig(config, target);
 
         this.checkInput(config.initInput, target.addPath('initInput'));
         this.checkInput(config.fetchInput, target.addPath('fetchInput'));
@@ -868,8 +869,8 @@ export default class ConfigChecker
         }
     }
 
-    private checkAuthAccessConfig(config: AuthAccessConfig<any>, target) {
-        this.checkAccessKeyDependency(getNotableValue(config.access),target.addPath(nameof<ControllerConfig>(s => s.access)));
+    private checkAccessConfig(config: AccessConfig<any>, target) {
+        this.checkAccessKeyDependency(getNotValue(config.access),target.addPath(nameof<ControllerConfig>(s => s.access)));
     }
 
     private checkAccessKeyDependency(value, target) {
@@ -887,6 +888,9 @@ export default class ConfigChecker
             for(let i = 0; i < value.length; i++){
                 this.checkAccessKeyDependency(value[i],target.addPath(`${i}`));
             }
+        }
+        else if(isNot(value)) {
+            this.checkAccessKeyDependency(getNotValue(value),target.addPath(`not`));
         }
     }
 

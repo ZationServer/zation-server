@@ -100,13 +100,13 @@ export default class ControllerReqHandler
             }
             else {
                 const {
-                    tokenStateCheck,
+                    accessCheck,
                     handleMiddlewareInvoke,
                     inputConsume,
                 } = cInstance._preparedData;
 
                 //check access to controller
-                if(await tokenStateCheck(socket)) {
+                if(await accessCheck(socket)) {
                     const packet = new Packet((request as ControllerStandardReq).d,packetApiLevel);
                     let input: object;
                     try {

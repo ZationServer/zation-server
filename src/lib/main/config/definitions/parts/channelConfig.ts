@@ -7,8 +7,8 @@ Copyright(c) Luca Scaringella
 import Socket               from "../../../../api/Socket";
 // noinspection ES6PreferShortImport
 import {ChannelInfo}        from '../../../channel/channelDefinitions';
-import {AuthAccessConfig}   from './accessConfigs';
+import {AccessConfig}       from './accessConfigs';
 
-export type ChSubAccessFunction = (socketInfo: Socket, info: ChannelInfo) => Promise<boolean> | boolean;
+export type ChSubAccessFunction = (socket: Socket, info: ChannelInfo) => Promise<boolean> | boolean;
 
-export interface ChannelConfig extends AuthAccessConfig<ChSubAccessFunction> {}
+export interface ChannelConfig extends AccessConfig<ChSubAccessFunction> {}

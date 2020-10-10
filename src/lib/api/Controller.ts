@@ -8,12 +8,12 @@ Copyright(c) Luca Scaringella
 import {ControllerConfig} from "../main/config/definitions/parts/controllerConfig";
 import BackErrorBag       from "./BackErrorBag";
 import Component          from './component/Component';
-import {TokenStateAccessCheckFunction}    from '../main/controller/controllerAccessHelper';
 import {InputConsumeFunction, InputValidationCheckFunction} from '../main/input/inputClosureCreator';
 import {componentTypeSymbol}                                from '../main/component/componentUtils';
 import {CompHandleMiddlewareInvoker}                        from '../main/compHandleMiddleware/compHandleMiddlewareUtils';
 import Socket                                               from './Socket';
 import Packet                                               from './Packet';
+import {NormalAccessCustomFunction}                         from '../main/config/definitions/parts/accessConfigs';
 
 /**
  * The Controller is one of the zation components.
@@ -107,7 +107,7 @@ export type ControllerClass = typeof Controller;
 
 export interface ControllerPreparedData {
     controllerConfig: ControllerConfig,
-    tokenStateCheck: TokenStateAccessCheckFunction,
+    accessCheck: NormalAccessCustomFunction,
     handleMiddlewareInvoke: CompHandleMiddlewareInvoker,
     inputConsume: InputConsumeFunction,
     inputValidationCheck: InputValidationCheckFunction

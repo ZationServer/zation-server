@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
-import {DataboxConfig}                    from "../../main/config/definitions/parts/databoxConfig";
+import {DataboxConfig, DbAccessFunction}  from '../../main/config/definitions/parts/databoxConfig';
 import Bag                                from "../Bag";
 import NoMoreDataAvailableError           from "../../main/databox/noMoreDataAvailable";
 import {ClientErrorName}                  from "../../main/definitions/clientErrorName";
@@ -15,7 +15,6 @@ import DbKeyArrayUtils                    from "../../main/databox/dbKeyArrayUti
 import {DataboxConnectReq, DataboxConnectRes, DataboxInfo, DbToken} from '../../main/databox/dbDefinitions';
 import {InputConsumeFunction}             from "../../main/input/inputClosureCreator";
 import ErrorUtils                         from "../../main/utils/errorUtils";
-import {DbAccessCheckFunction}            from "../../main/databox/databoxAccessHelper";
 import NoDataAvailableError               from "../../main/databox/noDataAvailable";
 import Component                          from '../component/Component';
 import {AnyDataboxClass}                  from './AnyDataboxClass';
@@ -286,7 +285,7 @@ export default abstract class DataboxCore extends Component {
 DataboxCore.prototype[componentTypeSymbol] = 'Databox';
 
 export interface DbPreparedData {
-    accessCheck: DbAccessCheckFunction,
+    accessCheck: DbAccessFunction,
     initInputConsumer: InputConsumeFunction,
     fetchInputConsumer: InputConsumeFunction,
     parallelFetch: boolean,

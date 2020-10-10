@@ -16,11 +16,12 @@ import DynamicSingleton                                                         
 import Receiver, {ReceiverClass, ReceiverPreparedData}                           from '../../api/Receiver';
 // noinspection ES6PreferShortImport
 import {ReceiverConfig}                                                          from '../../main/config/definitions/parts/receiverConfig';
-import ReceiverAccessHelper                                                      from './receiverAccessHelper';
 import CompHandleMiddlewareUtils                                                 from '../compHandleMiddleware/compHandleMiddlewareUtils';
 import {systemReceivers}                                                         from './systemReceivers/systemReceivers.config';
 import ObjectUtils                                                               from '../utils/objectUtils';
 import {Writable}                                                                from '../utils/typeUtils';
+import AccessUtils                                                               from '../access/accessUtils';
+import {NormalAccessCustomFunction}                                              from '../config/definitions/parts/accessConfigs';
 
 export default class ReceiverPrepare extends ComponentPrepare<Receiver,ReceiverConfig>
 {
@@ -75,7 +76,8 @@ export default class ReceiverPrepare extends ComponentPrepare<Receiver,ReceiverC
 
         const preparedData: ReceiverPreparedData = {
             receiverConfig: config,
-            tokenStateCheck: ReceiverAccessHelper.createAuthAccessChecker(config.access,identifier),
+            accessCheck: AccessUtils.createAccessChecker<NormalAccessCustomFunction>
+                (config.access,`Receiver: ${identifier}`),
             handleMiddlewareInvoke: CompHandleMiddlewareUtils.createInvoker(config),
             inputConsume: InputClosureCreator.createInputConsumer(config.input)
         };

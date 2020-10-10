@@ -4,9 +4,10 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {createTokenCheckFunction, createUserIdCheck} from "../main/access/accessOptions";
+import {createUserIdCheck}                           from "../main/access/accessOptions";
 import forint, {ForintQuery}                         from "forint";
 import {RawZationToken}                              from '../main/definitions/internal';
+import Socket                                        from './Socket';
 
 /**
  * @description
@@ -19,7 +20,8 @@ import {RawZationToken}                              from '../main/definitions/i
 export function $tokenPayloadIncludes(pairs: Record<string,any>) {
     const checkKeys = Object.keys(pairs);
     const checkKeysLength = checkKeys.length;
-    return createTokenCheckFunction((token) => {
+    return (socket: Socket) => {
+        const token = socket.rawToken;
         if(token != null && token.payload != undefined) {
             const payload = token.payload;
             let tmpKey;
@@ -30,7 +32,7 @@ export function $tokenPayloadIncludes(pairs: Record<string,any>) {
             return true;
         }
         return false;
-    });
+    };
 }
 
 /**
@@ -42,7 +44,10 @@ export function $tokenPayloadIncludes(pairs: Record<string,any>) {
  */
 export function $tokenPayloadMatches<T>(query: ForintQuery<T>) {
     const checker = forint({[nameof<RawZationToken>(s => s.payload)]: query});
-    return createTokenCheckFunction(token => checker(token));
+    return (socket: Socket) => {
+        const token = socket.rawToken;
+        return token != null && checker(token);
+    };
 }
 
 /**

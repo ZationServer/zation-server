@@ -10,11 +10,10 @@ import {ClientErrorName}                  from "../../main/definitions/clientErr
 import ConfigBuildError                   from "../../main/config/manager/configBuildError";
 import Component, {ComponentClass}        from '../component/Component';
 import Socket                             from '../Socket';
-import {ChSubAccessCheckFunction}         from '../../main/channel/chAccessHelper';
 // noinspection ES6PreferShortImport
 import {ChannelInfo}                                              from '../../main/channel/channelDefinitions';
 // noinspection ES6PreferShortImport
-import {ChannelConfig}                                            from '../../main/config/definitions/parts/channelConfig';
+import {ChannelConfig, ChSubAccessFunction} from '../../main/config/definitions/parts/channelConfig';
 import {ScExchange}                                               from '../../main/sc/scServer';
 import {AnyChannelClass}                                          from './AnyChannelClass';
 import {componentTypeSymbol}                                      from '../../main/component/componentUtils';
@@ -106,5 +105,5 @@ export default abstract class ChannelCore extends Component {
 ChannelCore.prototype[componentTypeSymbol] = 'Channel';
 
 export interface ChPreparedData {
-    accessCheck: ChSubAccessCheckFunction
+    accessCheck: ChSubAccessFunction
 }

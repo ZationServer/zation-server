@@ -11,16 +11,16 @@ import DataboxCore, {DbPreparedData}                            from "../../api/
 import ZationWorker                                           = require("../../core/zationWorker");
 import {ClientErrorName}                                        from "../definitions/clientErrorName";
 // noinspection ES6PreferShortImport
-import {DataboxConfig}                                          from "../config/definitions/parts/databoxConfig";
+import {DataboxConfig, DbAccessFunction}                        from '../config/definitions/parts/databoxConfig';
 import DataboxFamily                                            from "../../api/databox/DataboxFamily";
 import Databox                                                  from '../../api/databox/Databox';
 import InputClosureCreator                                      from "../input/inputClosureCreator";
-import DataboxAccessHelper                                      from "./databoxAccessHelper";
 import {AnyDataboxClass}                                        from '../../api/databox/AnyDataboxClass';
 import ComponentPrepare                                         from '../component/componentPrepare';
 import DynamicSingleton                                         from '../utils/dynamicSingleton';
 import ObjectUtils                                              from '../utils/objectUtils';
 import {Writable}                                               from '../utils/typeUtils';
+import AccessUtils                                              from '../access/accessUtils';
 
 export default class DataboxPrepare extends ComponentPrepare<DataboxCore,DataboxConfig>
 {
@@ -77,7 +77,7 @@ export default class DataboxPrepare extends ComponentPrepare<DataboxCore,Databox
         (databox as Writable<AnyDataboxClass>).config = config;
 
         const dbPreparedData: DbPreparedData = {
-            accessCheck: DataboxAccessHelper.createAccessChecker(config.access,identifier),
+            accessCheck: AccessUtils.createAccessChecker<DbAccessFunction>(config.access,`Databox: ${identifier}`),
             initInputConsumer: InputClosureCreator.createInputConsumer(config.initInput),
             fetchInputConsumer: InputClosureCreator.createInputConsumer(config.fetchInput),
             parallelFetch: config.parallelFetch !== undefined ? config.parallelFetch: false,

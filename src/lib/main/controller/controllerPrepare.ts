@@ -8,7 +8,6 @@ import ZationWorker     = require("../../core/zationWorker");
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig} from "../config/definitions/parts/controllerConfig";
 import BackError          from "../../api/BackError";
-import ControllerAccessHelper from "./controllerAccessHelper";
 import {MainBackErrors}              from "../systemBackErrors/mainBackErrors";
 import Bag                           from "../../api/Bag";
 import ZationConfigFull              from "../config/manager/zationConfigFull";
@@ -22,6 +21,8 @@ import CompHandleMiddlewareUtils                                                
 import ObjectUtils                                                               from '../utils/objectUtils';
 import {Writable}                                                                from '../utils/typeUtils';
 import {systemControllers}                                                       from './systemControllers/systemControllers.config';
+import AccessUtils                                                               from '../access/accessUtils';
+import {NormalAccessCustomFunction}                                              from '../config/definitions/parts/accessConfigs';
 
 export default class ControllerPrepare extends ComponentPrepare<Controller,ControllerConfig>
 {
@@ -91,7 +92,8 @@ export default class ControllerPrepare extends ComponentPrepare<Controller,Contr
 
         const preparedData: ControllerPreparedData = {
             controllerConfig: config,
-            tokenStateCheck: ControllerAccessHelper.createAuthAccessChecker(config.access,identifier),
+            accessCheck: AccessUtils.createAccessChecker<NormalAccessCustomFunction>
+                (config.access,`Controller: ${identifier}`),
             handleMiddlewareInvoke: CompHandleMiddlewareUtils.createInvoker(config),
             inputConsume: InputClosureCreator.createInputConsumer(config.input),
             inputValidationCheck: InputClosureCreator.createValidationChecker(config.input)

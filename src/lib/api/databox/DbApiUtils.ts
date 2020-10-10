@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import {ForintQuery}                             from 'forint';
 import {ForintSearchQuery, IfQuery, IfQueryType} from '../../main/databox/dbDefinitions';
-import {notableNot}                              from '../Notable';
+import {setNotFunctionSymbol}                    from '../Not';
 
 /**
  * @description
@@ -65,13 +65,8 @@ export function $contains<TK,TV>(query: ForintSearchQuery<TK,TV>): IfQuery {
         q: query,
         t: IfQueryType.search,
         //set notable
-        set [notableNot](value) {
-            if(value){
-                this.n = true;
-            }
-            else {
-                this.n = undefined;
-            }
+        [setNotFunctionSymbol]: function() {
+            this.n = true;
         }
     } as IfQuery;
 }
@@ -101,13 +96,8 @@ export function $matches<T>(query: ForintQuery<T>): IfQuery {
         q: query,
         t: IfQueryType.full,
         //set notable
-        set [notableNot](value) {
-            if(value){
-                this.n = true;
-            }
-            else {
-                this.n = undefined;
-            }
+        [setNotFunctionSymbol]: function() {
+            this.n = true;
         }
     } as IfQuery;
 }
