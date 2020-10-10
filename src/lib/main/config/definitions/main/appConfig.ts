@@ -175,4 +175,24 @@ export interface AppConfig
      * },
      */
     backgroundTasks?: Record<string,BackgroundTask>,
+
+    /**
+     * Define all client systems that are allowed to connect to the server.
+     * Optionally you also can set required versions of a system.
+     * Notice that the client sends the system and version in the
+     * handshake and focus on different client applications.
+     * Look in the examples to see what possibilities you have.
+     * @default 'any'
+     * @example
+     * //string
+     * allowedSystems: 'any'       // Allow any system and version
+     * //object
+     * allowedSystems: {
+     *     'IOS': 1.0,             // Allow system IOS with at least version 1.0
+     *     'ANDROID': 4.2,         // Allow system Android with at least version 4.2
+     *     'WIN': 'any',           // Allow system WIN with any version
+     *     'MAC': [1.3,1.8,2.2]    // Allow system MAC with version 1.3, 1.8 or 2.2
+     * }
+     */
+    allowedSystems?: 'any' | Record<string,number | number[] | 'any'>
 }

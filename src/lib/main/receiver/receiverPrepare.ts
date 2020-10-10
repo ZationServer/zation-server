@@ -6,7 +6,6 @@ Copyright(c) Luca Scaringella
 
 import ZationWorker                = require("../../core/zationWorker");
 import BackError                     from "../../api/BackError";
-import SystemVersionChecker          from "../systemVersion/systemVersionChecker";
 import {MainBackErrors}              from "../systemBackErrors/mainBackErrors";
 import Bag                           from "../../api/Bag";
 import ZationConfigFull              from "../config/manager/zationConfigFull";
@@ -76,8 +75,6 @@ export default class ReceiverPrepare extends ComponentPrepare<Receiver,ReceiverC
 
         const preparedData: ReceiverPreparedData = {
             receiverConfig: config,
-            versionAccessCheck: SystemVersionChecker.createVersionChecker(config),
-            systemAccessCheck: SystemVersionChecker.createSystemChecker(config),
             tokenStateCheck: ReceiverAccessHelper.createAuthAccessChecker(config.access,identifier),
             handleMiddlewareInvoke: CompHandleMiddlewareUtils.createInvoker(config),
             inputConsume: InputClosureCreator.createInputConsumer(config.input)

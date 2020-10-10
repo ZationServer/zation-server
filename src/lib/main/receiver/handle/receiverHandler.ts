@@ -58,19 +58,10 @@ export default class ReceiverHandler
             const rInstance = this.receiverPrepare.get(pack.r, (packetApiLevel || socket.connectionApiLevel || this.defaultApiLevel));
 
             const {
-                systemAccessCheck,
-                versionAccessCheck,
                 tokenStateCheck,
                 handleMiddlewareInvoke,
                 inputConsume
             } = rInstance._preparedData;
-
-            if(!systemAccessCheck(socket)){
-                throw new BackError(MainBackErrors.accessDenied,{reason: 'system'});
-            }
-            if(!versionAccessCheck(socket)){
-                throw new BackError(MainBackErrors.accessDenied,{reason: 'version'});
-            }
 
             //check access to receiver
             if(await tokenStateCheck(socket)) {

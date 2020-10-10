@@ -22,7 +22,6 @@ export default class PanelReceiver extends Receiver
     static config: ReceiverConfig = {
         access: createTokenCheckFunction((token) =>
             token !== null && token[nameof<RawZationToken>(s => s.panelAccess)] === true),
-        versionAccess: 'all',
         input: $optional({type: 'boolean'},false)
     };
 

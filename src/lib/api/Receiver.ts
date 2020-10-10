@@ -10,7 +10,6 @@ import BackErrorBag       from "./BackErrorBag";
 import Socket             from './Socket';
 import Packet             from './Packet';
 import Component          from './component/Component';
-import {VersionSystemAccessCheckFunction} from '../main/systemVersion/systemVersionChecker';
 import {TokenStateAccessCheckFunction}    from '../main/controller/controllerAccessHelper';
 import {InputConsumeFunction}             from '../main/input/inputClosureCreator';
 import {componentTypeSymbol}              from '../main/component/componentUtils';
@@ -96,8 +95,6 @@ export type ReceiverClass = typeof Receiver;
 
 export interface ReceiverPreparedData {
     receiverConfig: ReceiverConfig,
-    versionAccessCheck: VersionSystemAccessCheckFunction,
-    systemAccessCheck: VersionSystemAccessCheckFunction,
     tokenStateCheck: TokenStateAccessCheckFunction,
     handleMiddlewareInvoke: CompHandleMiddlewareInvoker,
     inputConsume: InputConsumeFunction

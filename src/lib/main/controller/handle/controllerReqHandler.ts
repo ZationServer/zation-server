@@ -100,20 +100,10 @@ export default class ControllerReqHandler
             }
             else {
                 const {
-                    systemAccessCheck,
-                    versionAccessCheck,
                     tokenStateCheck,
                     handleMiddlewareInvoke,
                     inputConsume,
                 } = cInstance._preparedData;
-
-                if(!systemAccessCheck(socket)){
-                    throw new BackError(MainBackErrors.accessDenied,{reason: 'system'});
-                }
-
-                if(!versionAccessCheck(socket)){
-                    throw new BackError(MainBackErrors.accessDenied,{reason: 'version'});
-                }
 
                 //check access to controller
                 if(await tokenStateCheck(socket)) {

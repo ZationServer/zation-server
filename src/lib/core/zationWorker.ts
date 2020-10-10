@@ -51,6 +51,7 @@ import ConfigLoader         from "../main/config/manager/configLoader";
 import RawSocketUpgradeFactory  from "../main/socket/rawSocketUpgradeFactory";
 import InternalChannelEngine, {INTERNAL_WORKER_CH} from '../main/internalChannels/internalChannelEngine';
 import {MasterMessageAction, MasterMessagePackage} from '../main/definitions/masterMessage';
+import AllowedSystemsChecker, {AllowedSystemsCheckFunction} from '../main/allowedSystems/allowedSystemsChecker';
 import {
     AuthMiddlewareReq,
     HandshakeScMiddlewareReq,
@@ -120,6 +121,7 @@ class ZationWorker extends SCWorker
     private channelHandler: ChannelHandler;
     private rawSocketUpdateEngine: RawSocketUpgradeFactory;
     private tokenClusterKeyCheck: TokenClusterKeyCheckFunction;
+    private allowedSystemsCheck: AllowedSystemsCheckFunction;
 
     private app: any;
 
@@ -203,6 +205,11 @@ class ZationWorker extends SCWorker
         debugStopwatch.start();
         this.tokenClusterKeyCheck = TokenUtils.createTokenClusterKeyChecker(this.zc);
         debugStopwatch.stop(`The Worker with id ${this.id} has created the token cluster key checker.`);
+
+        //Allowed systems checker
+        debugStopwatch.start();
+        this.allowedSystemsCheck = AllowedSystemsChecker.createAllowedSystemsChecker(this.zc.appConfig.allowedSystems);
+        debugStopwatch.stop(`The Worker with id ${this.id} has created the allowed systems checker.`);
 
         //Services (!Before Bag)
         debugStopwatch.start();
@@ -518,9 +525,11 @@ class ZationWorker extends SCWorker
             //check for version and system info
             const urlParts = url.parse(req.socket.request.url || '', true);
             const query = urlParts.query;
+            let version;
             if (
-                typeof query === 'object' &&
-                (typeof query.version === 'string') && typeof query.system === 'string')
+                typeof query === 'object' && typeof query.version === 'string' &&
+                !isNaN(version = parseFloat(query.version)) &&
+                typeof query.system === 'string')
             {
                 const rawSocket = req.socket;
 
@@ -533,10 +542,19 @@ class ZationWorker extends SCWorker
                     catch (e) {}
                 }
                 (rawSocket as any)[nameof<RawSocket>(s => s.handshakeAttachment)] = attachment;
-                (rawSocket as any)[nameof<RawSocket>(s => s.clientVersion)] = parseFloat(query.version);
+                (rawSocket as any)[nameof<RawSocket>(s => s.clientVersion)] = version;
                 (rawSocket as any)[nameof<RawSocket>(s => s.clientSystem)] = query.system;
-                if(typeof query.apiLevel === 'string') {
-                    (rawSocket as any)[nameof<RawSocket>(s => s.apiLevel)] = parseInt(query.apiLevel);
+
+                let apiLevel;
+                if(typeof query.apiLevel === 'string' &&
+                    !isNaN(apiLevel = parseInt(query.apiLevel))) {
+                    (rawSocket as any)[nameof<RawSocket>(s => s.apiLevel)] = apiLevel;
+                }
+
+                if(!this.allowedSystemsCheck(query.system, version)) {
+                    const err = new Error('The client system is not allowed to connect.');
+                    err.name = 'BadSystem';
+                    return next(err);
                 }
 
                 this.rawSocketUpdateEngine.upgrade(rawSocket);

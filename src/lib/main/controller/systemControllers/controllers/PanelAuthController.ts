@@ -19,7 +19,6 @@ export default class PanelAuthController extends Controller
 {
     static config: ControllerConfig = {
         access: 'all',
-        versionAccess: 'all',
         input: {
             properties: {
                 username: {

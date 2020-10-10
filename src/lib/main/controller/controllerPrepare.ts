@@ -8,7 +8,6 @@ import ZationWorker     = require("../../core/zationWorker");
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig} from "../config/definitions/parts/controllerConfig";
 import BackError          from "../../api/BackError";
-import SystemVersionChecker   from "../systemVersion/systemVersionChecker";
 import ControllerAccessHelper from "./controllerAccessHelper";
 import {MainBackErrors}              from "../systemBackErrors/mainBackErrors";
 import Bag                           from "../../api/Bag";
@@ -92,8 +91,6 @@ export default class ControllerPrepare extends ComponentPrepare<Controller,Contr
 
         const preparedData: ControllerPreparedData = {
             controllerConfig: config,
-            versionAccessCheck: SystemVersionChecker.createVersionChecker(config),
-            systemAccessCheck: SystemVersionChecker.createSystemChecker(config),
             tokenStateCheck: ControllerAccessHelper.createAuthAccessChecker(config.access,identifier),
             handleMiddlewareInvoke: CompHandleMiddlewareUtils.createInvoker(config),
             inputConsume: InputClosureCreator.createInputConsumer(config.input),

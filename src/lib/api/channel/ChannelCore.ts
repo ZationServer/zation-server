@@ -6,7 +6,6 @@ Copyright(c) Luca Scaringella
 
 // noinspection TypeScriptPreferShortImport
 import Bag                                from "../Bag";
-import {VersionSystemAccessCheckFunction} from "../../main/systemVersion/systemVersionChecker";
 import {ClientErrorName}                  from "../../main/definitions/clientErrorName";
 import ConfigBuildError                   from "../../main/config/manager/configBuildError";
 import Component, {ComponentClass}        from '../component/Component';
@@ -69,21 +68,7 @@ export default abstract class ChannelCore extends Component {
      * @param chInfo
      */
     async _checkSubscribeAccess(socket: Socket, chInfo: ChannelInfo){
-        const {systemAccessCheck,versionAccessCheck,accessCheck} = this._preparedData;
-
-        if(!systemAccessCheck(socket)){
-            const err: any = new Error('Access to this Channel with client system denied.');
-            err.name = ClientErrorName.NoAccessWithSystem;
-            throw err;
-        }
-
-        if(!versionAccessCheck(socket)){
-            const err: any = new Error('Access to this Channel with client version denied.');
-            err.name = ClientErrorName.NoAccessWithVersion;
-            throw err;
-        }
-
-        if(!(await accessCheck(socket,chInfo))){
+        if(!(await this._preparedData.accessCheck(socket,chInfo))){
             const err: any = new Error('Access to this Channel denied.');
             err.name = ClientErrorName.AccessDenied;
             throw err;
@@ -121,7 +106,5 @@ export default abstract class ChannelCore extends Component {
 ChannelCore.prototype[componentTypeSymbol] = 'Channel';
 
 export interface ChPreparedData {
-    versionAccessCheck: VersionSystemAccessCheckFunction,
-    systemAccessCheck: VersionSystemAccessCheckFunction,
     accessCheck: ChSubAccessCheckFunction
 }

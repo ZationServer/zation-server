@@ -8,7 +8,6 @@ Copyright(c) Luca Scaringella
 import {DataboxConfig}                    from "../../main/config/definitions/parts/databoxConfig";
 import Bag                                from "../Bag";
 import NoMoreDataAvailableError           from "../../main/databox/noMoreDataAvailable";
-import {VersionSystemAccessCheckFunction} from "../../main/systemVersion/systemVersionChecker";
 import {ClientErrorName}                  from "../../main/definitions/clientErrorName";
 const  Jwt                              = require('jsonwebtoken');
 import {JwtSignFunction, JwtVerifyFunction, JwtVerifyOptions} from "../../main/definitions/jwt";
@@ -149,21 +148,7 @@ export default abstract class DataboxCore extends Component {
      * @param dbInfo
      */
     async _checkAccess(socket: Socket, dbInfo: DataboxInfo){
-        const {systemAccessCheck,versionAccessCheck,accessCheck} = this._preparedData;
-
-        if(!systemAccessCheck(socket)){
-            const err: any = new Error('Access to this Databox with client system denied.');
-            err.name = ClientErrorName.NoAccessWithSystem;
-            throw err;
-        }
-
-        if(!versionAccessCheck(socket)){
-            const err: any = new Error('Access to this Databox with client version denied.');
-            err.name = ClientErrorName.NoAccessWithVersion;
-            throw err;
-        }
-
-        if(!(await accessCheck(socket,dbInfo))){
+        if(!(await this._preparedData.accessCheck(socket,dbInfo))){
             const err: any = new Error('Access to this Databox denied.');
             err.name = ClientErrorName.AccessDenied;
             throw err;
@@ -301,8 +286,6 @@ export default abstract class DataboxCore extends Component {
 DataboxCore.prototype[componentTypeSymbol] = 'Databox';
 
 export interface DbPreparedData {
-    versionAccessCheck: VersionSystemAccessCheckFunction,
-    systemAccessCheck: VersionSystemAccessCheckFunction,
     accessCheck: DbAccessCheckFunction,
     initInputConsumer: InputConsumeFunction,
     fetchInputConsumer: InputConsumeFunction,

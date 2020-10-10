@@ -4,7 +4,6 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import SystemVersionChecker                                     from "../systemVersion/systemVersionChecker";
 import ZationConfigFull                                         from "../config/manager/zationConfigFull";
 import Bag                                                      from "../../api/Bag";
 import ApiLevelUtils, {ApiLevelSwitch}                          from "../apiLevel/apiLevelUtils";
@@ -78,8 +77,6 @@ export default class DataboxPrepare extends ComponentPrepare<DataboxCore,Databox
         (databox as Writable<AnyDataboxClass>).config = config;
 
         const dbPreparedData: DbPreparedData = {
-            versionAccessCheck: SystemVersionChecker.createVersionChecker(config),
-            systemAccessCheck: SystemVersionChecker.createSystemChecker(config),
             accessCheck: DataboxAccessHelper.createAccessChecker(config.access,identifier),
             initInputConsumer: InputClosureCreator.createInputConsumer(config.initInput),
             fetchInputConsumer: InputClosureCreator.createInputConsumer(config.fetchInput),

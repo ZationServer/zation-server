@@ -7,7 +7,6 @@ Copyright(c) Luca Scaringella
 import ZationConfigFull                    from "../config/manager/zationConfigFull";
 import Bag                                 from "../../api/Bag";
 import ChAccessHelper                      from "./chAccessHelper";
-import SystemVersionChecker                from "../systemVersion/systemVersionChecker";
 import ApiLevelUtils, {ApiLevelSwitch}     from '../apiLevel/apiLevelUtils';
 import ChannelCore, {ChPreparedData}       from '../../api/channel/ChannelCore';
 import {ClientErrorName}                   from '../definitions/clientErrorName';
@@ -78,8 +77,6 @@ export class ChannelPrepare extends ComponentPrepare<ChannelCore,ChannelConfig>
         (channel as Writable<AnyChannelClass>).config = config;
 
         const chPreparedData: ChPreparedData = {
-            versionAccessCheck: SystemVersionChecker.createVersionChecker(config),
-            systemAccessCheck: SystemVersionChecker.createSystemChecker(config),
             accessCheck: ChAccessHelper.createSubAccessChecker(config.access,identifier)
         };
 

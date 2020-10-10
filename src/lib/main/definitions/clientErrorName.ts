@@ -9,8 +9,6 @@ export enum ClientErrorName {
     UnnecessaryMember            = 'UnnecessaryMember',
     IdentifierMissing            = 'IdentifierMissing',
     UnknownChannel               = 'UnknownChannel',
-    NoAccessWithVersion          = 'NoAccessWithVersion',
-    NoAccessWithSystem           = 'NoAccessWithSystem',
     AccessDenied                 = 'AccessDenied',
     InvalidMember                = 'InvalidMember',
 

@@ -8,7 +8,6 @@ Copyright(c) Luca Scaringella
 import {ControllerConfig} from "../main/config/definitions/parts/controllerConfig";
 import BackErrorBag       from "./BackErrorBag";
 import Component          from './component/Component';
-import {VersionSystemAccessCheckFunction} from '../main/systemVersion/systemVersionChecker';
 import {TokenStateAccessCheckFunction}    from '../main/controller/controllerAccessHelper';
 import {InputConsumeFunction, InputValidationCheckFunction} from '../main/input/inputClosureCreator';
 import {componentTypeSymbol}                                from '../main/component/componentUtils';
@@ -108,8 +107,6 @@ export type ControllerClass = typeof Controller;
 
 export interface ControllerPreparedData {
     controllerConfig: ControllerConfig,
-    versionAccessCheck: VersionSystemAccessCheckFunction,
-    systemAccessCheck: VersionSystemAccessCheckFunction,
     tokenStateCheck: TokenStateAccessCheckFunction,
     handleMiddlewareInvoke: CompHandleMiddlewareInvoker,
     inputConsume: InputConsumeFunction,
