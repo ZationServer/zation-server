@@ -13,6 +13,8 @@ export type Not<T> = {[notValueSymbol]: T};
  * Inverts the value.
  * @param value
  */
+export function $not<T>(value: T & {[setNotFunctionSymbol]: (...args: any[]) => any}): T
+export function $not<T>(value: T): Not<T>
 export function $not<T>(value: T): Not<T> {
     if(typeof value === 'object' && value !== null && typeof value[setNotFunctionSymbol] === 'function') {
         value[setNotFunctionSymbol]();

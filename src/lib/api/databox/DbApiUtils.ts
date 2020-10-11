@@ -60,7 +60,7 @@ export const $all = Object.freeze({});
  * await db.update(['34','name'],'luca',{if: $not($contains($key('39')))});
  * @param query
  */
-export function $contains<TK,TV>(query: ForintSearchQuery<TK,TV>): IfQuery {
+export function $contains<TK,TV>(query: ForintSearchQuery<TK,TV>): IfQuery & {[setNotFunctionSymbol]: () => void} {
     return {
         q: query,
         t: IfQueryType.search,
@@ -68,7 +68,7 @@ export function $contains<TK,TV>(query: ForintSearchQuery<TK,TV>): IfQuery {
         [setNotFunctionSymbol]: function() {
             this.n = true;
         }
-    } as IfQuery;
+    } as IfQuery & {[setNotFunctionSymbol]: () => void};
 }
 
 /**
@@ -91,7 +91,7 @@ export const $any = Object.freeze({});
  * await db.update(['34','name'],'luca',{if: $not($matches({email: 'test1@test.de', age: {gte: 18}}))});
  * @param query
  */
-export function $matches<T>(query: ForintQuery<T>): IfQuery {
+export function $matches<T>(query: ForintQuery<T>): IfQuery & {[setNotFunctionSymbol]: () => void} {
     return {
         q: query,
         t: IfQueryType.full,
@@ -99,5 +99,5 @@ export function $matches<T>(query: ForintQuery<T>): IfQuery {
         [setNotFunctionSymbol]: function() {
             this.n = true;
         }
-    } as IfQuery;
+    } as IfQuery & {[setNotFunctionSymbol]: () => void};
 }
