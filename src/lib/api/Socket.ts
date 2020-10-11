@@ -89,21 +89,21 @@ export default class Socket<A extends object = any, TP extends object = any>
 
     private _connectToRawSocket() {
         this._connectTokenUpdate();
-        this._onTokenUpdate(this.stillAccessCheck.bind(this));
+        this._onTokenUpdate(this.recheckAccess.bind(this));
     }
 
     /**
      * @description
-     * This function can be used to check that the socket has still
-     * access to all components where this socket is connected to (Databoxes, Channels).
+     * This function can be used to recheck the access of this socket to all components
+     * where it is connected to (Databoxes, Channels).
      * If the access was denied the socket will be kicked out from this component.
      * It will automatically run whenever the token state of this socket had changed.
      */
-    async stillAccessCheck() {
+    async recheckAccess() {
         const p: Promise<void>[] = [];
         const checkObjectives = [...this._databoxes,...this._channels];
         for(let i = 0; i < checkObjectives.length; i++) {
-            p.push(checkObjectives[i]._checkSocketHasStillAccess(this));
+            p.push(checkObjectives[i]._recheckSocketAccess(this));
         }
         await Promise.all(p);
     }

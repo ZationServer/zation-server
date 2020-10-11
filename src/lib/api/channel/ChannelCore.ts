@@ -55,7 +55,7 @@ export default abstract class ChannelCore extends Component {
      * Otherwise, the socket will be kicked out.
      * @private
      */
-    abstract async _checkSocketHasStillAccess(socket: Socket): Promise<void>;
+    abstract async _recheckSocketAccess(socket: Socket): Promise<void>;
 
     /**
      * @internal

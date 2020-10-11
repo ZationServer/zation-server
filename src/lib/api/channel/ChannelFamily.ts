@@ -272,7 +272,7 @@ export default class ChannelFamily extends ChannelCore {
      * @param socket
      * @private
      */
-    async _checkSocketHasStillAccess(socket: Socket): Promise<void> {
+    async _recheckSocketAccess(socket: Socket): Promise<void> {
         const members = this.getSocketSubMembers(socket);
         for(let i = 0; i < members.length; i++){
             if(!(await this._preparedData.accessCheck(socket,

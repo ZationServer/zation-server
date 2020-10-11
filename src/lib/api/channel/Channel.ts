@@ -210,7 +210,7 @@ export default class Channel extends ChannelCore {
      * @param socket
      * @private
      */
-    async _checkSocketHasStillAccess(socket: Socket): Promise<void> {
+    async _recheckSocketAccess(socket: Socket): Promise<void> {
         if(!(await this._preparedData.accessCheck(socket,{identifier: this.identifier}))){
             this.kickOut(socket);
         }
