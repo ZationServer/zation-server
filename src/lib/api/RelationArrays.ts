@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-export type RelationOrArray<T = any> = T[];
+export type RelationOrArray<T extends any[] = any> = T;
 
 // noinspection JSUnusedGlobalSymbols
 /**
@@ -12,13 +12,13 @@ export type RelationOrArray<T = any> = T[];
  * all items in the array are related with or.
  * @param items
  */
-export function $or(...items: any[]): RelationOrArray {
+export function $or<T extends Array<any>>(...items: T): RelationOrArray<T> {
     return items;
 }
 
 const relationAndArraySymbol = Symbol();
 
-export type RelationAndArray<T = any> = T[] & {[relationAndArraySymbol]: true};
+export type RelationAndArray<T extends any[] = any> = T & {[relationAndArraySymbol]: true};
 
 // noinspection JSUnusedGlobalSymbols
 /**
@@ -26,7 +26,7 @@ export type RelationAndArray<T = any> = T[] & {[relationAndArraySymbol]: true};
  * items in the array are related with and.
  * @param items
  */
-export function $and(...items: any[]): RelationAndArray {
+export function $and<T extends Array<any>>(...items: T): RelationAndArray<T> {
     items[relationAndArraySymbol] = true;
     return items as RelationAndArray;
 }
