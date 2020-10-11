@@ -22,7 +22,10 @@ import {StartMode}                  from "./lib/core/startMode";
 import Router                       from "./lib/api/Router";
 import {Register}                   from "./lib/api/component/decorator/Register";
 import {$value, $key, $pair, $all, $any, $contains, $matches}   from './lib/api/databox/DbApiUtils';
-import {$tokenPayloadIncludes, $tokenPayloadMatches, $userId}   from './lib/api/AccessApiUtils';
+import {
+    $handshakeAttachmentMatches,
+    $socketAttachmentMatches,
+    $tokenPayloadMatches, $userId}                              from './lib/api/AccessApiUtils';
 import {updateModelTranslatable}                                from './lib/api/configTranslatable/modelTranslatable';
 import {Model as AnyModel, DirectModel, AnyModelTranslatable}   from "./lib/main/models/model";
 import {MetaModel, ModelMetaData}   from "./lib/main/models/metaModel";
@@ -118,7 +121,8 @@ export {
     $userId,
     $and,
     $or,
-    $tokenPayloadIncludes,
+    $handshakeAttachmentMatches,
+    $socketAttachmentMatches,
     $tokenPayloadMatches,
     AuthController,
     Controller,

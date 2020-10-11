@@ -10,33 +10,7 @@ import {RawZationToken}                              from '../main/definitions/i
 import Socket                                        from './Socket';
 
 /**
- * @description
- * This function can be used to check the access with the token payload of a client.
- * You can set that the token payload has to include some specific key-value pairs.
- * @example
- * access: $tokenPayloadIncludes({canCreateItems: true})
- * @param pairs
- */
-export function $tokenPayloadIncludes(pairs: Record<string,any>) {
-    const checkKeys = Object.keys(pairs);
-    const checkKeysLength = checkKeys.length;
-    return (socket: Socket) => {
-        const token = socket.rawToken;
-        if(token != null && token.payload != undefined) {
-            const payload = token.payload;
-            let tmpKey;
-            for(let i = 0; i < checkKeysLength; i++){
-                tmpKey = checkKeys[i];
-                if(payload[tmpKey] !== pairs[tmpKey]){return false;}
-            }
-            return true;
-        }
-        return false;
-    };
-}
-
-/**
- * This function can be used to check the access with the token payload of a client.
+ * This function can be used to check the access with the token payload of a socket.
  * You can set that the token payload has to match with a forint query.
  * @example
  * access: $tokenPayloadMatches({age: {$gt: 18}})
@@ -44,14 +18,35 @@ export function $tokenPayloadIncludes(pairs: Record<string,any>) {
  */
 export function $tokenPayloadMatches<T>(query: ForintQuery<T>) {
     const checker = forint({[nameof<RawZationToken>(s => s.payload)]: query});
-    return (socket: Socket) => {
-        const token = socket.rawToken;
-        return token != null && checker(token);
-    };
+    return (socket: Socket) => checker(socket.rawToken);
 }
 
 /**
- * This function can be used to check the access with the token user id of a client.
+ * This function can be used to check the access with the handshake attachment of a socket.
+ * You can set that the handshake attachment has to match with a forint query.
+ * @example
+ * access: $handshakeAttachmentMatches({device: 'MO'})
+ * @param query
+ */
+export function $handshakeAttachmentMatches<T>(query: ForintQuery<T>) {
+    const checker = forint(query);
+    return (socket: Socket) => checker(socket.getHandshakeAttachment());
+}
+
+/**
+ * This function can be used to check the access with the socket attachment.
+ * You can set that the socket attachment has to match with a forint query.
+ * @example
+ * access: $socketAttachmentMatches({code: 2313})
+ * @param query
+ */
+export function $socketAttachmentMatches<T>(query: ForintQuery<T>) {
+    const checker = forint(query);
+    return (socket: Socket) => checker(socket.attachment);
+}
+
+/**
+ * This function can be used to check the access with the token user id of a socket.
  * You can set that the token user-id has to match with a specific string or number.
  * @example
  * access: [$userId('luca'),$userId(221,false)]
