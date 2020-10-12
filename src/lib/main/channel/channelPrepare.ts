@@ -77,7 +77,7 @@ export class ChannelPrepare extends ComponentPrepare<ChannelCore,ChannelConfig>
         (channel as Writable<AnyChannelClass>).config = config;
 
         const chPreparedData: ChPreparedData = {
-            accessCheck: AccessUtils.createAccessChecker<ChSubAccessFunction>
+            checkAccess: AccessUtils.createAccessChecker<ChSubAccessFunction>
                 (config.access,`Channel: ${identifier}`)
         };
 

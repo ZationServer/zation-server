@@ -58,17 +58,17 @@ export default class ReceiverHandler
             const rInstance = this.receiverPrepare.get(pack.r, (packetApiLevel || socket.connectionApiLevel || this.defaultApiLevel));
 
             const {
-                accessCheck,
+                checkAccess,
                 handleMiddlewareInvoke,
-                inputConsume
+                consumeInput
             } = rInstance._preparedData;
 
             //check access to receiver
-            if(await accessCheck(socket)) {
+            if(await checkAccess(socket)) {
                 const packet = new Packet(pack.d,packetApiLevel);
                 let input: object;
                 try {
-                    input = await inputConsume(pack.d);
+                    input = await consumeInput(pack.d);
                 }
                 catch (err) {
                     //invoke controller invalid input function

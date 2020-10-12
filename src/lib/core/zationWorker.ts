@@ -113,15 +113,15 @@ class ZationWorker extends SCWorker
     private authConfig: AuthConfig;
     private panelEngine: PanelEngine;
     private internalChannelEngine: InternalChannelEngine;
-    private originCheck: OriginChecker;
+    private checkOrigin: OriginChecker;
     private channelPrepare: ChannelPrepare;
     private controllerReqHandler: ControllerReqHandler;
     private receiverHandler: ReceiverHandler;
     private databoxHandler: DataboxHandler;
     private channelHandler: ChannelHandler;
     private rawSocketUpdateEngine: RawSocketUpgradeFactory;
-    private tokenClusterKeyCheck: TokenClusterKeyCheckFunction;
-    private allowedSystemsCheck: AllowedSystemsCheckFunction;
+    private checkTokenClusterKey: TokenClusterKeyCheckFunction;
+    private checkAllowedSystems: AllowedSystemsCheckFunction;
 
     private app: any;
 
@@ -198,17 +198,17 @@ class ZationWorker extends SCWorker
 
         //Origins checker
         debugStopwatch.start();
-        this.originCheck = OriginsUtils.createOriginChecker(this.zc.mainConfig.origins);
+        this.checkOrigin = OriginsUtils.createOriginChecker(this.zc.mainConfig.origins);
         debugStopwatch.stop(`The Worker with id ${this.id} has created the origin checker.`);
 
         //Token cluster key checker
         debugStopwatch.start();
-        this.tokenClusterKeyCheck = TokenUtils.createTokenClusterKeyChecker(this.zc);
+        this.checkTokenClusterKey = TokenUtils.createTokenClusterKeyChecker(this.zc);
         debugStopwatch.stop(`The Worker with id ${this.id} has created the token cluster key checker.`);
 
         //Allowed systems checker
         debugStopwatch.start();
-        this.allowedSystemsCheck = AllowedSystemsChecker.createAllowedSystemsChecker(this.zc.appConfig.allowedSystems);
+        this.checkAllowedSystems = AllowedSystemsChecker.createAllowedSystemsChecker(this.zc.appConfig.allowedSystems);
         debugStopwatch.stop(`The Worker with id ${this.id} has created the allowed systems checker.`);
 
         //Services (!Before Bag)
@@ -434,7 +434,7 @@ class ZationWorker extends SCWorker
 
         //Middleware check origin.
         this.app.use((req, res, next) => {
-            if(this.originCheck(req.hostname,req.protocol,serverPort)){
+            if(this.checkOrigin(req.hostname,req.protocol,serverPort)){
                 res.setHeader('Access-Control-Allow-Origin', `${req.protocol}://${req.hostname}`);
                 res.header('Access-Control-Allow-Methods', '*');
                 res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,contenttype');
@@ -551,7 +551,7 @@ class ZationWorker extends SCWorker
                     (rawSocket as any)[nameof<RawSocket>(s => s.apiLevel)] = apiLevel;
                 }
 
-                if(!this.allowedSystemsCheck(query.system, version)) {
+                if(!this.checkAllowedSystems(query.system, version)) {
                     const err = new Error('The client system is not allowed to connect.');
                     err.name = 'BadSystem';
                     return next(err);
@@ -585,7 +585,7 @@ class ZationWorker extends SCWorker
                 origin = '*';
             }
             const parts = url.parse(origin);
-            if(this.originCheck(parts.hostname,parts.protocol,parts.port)) {
+            if(this.checkOrigin(parts.hostname,parts.protocol,parts.port)) {
                 next();
             }
             else {
@@ -606,7 +606,7 @@ class ZationWorker extends SCWorker
             //check if the token is valid
             try {
                 TokenUtils.checkToken(token,this.authConfig);
-                this.tokenClusterKeyCheck(token);
+                this.checkTokenClusterKey(token);
             }
             catch (e) {
                 next(e,true);

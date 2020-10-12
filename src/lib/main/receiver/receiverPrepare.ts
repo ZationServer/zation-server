@@ -76,10 +76,10 @@ export default class ReceiverPrepare extends ComponentPrepare<Receiver,ReceiverC
 
         const preparedData: ReceiverPreparedData = {
             receiverConfig: config,
-            accessCheck: AccessUtils.createAccessChecker<NormalAccessCustomFunction>
+            checkAccess: AccessUtils.createAccessChecker<NormalAccessCustomFunction>
                 (config.access,`Receiver: ${identifier}`),
             handleMiddlewareInvoke: CompHandleMiddlewareUtils.createInvoker(config),
-            inputConsume: InputClosureCreator.createInputConsumer(config.input)
+            consumeInput: InputClosureCreator.createInputConsumer(config.input)
         };
 
         const rInstance: Receiver = DynamicSingleton.create<ReceiverClass,Receiver>

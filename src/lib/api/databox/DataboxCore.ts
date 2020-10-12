@@ -13,7 +13,7 @@ const  Jwt                              = require('jsonwebtoken');
 import {JwtSignFunction, JwtVerifyFunction, JwtVerifyOptions} from "../../main/definitions/jwt";
 import DbKeyArrayUtils                    from "../../main/databox/dbKeyArrayUtils";
 import {DataboxConnectReq, DataboxConnectRes, DataboxInfo, DbToken} from '../../main/databox/dbDefinitions';
-import {InputConsumeFunction}             from "../../main/input/inputClosureCreator";
+import {ConsumeInputFunction}             from "../../main/input/inputClosureCreator";
 import ErrorUtils                         from "../../main/utils/errorUtils";
 import NoDataAvailableError               from "../../main/databox/noDataAvailable";
 import Component                          from '../component/Component';
@@ -50,8 +50,8 @@ export default abstract class DataboxCore extends Component {
     private readonly _preparedTokenSessionKey: string;
 
     private readonly _parallelFetch: boolean;
-    private readonly _initInputConsumer: InputConsumeFunction;
-    private readonly _fetchInputConsumer: InputConsumeFunction;
+    private readonly _initInputConsumer: ConsumeInputFunction;
+    private readonly _fetchInputConsumer: ConsumeInputFunction;
 
     protected constructor(identifier: string, bag: Bag, preparedData: DbPreparedData, apiLevel: number | undefined) {
         super(identifier,apiLevel);
@@ -59,8 +59,8 @@ export default abstract class DataboxCore extends Component {
         this._sendErrorDescription = bag.getMainConfig().sendErrorDescription;
 
         this._parallelFetch = preparedData.parallelFetch;
-        this._initInputConsumer = preparedData.initInputConsumer;
-        this._fetchInputConsumer = preparedData.fetchInputConsumer;
+        this._initInputConsumer = preparedData.consumeInitInput;
+        this._fetchInputConsumer = preparedData.consumeFetchInput;
 
         this._preparedTokenSessionKey =
             `${bag.getZationConfig().getDataboxKey()}.${this.dbTokenVersion}.${this.identifier}${apiLevel !== undefined ? apiLevel: ''}`;
@@ -147,7 +147,7 @@ export default abstract class DataboxCore extends Component {
      * @param dbInfo
      */
     async _checkAccess(socket: Socket, dbInfo: DataboxInfo){
-        if(!(await this._preparedData.accessCheck(socket,dbInfo))){
+        if(!(await this._preparedData.checkAccess(socket,dbInfo))){
             const err: any = new Error('Access to this Databox denied.');
             err.name = ClientErrorName.AccessDenied;
             throw err;
@@ -285,9 +285,9 @@ export default abstract class DataboxCore extends Component {
 DataboxCore.prototype[componentTypeSymbol] = 'Databox';
 
 export interface DbPreparedData {
-    accessCheck: DbAccessFunction,
-    initInputConsumer: InputConsumeFunction,
-    fetchInputConsumer: InputConsumeFunction,
+    checkAccess: DbAccessFunction,
+    consumeInitInput: ConsumeInputFunction,
+    consumeFetchInput: ConsumeInputFunction,
     parallelFetch: boolean,
     maxBackpressure: number,
     maxSocketInputChannels: number

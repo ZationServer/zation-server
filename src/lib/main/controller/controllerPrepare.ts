@@ -92,11 +92,11 @@ export default class ControllerPrepare extends ComponentPrepare<Controller,Contr
 
         const preparedData: ControllerPreparedData = {
             controllerConfig: config,
-            accessCheck: AccessUtils.createAccessChecker<NormalAccessCustomFunction>
+            checkAccess: AccessUtils.createAccessChecker<NormalAccessCustomFunction>
                 (config.access,`Controller: ${identifier}`),
             handleMiddlewareInvoke: CompHandleMiddlewareUtils.createInvoker(config),
-            inputConsume: InputClosureCreator.createInputConsumer(config.input),
-            inputValidationCheck: InputClosureCreator.createValidationChecker(config.input)
+            consumeInput: InputClosureCreator.createInputConsumer(config.input),
+            checkInputValidation: InputClosureCreator.createValidationChecker(config.input)
         };
 
         const cInstance: Controller = DynamicSingleton.create<ControllerClass,Controller>

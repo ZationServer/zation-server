@@ -95,22 +95,22 @@ export default class ControllerReqHandler
                     });
                 }
 
-                await cInstance._preparedData.inputValidationCheck(checks);
+                await cInstance._preparedData.checkInputValidation(checks);
                 return undefined;
             }
             else {
                 const {
-                    accessCheck,
+                    checkAccess,
                     handleMiddlewareInvoke,
-                    inputConsume,
+                    consumeInput,
                 } = cInstance._preparedData;
 
                 //check access to controller
-                if(await accessCheck(socket)) {
+                if(await checkAccess(socket)) {
                     const packet = new Packet((request as ControllerStandardReq).d,packetApiLevel);
                     let input: object;
                     try {
-                        input = await inputConsume((request as ControllerStandardReq).d);
+                        input = await consumeInput((request as ControllerStandardReq).d);
                     }
                     catch (err) {
                         //invoke controller invalid input function

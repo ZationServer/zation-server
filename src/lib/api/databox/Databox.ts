@@ -582,7 +582,7 @@ export default class Databox extends DataboxCore {
      * @private
      */
     async _recheckSocketAccess(socket: Socket): Promise<void> {
-        if(!(await this._preparedData.accessCheck(socket,
+        if(!(await this._preparedData.checkAccess(socket,
             {identifier: this.identifier})))
         {
             this.kickOut(socket);

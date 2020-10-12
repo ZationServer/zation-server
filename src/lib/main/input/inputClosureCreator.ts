@@ -16,7 +16,7 @@ import {ValidationBackErrors}           from '../systemBackErrors/validationBack
 import CloneUtils                       from '../utils/cloneUtils';
 import {ModelCompiler, CompiledModel}   from '../models/modelCompiler';
 
-export type InputConsumeFunction = (input: any) => Promise<any>;
+export type ConsumeInputFunction = (input: any) => Promise<any>;
 export type InputValidationCheckFunction = (checkData: ValidationCheckPair[]) => Promise<void>;
 
 /**
@@ -28,7 +28,7 @@ export default class InputClosureCreator
      * Creates a closure to consume the input (validate and format).
      * @param inputDefinition
      */
-    static createInputConsumer(inputDefinition?: Input): InputConsumeFunction {
+    static createInputConsumer(inputDefinition?: Input): ConsumeInputFunction {
         if(inputDefinition === 'any') return (input) => input;
         else if(inputDefinition == null || inputDefinition === 'nothing') {
             return async (input) => {

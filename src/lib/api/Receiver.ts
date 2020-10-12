@@ -10,7 +10,7 @@ import BackErrorBag       from "./BackErrorBag";
 import Socket             from './Socket';
 import Packet             from './Packet';
 import Component          from './component/Component';
-import {InputConsumeFunction}             from '../main/input/inputClosureCreator';
+import {ConsumeInputFunction}             from '../main/input/inputClosureCreator';
 import {componentTypeSymbol}              from '../main/component/componentUtils';
 import {CompHandleMiddlewareInvoker}      from '../main/compHandleMiddleware/compHandleMiddlewareUtils';
 import {NormalAccessCustomFunction}       from '../main/config/definitions/parts/accessConfigs';
@@ -95,7 +95,7 @@ export type ReceiverClass = typeof Receiver;
 
 export interface ReceiverPreparedData {
     receiverConfig: ReceiverConfig,
-    accessCheck: NormalAccessCustomFunction,
+    checkAccess: NormalAccessCustomFunction,
     handleMiddlewareInvoke: CompHandleMiddlewareInvoker,
-    inputConsume: InputConsumeFunction
+    consumeInput: ConsumeInputFunction
 }

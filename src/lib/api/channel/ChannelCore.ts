@@ -67,7 +67,7 @@ export default abstract class ChannelCore extends Component {
      * @param chInfo
      */
     async _checkSubscribeAccess(socket: Socket, chInfo: ChannelInfo){
-        if(!(await this._preparedData.accessCheck(socket,chInfo))){
+        if(!(await this._preparedData.checkAccess(socket,chInfo))){
             const err: any = new Error('Access to this Channel denied.');
             err.name = ClientErrorName.AccessDenied;
             throw err;
@@ -105,5 +105,5 @@ export default abstract class ChannelCore extends Component {
 ChannelCore.prototype[componentTypeSymbol] = 'Channel';
 
 export interface ChPreparedData {
-    accessCheck: ChSubAccessFunction
+    checkAccess: ChSubAccessFunction
 }
