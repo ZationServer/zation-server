@@ -1026,7 +1026,7 @@ export default class DataboxFamily extends DataboxCore {
      * @param initData
      * @param socket
      */
-    protected fetch(member: string, counter: number, session: any, input: any, initData: any, socket: Socket): Promise<any> | any {
+    protected fetch(member: string, counter: number, session: Record<string,any>, input: any, initData: any, socket: Socket): Promise<any> | any {
         this.noDataAvailable();
     }
 

@@ -873,7 +873,7 @@ export default class Databox extends DataboxCore {
      * @param initData
      * @param socket
      */
-    protected fetch(counter: number, session: any, input: any, initData: any, socket: Socket): Promise<any> | any {
+    protected fetch(counter: number, session: Record<string,any>, input: any, initData: any, socket: Socket): Promise<any> | any {
         this.noDataAvailable();
     }
 
