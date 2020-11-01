@@ -44,7 +44,7 @@ Copyright(c) Luca Scaringella
  * // The first item of each array represents the key and the second item the associated value.
  * buildKeyArray([['2033323','hello'],['2435435','hi']])
  */
-export function buildKeyArray(array: [string, any][])
+export function buildKeyArray(array: [string | number, any][])
 /**
  * This method can be used to build a raw key array.
  * These arrays are useful to present data in a sequence and as a key-value map.
