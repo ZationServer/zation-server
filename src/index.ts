@@ -38,7 +38,7 @@ import Databox                      from "./lib/api/databox/Databox";
 import {DataboxConfig}              from "./lib/main/config/definitions/parts/databoxConfig";
 import DataboxContainer             from "./lib/api/databox/container/databoxContainer";
 import DataboxFamilyContainer       from "./lib/api/databox/container/databoxFamilyContainer";
-import {buildKeyArray}              from "./lib/main/databox/dbKeyArrayUtils";
+import {buildKeyArray}              from "./lib/main/databox/keyArrayUtils";
 import Socket                       from "./lib/api/Socket";
 import ZationToken                  from "./lib/main/internalApi/zationToken";
 import ServerInfo                   from "./lib/main/internalApi/serverInfo";
