@@ -1018,10 +1018,9 @@ export default class Databox extends DataboxCore {
     /**
      * **Can be overridden.**
      * The insert middleware.
-     * You should only use a cud middleware if you can find no other way
-     * because when your overwrite at least one of them, the Databox
-     * switches to a more costly performance implementation.
-     * You should not invoke long process tasks in this middleware.
+     * Notice that when you overwrite at least one of the cud middlewares,
+     * the Databox switches to a more costly performance implementation.
+     * It is not recommended to invoke long processes in this middleware.
      * Instead, try to prepare stuff in the token of the socket or the socket attachment.
      * The middleware will be called before each socket reaches a cud operation.
      * You can change the value with the parameter changeValue by simply calling
@@ -1043,10 +1042,9 @@ export default class Databox extends DataboxCore {
     /**
      * **Can be overridden.**
      * The update middleware.
-     * You should only use a cud middleware if you can find no other way
-     * because when your overwrite at least one of them, the Databox
-     * switches to a more costly performance implementation.
-     * You should not invoke long process tasks in this middleware.
+     * Notice that when you overwrite at least one of the cud middlewares,
+     * the Databox switches to a more costly performance implementation.
+     * It is not recommended to invoke long processes in this middleware.
      * Instead, try to prepare stuff in the token of the socket or the socket attachment.
      * The middleware will be called before each socket reaches a cud operation.
      * You can change the value with the parameter changeValue by simply calling
@@ -1068,10 +1066,9 @@ export default class Databox extends DataboxCore {
     /**
      * **Can be overridden.**
      * The delete middleware.
-     * You should only use a cud middleware if you can find no other way
-     * because when your overwrite at least one of them, the Databox
-     * switches to a more costly performance implementation.
-     * You should not invoke long process tasks in this middleware.
+     * Notice that when you overwrite at least one of the cud middlewares,
+     * the Databox switches to a more costly performance implementation.
+     * It is not recommended to invoke long processes in this middleware.
      * Instead, try to prepare stuff in the token of the socket or the socket attachment.
      * The middleware will be called before each socket reaches a cud operation.
      * You are able to block the complete operation for the socket
