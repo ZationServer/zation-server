@@ -461,7 +461,7 @@ export default class Databox extends DataboxCore {
                         promises.push((async () => {
                             try {
                                 await this.updateMiddleware(socket,operation.s,operation.v,(value) => {
-                                    operation.d = value;
+                                    operation.v = value;
                                 },operation.c,operation.d);
                                 filteredOperations.push(operation);
                             }
@@ -472,7 +472,7 @@ export default class Databox extends DataboxCore {
                         promises.push((async () => {
                             try {
                                 await this.insertMiddleware(socket,operation.s,operation.v,(value) => {
-                                    operation.d = value;
+                                    operation.v = value;
                                 },operation.c,operation.d);
                                 filteredOperations.push(operation);
                             }
