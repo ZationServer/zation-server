@@ -35,7 +35,6 @@ import {
     DbClientInputFetchPackage,
     DbSocketMemory,
     DbRegisterResult,
-    ChangeValue,
     DbToken,
     DbSelector,
     DbProcessedSelector,
@@ -48,6 +47,12 @@ import {
     DbClientOutputSignalPackage,
     DbWorkerSignalPackage
 } from '../../main/databox/dbDefinitions';
+import {DbFamilyConnection,
+    DeleteAction,
+    FetchRequest,
+    InsertAction,
+    SignalAction,
+    UpdateAction} from './DataboxApiDefinitions';
 import DataboxUtils           from "../../main/databox/databoxUtils";
 import DbCudOperationSequence from "../../main/databox/dbCudOperationSequence";
 import {ClientErrorName}      from "../../main/definitions/clientErrorName";
@@ -120,7 +125,7 @@ export default class DataboxFamily extends DataboxCore {
     private readonly _workerFullId: string;
     private readonly _maxSocketInputChannels: number;
 
-    private readonly _fetchImpl: (member: string,counter: number, session: any, input: any, initData: any, socket: Socket) => Promise<any> | any;
+    private readonly _fetchImpl: (request: FetchRequest, connection: DbFamilyConnection, session: Record<string, any>) => Promise<any> | any;
     private readonly _buildFetchManager: FetchManagerBuilder<typeof DataboxFamily.prototype._fetch>;
     private readonly _sendCudToSockets: (member: string,dbClientCudPackage: DbClientOutputCudPackage) => Promise<void> | void;
     private readonly _sendSignalToSockets: (member: string,dbClientPackage: DbClientOutputSignalPackage) => Promise<void> | void;
@@ -131,7 +136,7 @@ export default class DataboxFamily extends DataboxCore {
 
     private readonly _onConnection: (member: string, socket: Socket) => Promise<void> | void;
     private readonly _onDisconnection: (member: string, socket: Socket) => Promise<void> | void;
-    private readonly _onReceivedSignal: (member: string, socket: Socket, signal: string, data: any) => Promise<void> | void;
+    private readonly _onReceivedSignal: (connection: DbFamilyConnection, signal: string, data: any) => Promise<void> | void;
 
     constructor(identifier: string, bag: Bag, dbPreparedData: DbPreparedData, apiLevel: number | undefined) {
         super(identifier,bag,dbPreparedData,apiLevel);
@@ -160,11 +165,11 @@ export default class DataboxFamily extends DataboxCore {
             `${errMessagePrefix} onReceivedSignal`,ErrorEventHolder.get());
     }
 
-    private _getFetchImpl(): (member: string, counter: number, session: any, input: any, initData: any, socket: Socket) => Promise<any> | any {
+    private _getFetchImpl(): (request: FetchRequest, connection: DbFamilyConnection, session: Record<string, any>) => Promise<any> | any {
         if(!isDefaultImpl(this.singleFetch)) {
-            return (member, counter, session, input, initData, socket) => {
-                if(counter === 0){
-                    return this.singleFetch(member,input,initData,socket);
+            return (request,connection) => {
+                if(request.counter === 0){
+                    return this.singleFetch(request,connection);
                 }
                 else {this.noMoreDataAvailable();}
             };
@@ -235,6 +240,7 @@ export default class DataboxFamily extends DataboxCore {
 
         const outputCh = this._dbEventPreFix+member;
         const inputCh = outputCh+'-'+chInputId;
+        const dbConnection: DbFamilyConnection = Object.freeze({member,socket,initData});
 
         const fetchManager = this._buildFetchManager();
 
@@ -243,7 +249,7 @@ export default class DataboxFamily extends DataboxCore {
                 switch (senderPackage.a) {
                     case DbClientInputAction.signal:
                         if(typeof (senderPackage as DbClientInputSignalPackage).s as any === 'string'){
-                            this._onReceivedSignal(member,socket,(senderPackage as DbClientInputSignalPackage).s,
+                            this._onReceivedSignal(dbConnection,(senderPackage as DbClientInputSignalPackage).s,
                                 (senderPackage as DbClientInputSignalPackage).d);
                         }
                         else {
@@ -259,11 +265,9 @@ export default class DataboxFamily extends DataboxCore {
                             respond,
                             async () => this._fetch
                             (
-                                member,
                                 dbToken,
                                 processedFetchInput,
-                                initData,
-                                socket,
+                                dbConnection,
                                 senderPackage.t
                             ),DataboxUtils.isReloadTarget(senderPackage.t)
                         );
@@ -322,12 +326,16 @@ export default class DataboxFamily extends DataboxCore {
         return DataboxUtils.generateStartCudId();
     }
 
-    private async _fetch(member: string, dbToken: DbToken, fetchInput: any, initData: any, zSocket: Socket, target?: DBClientInputSessionTarget): Promise<DbClientInputFetchResponse> {
+    private async _fetch(dbToken: DbToken, fetchInput: any, connection: DbFamilyConnection, target?: DBClientInputSessionTarget): Promise<DbClientInputFetchResponse> {
         const session = DataboxUtils.getSession(dbToken.sessions,target);
         const currentCounter = session.c;
         const clonedSessionData = CloneUtils.deepClone(session.d);
         try {
-            const data = await this._fetchImpl(member,currentCounter,clonedSessionData,fetchInput,initData,zSocket);
+            const data = this._fetchImpl({
+                counter: currentCounter,
+                input: fetchInput,
+                reload: target === DBClientInputSessionTarget.reloadSession
+            },connection,clonedSessionData);
 
             //success fetch
             session.c++;
@@ -336,7 +344,7 @@ export default class DataboxFamily extends DataboxCore {
             return {
                 c: currentCounter,
                 d: data,
-                t: await this._signDbToken(dbToken,member)
+                t: await this._signDbToken(dbToken,connection.member)
             };
         }
         catch (e) {
@@ -563,12 +571,13 @@ export default class DataboxFamily extends DataboxCore {
         if(!socketSet) return;
 
         const outputCh = this._dbEventPreFix+member;
+        const preAction = {signal: dbClientPackage.s, data: dbClientPackage.d};
         const middlewareInvoker = async (socket: Socket) => {
             try {
                 let dbPackage = dbClientPackage;
-                await this.signalMiddleware(member,socket,dbPackage.s,dbPackage.d,(data) => {
+                await this.signalMiddleware(member,socket,{...preAction, changeData: (data) => {
                     dbPackage = {...dbPackage,d: data};
-                })
+                }})
                 socket._emit(outputCh,dbPackage);
             }
             catch (e) {}
@@ -597,46 +606,52 @@ export default class DataboxFamily extends DataboxCore {
 
         const operationsLen = operations.length;
         for(let i = 0; i < operationsLen; i++) {
-            switch (operations[i].t) {
+            const operation = operations[i];
+            switch (operation.t) {
                 case CudType.update:
-                    if(!this._definedUpdateMiddleware) startOperations.push(operations[i]);
-                    else operationsLookUps.push(async (socket, filteredOperations) => {
-                        try {
-                            let operation = operations[i];
-                            await this.updateMiddleware(member,socket,operation.s,operation.v,(value) => {
-                                operation = {...operation,v: value};
-                            },operation.c,operation.d);
-                            filteredOperations.push(operation);
-                        }
-                        catch (e) {}
-                    })
+                    if(!this._definedUpdateMiddleware) startOperations.push(operation);
+                    else {
+                        const preAction = {selector: operation.s,value: operation.v,code: operation.c,data: operation.d};
+                        operationsLookUps.push(async (socket, filteredOperations) => {
+                            try {
+                                let innerOperation = operation;
+                                await this.updateMiddleware(member, socket,{...preAction, changeValue: (value) => {
+                                        innerOperation = {...innerOperation,v: value};
+                                    }});
+                                filteredOperations.push(innerOperation);
+                            }
+                            catch (e) {}
+                        })
+                    }
                     continue;
                 case CudType.insert:
-                    if(!this._definedInsertMiddleware) startOperations.push(operations[i]);
-                    else operationsLookUps.push(async (socket, filteredOperations) => {
-                        try {
-                            let operation = operations[i];
-                            await this.insertMiddleware(member,socket,operation.s,operation.v,(value) => {
-                                operation = {...operation,v: value};
-                            },operation.c,operation.d);
-                            filteredOperations.push(operation);
-                        }
-                        catch (e) {}
-                    })
+                    if(!this._definedInsertMiddleware) startOperations.push(operation);
+                    else {
+                        const preAction = {selector: operation.s,value: operation.v,code: operation.c,data: operation.d};
+                        operationsLookUps.push(async (socket, filteredOperations) => {
+                            try {
+                                let innerOperation = operation;
+                                await this.insertMiddleware(member, socket,{...preAction, changeValue: (value) => {
+                                        innerOperation = {...innerOperation,v: value};
+                                    }});
+                                filteredOperations.push(innerOperation);
+                            }
+                            catch (e) {}
+                        })
+                    }
                     continue;
                 case CudType.delete:
-                    if(!this._definedDeleteMiddleware) startOperations.push(operations[i]);
-                    else operationsLookUps.push(async (socket, filteredOperations) => {
-                        try {
-                            const operation = operations[i];
+                    if(!this._definedDeleteMiddleware) startOperations.push(operation);
+                    else {
+                        const preAction = {selector: operation.s,code: operation.c,data: operation.d};
+                        operationsLookUps.push(async (socket, filteredOperations) => {
                             try {
-                                await this.deleteMiddleware(member,socket,operation.s,operation.c,operation.d);
+                                await this.deleteMiddleware(member, socket,{...preAction});
                                 filteredOperations.push(operation);
                             }
                             catch (e) {}
-                        }
-                        catch (e) {}
-                    })
+                        })
+                    }
             }
         }
 
@@ -1080,14 +1095,11 @@ export default class DataboxFamily extends DataboxCore {
      * you also have to use the cud middleware to filter the cud events for the socket.
      * You mostly should avoid this because if you are overwriting a cud middleware,
      * the Databox switches to a more costly performance implementation.
-     * @param member
-     * @param counter
+     * @param request
+     * @param connection
      * @param session
-     * @param input
-     * @param initData
-     * @param socket
      */
-    protected fetch(member: string, counter: number, session: Record<string,any>, input: any, initData: any, socket: Socket): Promise<any> | any {
+    protected fetch(request: FetchRequest, connection: DbFamilyConnection, session: Record<string,any>): Promise<any> | any {
         this.noDataAvailable();
     }
 
@@ -1132,12 +1144,10 @@ export default class DataboxFamily extends DataboxCore {
      * you also have to use the cud middleware to filter the cud events for the socket.
      * You mostly should avoid this because if you are overwriting a cud middleware,
      * the Databox switches to a more costly performance implementation.
-     * @param member
-     * @param input
-     * @param initData
-     * @param socket
+     * @param request
+     * @param connection
      */
-    protected singleFetch(member: string, input: any, initData: any, socket: Socket): Promise<any> | any {
+    protected singleFetch(request: FetchRequest, connection: DbFamilyConnection): Promise<any> | any {
         this.noDataAvailable();
     }
 
@@ -1225,7 +1235,7 @@ export default class DataboxFamily extends DataboxCore {
      * A function that gets triggered whenever a
      * socket from this Databox received a signal.
      */
-    protected onReceivedSignal(member: string, socket: Socket, signal: string, data: any): Promise<void> | void {
+    protected onReceivedSignal(connection: DbFamilyConnection, signal: string, data: any): Promise<void> | void {
     }
 
     /**
@@ -1243,14 +1253,9 @@ export default class DataboxFamily extends DataboxCore {
      * by calling the internal block method or throwing any error.
      * @param member
      * @param socket
-     * @param selector
-     * @param value
-     * @param changeValue
-     * @param code
-     * @param data
+     * @param insertAction
      */
-    protected insertMiddleware(member: string, socket: Socket, selector: DbProcessedSelector, value: any, changeValue: ChangeValue,
-                               code: string | number | undefined, data: any): Promise<void> | void {
+    protected insertMiddleware(member: string, socket: Socket, insertAction: InsertAction): Promise<void> | void {
     }
 
     /**
@@ -1268,14 +1273,9 @@ export default class DataboxFamily extends DataboxCore {
      * by calling the internal block method or throwing any error.
      * @param member
      * @param socket
-     * @param selector
-     * @param value
-     * @param changeValue
-     * @param code
-     * @param data
+     * @param updateAction
      */
-    protected updateMiddleware(member: string, socket: Socket, selector: DbProcessedSelector, value: any, changeValue: ChangeValue,
-                               code: string | number | undefined, data: any): Promise<void> | void {
+    protected updateMiddleware(member: string, socket: Socket, updateAction: UpdateAction): Promise<void> | void {
     }
 
     /**
@@ -1290,12 +1290,9 @@ export default class DataboxFamily extends DataboxCore {
      * by calling the internal block method or throwing any error.
      * @param member
      * @param socket
-     * @param selector
-     * @param code
-     * @param data
+     * @param deleteAction
      */
-    protected deleteMiddleware(member: string, socket: Socket, selector: DbProcessedSelector,
-                               code: string | number | undefined, data: any): Promise<void> | void {
+    protected deleteMiddleware(member: string, socket: Socket, deleteAction: DeleteAction): Promise<void> | void {
     }
 
     /**
@@ -1310,11 +1307,9 @@ export default class DataboxFamily extends DataboxCore {
      * by calling the internal block method or throwing any error.
      * @param member
      * @param socket
-     * @param signal
-     * @param data
-     * @param changeData
+     * @param signalAction
      */
-    protected signalMiddleware(member: string, socket: Socket, signal: string, data: any, changeData: (newData: any) => void): Promise<void> | void {
+    protected signalMiddleware(member: string, socket: Socket, signalAction: SignalAction): Promise<void> | void {
     }
 }
 

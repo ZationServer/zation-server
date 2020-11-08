@@ -4,55 +4,60 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import Bag                           from "../Bag";
+import Bag                           from '../Bag';
 import DataboxCore, {DbPreparedData} from './DataboxCore';
-import {RespondFunction}             from "../../main/sc/socket";
+import {RespondFunction}             from '../../main/sc/socket';
 import {
     CudOperation,
     CudPackage,
     CudType,
     DATABOX_START_INDICATOR,
-    DbClientOutputClosePackage,
-    DbClientOutputCudPackage,
-    DbClientInputFetchPackage,
-    DbClientOutputKickOutPackage,
-    DbClientOutputPackage,
-    DbClientOutputEvent,
+    DataboxConnectReq,
+    DataboxConnectRes,
     DbClientInputAction,
+    DbClientInputFetchPackage,
+    DbClientInputFetchResponse,
     DbClientInputPackage,
     DBClientInputSessionTarget,
-    DbClientInputFetchResponse,
+    DbClientInputSignalPackage,
+    DbClientOutputClosePackage,
+    DbClientOutputCudPackage,
+    DbClientOutputEvent,
+    DbClientOutputKickOutPackage,
+    DbClientOutputPackage,
+    DbClientOutputSignalPackage,
+    DbProcessedSelector,
+    DbRegisterResult,
+    DbSelector,
+    DbSocketMemory,
+    DbToken,
     DbWorkerAction,
     DbWorkerBroadcastPackage,
     DbWorkerClosePackage,
     DbWorkerCudPackage,
     DbWorkerPackage,
+    DbWorkerSignalPackage,
     IfOption,
-    InfoOption,
-    PreCudPackage,
-    TimestampOption,
-    DbRegisterResult,
-    DbSocketMemory,
-    ChangeValue,
-    DbToken,
-    DbSelector,
-    DbProcessedSelector,
-    PotentialUpdateOption,
-    PotentialInsertOption,
     IfOptionProcessed,
-    DbClientInputSignalPackage,
-    DataboxConnectReq,
-    DataboxConnectRes,
-    DbClientOutputSignalPackage,
-    DbWorkerSignalPackage
+    InfoOption,
+    PotentialInsertOption,
+    PotentialUpdateOption,
+    PreCudPackage,
+    TimestampOption
 } from '../../main/databox/dbDefinitions';
-import {ScExchange}        from "../../main/sc/scServer";
-import DataboxUtils        from "../../main/databox/databoxUtils";
-import DbCudOperationSequence                     from "../../main/databox/dbCudOperationSequence";
-import {ClientErrorName}                          from "../../main/definitions/clientErrorName";
-import DataboxFetchManager, {FetchManagerBuilder} from "../../main/databox/databoxFetchManager";
-import Socket                                     from "../Socket";
-import CloneUtils                                 from "../../main/utils/cloneUtils";
+import {DbConnection,
+    DeleteAction,
+    FetchRequest,
+    InsertAction,
+    SignalAction,
+    UpdateAction} from './DataboxApiDefinitions';
+import {ScExchange}                               from '../../main/sc/scServer';
+import DataboxUtils                               from '../../main/databox/databoxUtils';
+import DbCudOperationSequence                     from '../../main/databox/dbCudOperationSequence';
+import {ClientErrorName}                          from '../../main/definitions/clientErrorName';
+import DataboxFetchManager, {FetchManagerBuilder} from '../../main/databox/databoxFetchManager';
+import Socket                                     from '../Socket';
+import CloneUtils                                 from '../../main/utils/cloneUtils';
 import {removeValueFromArray}                     from '../../main/utils/arrayUtils';
 import ObjectUtils                                from '../../main/utils/objectUtils';
 import FuncUtils                                  from '../../main/utils/funcUtils';
@@ -104,7 +109,7 @@ export default class Databox extends DataboxCore {
     private _internalRegistered: boolean = false;
     private _unregisterTimout: NodeJS.Timeout | undefined;
 
-    private readonly _fetchImpl: (counter: number, session: any, input: any, initData: any, socket: Socket) => Promise<any> | any;
+    private readonly _fetchImpl: (request: FetchRequest, connection: DbConnection, session: Record<string, any>) => Promise<any> | any;
     private readonly _buildFetchManager: FetchManagerBuilder<typeof Databox.prototype._fetch>;
     private readonly _sendCudToSockets: (dbClientCudPackage: DbClientOutputCudPackage) => Promise<void> | void;
     private readonly _sendSignalToSockets: (dbClientPackage: DbClientOutputSignalPackage) => Promise<void> | void;
@@ -115,7 +120,7 @@ export default class Databox extends DataboxCore {
 
     private readonly _onConnection: (socket: Socket) => Promise<void> | void;
     private readonly _onDisconnection: (socket: Socket) => Promise<void> | void;
-    private readonly _onReceivedSignal: (socket: Socket, signal: string, data: any) => Promise<void> | void;
+    private readonly _onReceivedSignal: (connection: DbConnection, signal: string, data: any) => Promise<void> | void;
 
     constructor(identifier: string, bag: Bag, dbPreparedData: DbPreparedData, apiLevel: number | undefined) {
         super(identifier,bag,dbPreparedData,apiLevel);
@@ -143,11 +148,11 @@ export default class Databox extends DataboxCore {
             `${errMessagePrefix} onReceivedSignal`,ErrorEventHolder.get());
     }
 
-    private _getFetchImpl(): (counter: number, session: any, input: any, initData: any, socket: Socket) => Promise<any> | any {
+    private _getFetchImpl(): (request: FetchRequest, connection: DbConnection, session: Record<string, any>) => Promise<any> | any {
         if(!isDefaultImpl(this.singleFetch)) {
-            return (counter, session, input, initData, socket) => {
-                if(counter === 0){
-                    return this.singleFetch(input,initData,socket);
+            return (request,connection) => {
+                if(request.counter === 0){
+                    return this.singleFetch(request,connection);
                 }
                 else {this.noMoreDataAvailable();}
             };
@@ -214,6 +219,7 @@ export default class Databox extends DataboxCore {
         inputChIds.add(chInputId);
 
         const inputCh = this._dbEvent+'.'+chInputId;
+        const dbConnection: DbConnection = Object.freeze({socket,initData});
 
         const fetchManager = this._buildFetchManager();
 
@@ -222,7 +228,7 @@ export default class Databox extends DataboxCore {
                 switch (senderPackage.a) {
                     case DbClientInputAction.signal:
                         if(typeof (senderPackage as DbClientInputSignalPackage).s as any === 'string'){
-                            this._onReceivedSignal(socket,(senderPackage as DbClientInputSignalPackage).s,
+                            this._onReceivedSignal(dbConnection,(senderPackage as DbClientInputSignalPackage).s,
                                 (senderPackage as DbClientInputSignalPackage).d);
                         }
                         else {
@@ -240,8 +246,7 @@ export default class Databox extends DataboxCore {
                             (
                                 dbToken,
                                 processedFetchInput,
-                                initData,
-                                socket,
+                                dbConnection,
                                 senderPackage.t
                             ),DataboxUtils.isReloadTarget(senderPackage.t)
                         );
@@ -288,12 +293,16 @@ export default class Databox extends DataboxCore {
         return this._lastCudData.id;
     }
 
-    private async _fetch(dbToken: DbToken, fetchInput: any, initData: any, zSocket: Socket, target?: DBClientInputSessionTarget): Promise<DbClientInputFetchResponse> {
+    private async _fetch(dbToken: DbToken, fetchInput: any, connection: DbConnection, target?: DBClientInputSessionTarget): Promise<DbClientInputFetchResponse> {
         const session = DataboxUtils.getSession(dbToken.sessions,target);
         const currentCounter = session.c;
         const clonedSessionData = CloneUtils.deepClone(session.d);
         try {
-            const data = await this._fetchImpl(currentCounter,clonedSessionData,fetchInput,initData,zSocket);
+            const data = await this._fetchImpl({
+                counter: currentCounter,
+                input: fetchInput,
+                reload: target === DBClientInputSessionTarget.reloadSession
+                },connection,clonedSessionData);
 
             //success fetch
             session.c++;
@@ -464,12 +473,13 @@ export default class Databox extends DataboxCore {
      */
     private async _sendSignalToSocketsWithMiddleware(dbClientPackage: DbClientOutputSignalPackage) {
 
+        const preAction = {signal: dbClientPackage.s, data: dbClientPackage.d};
         const middlewareInvoker = async (socket: Socket) => {
             try {
                 let dbPackage = dbClientPackage;
-                await this.signalMiddleware(socket,dbPackage.s,dbPackage.d,(data) => {
+                await this.signalMiddleware(socket,{...preAction,changeData: (data) => {
                     dbPackage = {...dbPackage,d: data};
-                })
+                }})
                 socket._emit(this._dbEvent,dbPackage);
             }
             catch (e) {}
@@ -494,46 +504,52 @@ export default class Databox extends DataboxCore {
 
         const operationsLen = operations.length;
         for(let i = 0; i < operationsLen; i++) {
-            switch (operations[i].t) {
+            const operation = operations[i];
+            switch (operation.t) {
                 case CudType.update:
-                    if(!this._definedUpdateMiddleware) startOperations.push(operations[i]);
-                    else operationsLookUps.push(async (socket, filteredOperations) => {
-                        try {
-                            let operation = operations[i];
-                            await this.updateMiddleware(socket,operation.s,operation.v,(value) => {
-                                operation = {...operation,v: value};
-                            },operation.c,operation.d);
-                            filteredOperations.push(operation);
-                        }
-                        catch (e) {}
-                    })
+                    if(!this._definedUpdateMiddleware) startOperations.push(operation);
+                    else {
+                        const preAction = {selector: operation.s,value: operation.v,code: operation.c,data: operation.d};
+                        operationsLookUps.push(async (socket, filteredOperations) => {
+                            try {
+                                let innerOperation = operation;
+                                await this.updateMiddleware(socket,{...preAction, changeValue: (value) => {
+                                    innerOperation = {...innerOperation,v: value};
+                                }});
+                                filteredOperations.push(innerOperation);
+                            }
+                            catch (e) {}
+                        })
+                    }
                     continue;
                 case CudType.insert:
-                    if(!this._definedInsertMiddleware) startOperations.push(operations[i]);
-                    else operationsLookUps.push(async (socket, filteredOperations) => {
-                        try {
-                            let operation = operations[i];
-                            await this.insertMiddleware(socket,operation.s,operation.v,(value) => {
-                                operation = {...operation,v: value};
-                            },operation.c,operation.d);
-                            filteredOperations.push(operation);
-                        }
-                        catch (e) {}
-                    })
+                    if(!this._definedInsertMiddleware) startOperations.push(operation);
+                    else {
+                        const preAction = {selector: operation.s,value: operation.v,code: operation.c,data: operation.d};
+                        operationsLookUps.push(async (socket, filteredOperations) => {
+                            try {
+                                let innerOperation = operation;
+                                await this.insertMiddleware(socket,{...preAction, changeValue: (value) => {
+                                    innerOperation = {...innerOperation,v: value};
+                                }});
+                                filteredOperations.push(innerOperation);
+                            }
+                            catch (e) {}
+                        })
+                    }
                     continue;
                 case CudType.delete:
-                    if(!this._definedDeleteMiddleware) startOperations.push(operations[i]);
-                    else operationsLookUps.push(async (socket, filteredOperations) => {
-                        try {
-                            const operation = operations[i];
+                    if(!this._definedDeleteMiddleware) startOperations.push(operation);
+                    else {
+                        const preAction = {selector: operation.s,code: operation.c,data: operation.d};
+                        operationsLookUps.push(async (socket, filteredOperations) => {
                             try {
-                                await this.deleteMiddleware(socket,operation.s,operation.c,operation.d);
+                                await this.deleteMiddleware(socket,{...preAction});
                                 filteredOperations.push(operation);
                             }
                             catch (e) {}
-                        }
-                        catch (e) {}
-                    })
+                        })
+                    }
             }
         }
 
@@ -925,13 +941,11 @@ export default class Databox extends DataboxCore {
      * you also have to use the cud middleware to filter the cud events for the socket.
      * You mostly should avoid this because if you are overwriting a cud middleware,
      * the Databox switches to a more costly performance implementation.
-     * @param counter
+     * @param request {counter: number, input?: any, reload: boolean}
+     * @param connection {socket: Socket, initData?: any}
      * @param session
-     * @param input
-     * @param initData
-     * @param socket
      */
-    protected fetch(counter: number, session: Record<string,any>, input: any, initData: any, socket: Socket): Promise<any> | any {
+    protected fetch(request: FetchRequest, connection: DbConnection, session: Record<string,any>): Promise<any> | any {
         this.noDataAvailable();
     }
 
@@ -976,11 +990,10 @@ export default class Databox extends DataboxCore {
      * you also have to use the cud middleware to filter the cud events for the socket.
      * You mostly should avoid this because if you are overwriting a cud middleware,
      * the Databox switches to a more costly performance implementation.
-     * @param input
-     * @param initData
-     * @param socket
+     * @param request {counter: number, input?: any, reload: boolean}
+     * @param connection {socket: Socket, initData?: any}
      */
-    protected singleFetch(input: any, initData: any, socket: Socket): Promise<any> | any {
+    protected singleFetch(request: FetchRequest, connection: DbConnection): Promise<any> | any {
         this.noDataAvailable();
     }
 
@@ -1048,7 +1061,7 @@ export default class Databox extends DataboxCore {
      * A function that gets triggered whenever a
      * socket from this Databox received a signal.
      */
-    protected onReceivedSignal(socket: Socket, signal: string, data: any): Promise<void> | void {
+    protected onReceivedSignal(connection: DbConnection, signal: string, data: any): Promise<void> | void {
     }
 
     /**
@@ -1065,14 +1078,9 @@ export default class Databox extends DataboxCore {
      * You are also able to block the complete operation for the socket
      * by calling the internal block method or throwing any error.
      * @param socket
-     * @param selector
-     * @param value
-     * @param changeValue
-     * @param code
-     * @param data
+     * @param insertAction
      */
-    protected insertMiddleware(socket: Socket, selector: DbProcessedSelector, value: any, changeValue: ChangeValue,
-                               code: string | number | undefined, data: any): Promise<void> | void {
+    protected insertMiddleware(socket: Socket, insertAction: InsertAction): Promise<void> | void {
     }
 
     /**
@@ -1089,14 +1097,9 @@ export default class Databox extends DataboxCore {
      * You are also able to block the complete operation for the socket
      * by calling the internal block method or throwing any error.
      * @param socket
-     * @param selector
-     * @param value
-     * @param changeValue
-     * @param code
-     * @param data
+     * @param updateAction
      */
-    protected updateMiddleware(socket: Socket, selector: DbProcessedSelector, value: any, changeValue: ChangeValue,
-                               code: string | number | undefined, data: any): Promise<void> | void {
+    protected updateMiddleware(socket: Socket, updateAction: UpdateAction): Promise<void> | void {
     }
 
     /**
@@ -1110,12 +1113,9 @@ export default class Databox extends DataboxCore {
      * You are able to block the complete operation for the socket
      * by calling the internal block method or throwing any error.
      * @param socket
-     * @param selector
-     * @param code
-     * @param data
+     * @param deleteAction
      */
-    protected deleteMiddleware(socket: Socket, selector: DbProcessedSelector,
-                               code: string | number | undefined, data: any): Promise<void> | void {
+    protected deleteMiddleware(socket: Socket, deleteAction: DeleteAction): Promise<void> | void {
     }
 
     /**
@@ -1129,11 +1129,9 @@ export default class Databox extends DataboxCore {
      * You are able to block the complete signal for the socket
      * by calling the internal block method or throwing any error.
      * @param socket
-     * @param signal
-     * @param data
-     * @param changeData
+     * @param signalAction
      */
-    protected signalMiddleware(socket: Socket, signal: string, data: any, changeData: (newData: any) => void): Promise<void> | void {
+    protected signalMiddleware(socket: Socket, signalAction: SignalAction): Promise<void> | void {
     }
 }
 

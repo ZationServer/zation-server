@@ -21,13 +21,20 @@ import {ControllerConfig}           from "./lib/main/config/definitions/parts/co
 import {StartMode}                  from "./lib/core/startMode";
 import Router                       from "./lib/api/Router";
 import {Register}                   from "./lib/api/component/decorator/Register";
-import {$value, $key, $pair, $all, $any, $contains, $matches}   from './lib/api/databox/DbApiUtils';
+import {DbConnection,
+    DbFamilyConnection,
+    DeleteAction,
+    FetchRequest,
+    InsertAction,
+    UpdateAction,
+    SignalAction} from './lib/api/databox/DataboxApiDefinitions';
 import {
     $handshakeAttachmentMatches,
     $socketAttachmentMatches,
     $tokenPayloadMatches, $userId}                              from './lib/api/AccessApiUtils';
 import {updateModelTranslatable}                                from './lib/api/configTranslatable/modelTranslatable';
 import {Model as AnyModel, DirectModel, AnyModelTranslatable}   from "./lib/main/models/model";
+import {$value, $key, $pair, $all, $any, $contains, $matches}   from './lib/api/databox/DbApiUtils';
 import {MetaModel, ModelMetaData}   from "./lib/main/models/metaModel";
 import {Model}                      from "./lib/api/input/decorator/Model";
 import {ObjectModel}                from "./lib/api/input/decorator/ObjectModel";
@@ -105,6 +112,13 @@ export {
     Databox,
     DataboxContainer,
     DataboxConfig,
+    InsertAction,
+    UpdateAction,
+    DeleteAction,
+    SignalAction,
+    FetchRequest,
+    DbConnection,
+    DbFamilyConnection,
     Channel,
     ChannelContainer,
     ChannelFamily,
