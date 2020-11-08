@@ -38,7 +38,13 @@ import {
     DbSelector,
     DbProcessedSelector,
     PotentialUpdateOption,
-    PotentialInsertOption, IfOptionProcessed, DbClientInputSignalPackage, DataboxConnectReq, DataboxConnectRes
+    PotentialInsertOption,
+    IfOptionProcessed,
+    DbClientInputSignalPackage,
+    DataboxConnectReq,
+    DataboxConnectRes,
+    DbClientOutputSignalPackage,
+    DbWorkerSignalPackage
 } from '../../main/databox/dbDefinitions';
 import {ScExchange}        from "../../main/sc/scServer";
 import DataboxUtils        from "../../main/databox/databoxUtils";
@@ -78,10 +84,13 @@ import {isDefaultImpl, markAsDefaultImpl}         from '../../main/utils/default
  * - (beforeUpdate)
  * - (beforeDelete)
  *
- * and the cud middleware methods:
+ * middleware methods:
+ * cud
  * - insertMiddleware
  * - updateMiddleware
  * - deleteMiddleware
+ * other
+ * - signalMiddleware
  */
 export default class Databox extends DataboxCore {
 
@@ -98,6 +107,7 @@ export default class Databox extends DataboxCore {
     private readonly _fetchImpl: (counter: number, session: any, input: any, initData: any, socket: Socket) => Promise<any> | any;
     private readonly _buildFetchManager: FetchManagerBuilder<typeof Databox.prototype._fetch>;
     private readonly _sendCudToSockets: (dbClientCudPackage: DbClientOutputCudPackage) => Promise<void> | void;
+    private readonly _sendSignalToSockets: (dbClientPackage: DbClientOutputSignalPackage) => Promise<void> | void;
     private readonly _definedInsertMiddleware = !isDefaultImpl(this.insertMiddleware);
     private readonly _definedUpdateMiddleware = !isDefaultImpl(this.updateMiddleware);
     private readonly _definedDeleteMiddleware = !isDefaultImpl(this.deleteMiddleware);
@@ -118,6 +128,8 @@ export default class Databox extends DataboxCore {
         this._buildFetchManager = DataboxFetchManager.buildFetchMangerBuilder
         (dbPreparedData.parallelFetch,dbPreparedData.maxBackpressure);
         this._sendCudToSockets = this._getSendCudToSocketsHandler();
+        this._sendSignalToSockets = isDefaultImpl(this.signalMiddleware) ?
+            this._sendToSockets.bind(this) : this._sendSignalToSocketsWithMiddleware.bind(this);
 
         this._hasBeforeEventsListener = !isDefaultImpl(this.beforeInsert) ||
             !isDefaultImpl(this.beforeUpdate) || !isDefaultImpl(this.beforeDelete);
@@ -409,6 +421,9 @@ export default class Databox extends DataboxCore {
                         case DbWorkerAction.cud:
                             await this._processCudOperations((data as DbWorkerCudPackage)[2]);
                             break;
+                        case DbWorkerAction.signal:
+                            await this._sendSignalToSockets((data as DbWorkerSignalPackage)[2]);
+                            break;
                         case DbWorkerAction.close:
                             this._close((data as DbWorkerClosePackage)[2]);
                             break;
@@ -440,6 +455,30 @@ export default class Databox extends DataboxCore {
         for(const socket of this._regSockets.keys()) {
             socket._emit(this._dbEvent,dbClientPackage);
         }
+    }
+
+    /**
+     * Sends a Databox signal package to sockets of the Databox after passing the signal middleware.
+     * @param dbClientPackage
+     * @private
+     */
+    private async _sendSignalToSocketsWithMiddleware(dbClientPackage: DbClientOutputSignalPackage) {
+
+        const middlewareInvoker = async (socket: Socket) => {
+            try {
+                let dbPackage = dbClientPackage;
+                await this.signalMiddleware(socket,dbPackage.s,dbPackage.d,(data) => {
+                    dbPackage = {...dbPackage,d: data};
+                })
+                socket._emit(this._dbEvent,dbPackage);
+            }
+            catch (e) {}
+        }
+
+        const promises: Promise<void>[] = [];
+        for(const socket of this._regSockets.keys())
+            promises.push(middlewareInvoker(socket));
+        await Promise.all(promises);
     }
 
     /**
@@ -572,15 +611,15 @@ export default class Databox extends DataboxCore {
             await this._emitBeforeEvents(preCudPackage.o);
         }
         const cudPackage = DataboxUtils.buildCudPackage(preCudPackage,timestamp);
-        this._sendToWorker([this._workerFullId,DbWorkerAction.cud,cudPackage] as DbWorkerCudPackage);
+        this._sendToWorkers([this._workerFullId,DbWorkerAction.cud,cudPackage] as DbWorkerCudPackage);
         await this._processCudOperations(cudPackage);
     }
 
     private _broadcastToOtherSockets(clientPackage: DbClientOutputPackage) {
-        this._sendToWorker([this._workerFullId,DbWorkerAction.broadcast,clientPackage] as DbWorkerBroadcastPackage);
+        this._sendToWorkers([this._workerFullId,DbWorkerAction.broadcast,clientPackage] as DbWorkerBroadcastPackage);
     }
 
-    private _sendToWorker(workerPackage: DbWorkerPackage) {
+    private _sendToWorkers(workerPackage: DbWorkerPackage) {
         this._scExchange.publish(this._dbEvent,workerPackage);
     }
 
@@ -777,7 +816,7 @@ export default class Databox extends DataboxCore {
     close(code?: number | string,data?: any,forEveryWorker: boolean = true){
         const clientPackage = DataboxUtils.buildClientClosePackage(code,data);
         if(forEveryWorker){
-            this._sendToWorker([this._workerFullId,DbWorkerAction.close,clientPackage] as DbWorkerClosePackage);
+            this._sendToWorkers([this._workerFullId,DbWorkerAction.close,clientPackage] as DbWorkerClosePackage);
         }
         this._close(clientPackage);
     }
@@ -827,10 +866,9 @@ export default class Databox extends DataboxCore {
      */
     transmitSignal(signal: string, data?: any, forEveryWorker: boolean = true) {
         const clientPackage = DataboxUtils.buildClientSignalPackage(signal,data);
-        if(forEveryWorker){
-            this._broadcastToOtherSockets(clientPackage);
-        }
-        this._sendToSockets(clientPackage);
+        if(forEveryWorker)
+            this._sendToWorkers([this._workerFullId,DbWorkerAction.signal,clientPackage] as DbWorkerSignalPackage);
+        this._sendSignalToSockets(clientPackage);
     }
 
     /**
@@ -1079,11 +1117,30 @@ export default class Databox extends DataboxCore {
     protected deleteMiddleware(socket: Socket, selector: DbProcessedSelector,
                                code: string | number | undefined, data: any): Promise<void> | void {
     }
+
+    /**
+     * **Can be overridden.**
+     * The signal middleware.
+     * Notice that when you overwrite the signal middleware,
+     * the Databox switches to a more costly performance implementation of processing signals.
+     * It is not recommended to invoke long processes in this middleware.
+     * Instead, try to prepare stuff in the token of the socket or the socket attachment.
+     * The middleware will be called before each socket reaches a transmitted signal.
+     * You are able to block the complete signal for the socket
+     * by calling the internal block method or throwing any error.
+     * @param socket
+     * @param signal
+     * @param data
+     * @param changeData
+     */
+    protected signalMiddleware(socket: Socket, signal: string, data: any, changeData: (newData: any) => void): Promise<void> | void {
+    }
 }
 
 markAsDefaultImpl(Databox.prototype['insertMiddleware']);
 markAsDefaultImpl(Databox.prototype['updateMiddleware']);
 markAsDefaultImpl(Databox.prototype['deleteMiddleware']);
+markAsDefaultImpl(Databox.prototype['signalMiddleware']);
 
 markAsDefaultImpl(Databox.prototype['beforeInsert']);
 markAsDefaultImpl(Databox.prototype['beforeUpdate']);

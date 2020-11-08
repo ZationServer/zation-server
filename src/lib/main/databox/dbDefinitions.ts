@@ -310,6 +310,10 @@ export const enum DbWorkerAction {
      */
     cud,
     /**
+     * Broadcast a client signal package.
+     */
+    signal,
+    /**
      * Close the Databox
      */
     close,
@@ -350,6 +354,20 @@ export interface DbWorkerCudPackage extends DbWorkerPackage{
      * data
      */
     2: CudPackage,
+}
+
+/**
+ * Signal package that the worker can send to other workers.
+ */
+export interface DbWorkerSignalPackage extends DbWorkerPackage{
+    /**
+     * action
+     */
+    1: DbWorkerAction.signal,
+    /**
+     * data
+     */
+    2: DbClientOutputSignalPackage,
 }
 
 /**
