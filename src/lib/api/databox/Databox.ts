@@ -462,8 +462,7 @@ export default class Databox extends DataboxCore {
                         try {
                             let operation = operations[i];
                             await this.updateMiddleware(socket,operation.s,operation.v,(value) => {
-                                operation = CloneUtils.deepClone(operation);
-                                operation.v = value;
+                                operation = {...operation,v: value};
                             },operation.c,operation.d);
                             filteredOperations.push(operation);
                         }
@@ -476,8 +475,7 @@ export default class Databox extends DataboxCore {
                         try {
                             let operation = operations[i];
                             await this.insertMiddleware(socket,operation.s,operation.v,(value) => {
-                                operation = CloneUtils.deepClone(operation);
-                                operation.v = value;
+                                operation = {...operation,v: value};
                             },operation.c,operation.d);
                             filteredOperations.push(operation);
                         }
