@@ -150,7 +150,7 @@ export default class DataboxFamily extends DataboxCore {
         this._buildFetchManager = DataboxFetchManager.buildFetchMangerBuilder
         (dbPreparedData.parallelFetch,dbPreparedData.maxBackpressure);
         this._sendCudToSockets = this._getSendCudToSocketsHandler();
-        this._sendSignalToSockets = isDefaultImpl(this.signalMiddleware) ?
+        this._sendSignalToSockets = isDefaultImpl(this.transmitSignalMiddleware) ?
             this._sendToSockets.bind(this) : this._sendSignalToSocketsWithMiddleware.bind(this);
 
         this._hasBeforeEventsListener = !isDefaultImpl(this.beforeInsert) ||
@@ -575,7 +575,7 @@ export default class DataboxFamily extends DataboxCore {
         const middlewareInvoker = async (socket: Socket) => {
             try {
                 let dbPackage = dbClientPackage;
-                await this.signalMiddleware(member,socket,{...preAction, changeData: (data) => {
+                await this.transmitSignalMiddleware(member,socket,{...preAction, changeData: (data) => {
                     dbPackage = {...dbPackage,d: data};
                 }})
                 socket._emit(outputCh,dbPackage);
@@ -1297,8 +1297,8 @@ export default class DataboxFamily extends DataboxCore {
 
     /**
      * **Can be overridden.**
-     * The signal middleware.
-     * Notice that when you overwrite the signal middleware,
+     * The transmit signal middleware.
+     * Notice that when you overwrite the transmit signal middleware,
      * the Databox switches to a more costly performance implementation of processing signals.
      * It is not recommended to invoke long processes in this middleware.
      * Instead, try to prepare stuff in the token of the socket or the socket attachment.
@@ -1309,7 +1309,7 @@ export default class DataboxFamily extends DataboxCore {
      * @param socket
      * @param signalAction
      */
-    protected signalMiddleware(member: string, socket: Socket, signalAction: SignalAction): Promise<void> | void {
+    protected transmitSignalMiddleware(member: string, socket: Socket, signalAction: SignalAction): Promise<void> | void {
     }
 }
 
@@ -1319,7 +1319,7 @@ DataboxFamily.prototype[familyTypeSymbol] = true;
 markAsDefaultImpl(DataboxFamily.prototype['insertMiddleware']);
 markAsDefaultImpl(DataboxFamily.prototype['updateMiddleware']);
 markAsDefaultImpl(DataboxFamily.prototype['deleteMiddleware']);
-markAsDefaultImpl(DataboxFamily.prototype['signalMiddleware']);
+markAsDefaultImpl(DataboxFamily.prototype['transmitSignalMiddleware']);
 
 markAsDefaultImpl(DataboxFamily.prototype['beforeInsert']);
 markAsDefaultImpl(DataboxFamily.prototype['beforeUpdate']);

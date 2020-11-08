@@ -133,7 +133,7 @@ export default class Databox extends DataboxCore {
         this._buildFetchManager = DataboxFetchManager.buildFetchMangerBuilder
         (dbPreparedData.parallelFetch,dbPreparedData.maxBackpressure);
         this._sendCudToSockets = this._getSendCudToSocketsHandler();
-        this._sendSignalToSockets = isDefaultImpl(this.signalMiddleware) ?
+        this._sendSignalToSockets = isDefaultImpl(this.transmitSignalMiddleware) ?
             this._sendToSockets.bind(this) : this._sendSignalToSocketsWithMiddleware.bind(this);
 
         this._hasBeforeEventsListener = !isDefaultImpl(this.beforeInsert) ||
@@ -477,7 +477,7 @@ export default class Databox extends DataboxCore {
         const middlewareInvoker = async (socket: Socket) => {
             try {
                 let dbPackage = dbClientPackage;
-                await this.signalMiddleware(socket,{...preAction,changeData: (data) => {
+                await this.transmitSignalMiddleware(socket,{...preAction,changeData: (data) => {
                     dbPackage = {...dbPackage,d: data};
                 }})
                 socket._emit(this._dbEvent,dbPackage);
@@ -1120,8 +1120,8 @@ export default class Databox extends DataboxCore {
 
     /**
      * **Can be overridden.**
-     * The signal middleware.
-     * Notice that when you overwrite the signal middleware,
+     * The transmit signal middleware.
+     * Notice that when you overwrite the transmit signal middleware,
      * the Databox switches to a more costly performance implementation of processing signals.
      * It is not recommended to invoke long processes in this middleware.
      * Instead, try to prepare stuff in the token of the socket or the socket attachment.
@@ -1131,14 +1131,14 @@ export default class Databox extends DataboxCore {
      * @param socket
      * @param signalAction
      */
-    protected signalMiddleware(socket: Socket, signalAction: SignalAction): Promise<void> | void {
+    protected transmitSignalMiddleware(socket: Socket, signalAction: SignalAction): Promise<void> | void {
     }
 }
 
 markAsDefaultImpl(Databox.prototype['insertMiddleware']);
 markAsDefaultImpl(Databox.prototype['updateMiddleware']);
 markAsDefaultImpl(Databox.prototype['deleteMiddleware']);
-markAsDefaultImpl(Databox.prototype['signalMiddleware']);
+markAsDefaultImpl(Databox.prototype['transmitSignalMiddleware']);
 
 markAsDefaultImpl(Databox.prototype['beforeInsert']);
 markAsDefaultImpl(Databox.prototype['beforeUpdate']);
