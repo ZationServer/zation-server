@@ -1051,10 +1051,10 @@ export default class DataboxFamily extends DataboxCore {
      * you should throw a NoMoreDataAvailableError or call the internal noMoreDataAvailable method.
      * If no data is available, for example the profile with the id ten is not found,
      * you can throw a NoDataAvailableError or call the internal noDataAvailable method.
-     * The counter parameter indicates the number of the current call, it starts counting at zero.
+     * The counter property of the request indicates the number of the current call, it starts counting at zero.
      * Notice that the counter only increases when the fetch was successful (means no error was thrown).
      * The client can send additional data when calling the fetch process (fetchInput),
-     * this data is available as the input parameter.
+     * this data is available in the input property of the request.
      * Also, you extra get a session object, this object you can use to save variables that are
      * important to get more data in the future, for example, the last id of the item that the client had received.
      * The session object is only available on the server-side and can not be modified on the client-side.
@@ -1070,20 +1070,20 @@ export default class DataboxFamily extends DataboxCore {
      * There are three of them:
      * The Object:
      * It is a simple component that has no sequence, and you can access the values via property keys.
-     * The client will convert each JSON object to this component.
+     * The client will convert each JSON object into this component.
      *
      * The KeyArray:
      * This component allows you to keep data in a specific sequence,
      * but you still able to access the values via a string key.
      * To build a key-array, you can use the buildKeyArray function.
-     * Notice that JSON arrays will not be converted to this component type.
+     * Notice that JSON arrays will not be converted into this component type.
      *
      * The Array:
      * This component is a light way and simple component for an array.
      * Instead of the key-array, you only can access values via an array index.
      * Also, a difference is that the sequence of the elements is connected to the key (index).
      * That means sorting the values changes the keys.
-     * All JSON arrays will be converted to this type.
+     * All JSON arrays will be converted into this type.
      * If you need resorting, more specific keys, or you manipulate lots of data in the array,
      * you should use the key-array instead.
      *
@@ -1093,10 +1093,10 @@ export default class DataboxFamily extends DataboxCore {
      *
      * Whenever you are using the socket to filter secure data for a specific user,
      * you also have to use the cud middleware to filter the cud events for the socket.
-     * You mostly should avoid this because if you are overwriting a cud middleware,
-     * the Databox switches to a more costly performance implementation.
-     * @param request
-     * @param connection
+     * But keep in mind when you overwrite a cud middleware the Databox switches
+     * to a less performant implementation.
+     * @param request {counter: number, input?: any, reload: boolean}
+     * @param connection {member: string, socket: Socket, initData?: any}
      * @param session
      */
     protected fetch(request: FetchRequest, connection: DbFamilyConnection, session: Record<string,any>): Promise<any> | any {
@@ -1115,7 +1115,7 @@ export default class DataboxFamily extends DataboxCore {
      * If no data is available, for example the profile with the id ten is not found,
      * you can throw a NoDataAvailableError or call the internal noDataAvailable method.
      * The client can send additional data when calling the fetch process (fetchInput),
-     * this data is available as the input parameter.
+     * this data is available in the input property of the request.
      *
      * The data that you are returning can be of any type.
      * The client will convert some data parts into specific databox storage components.
@@ -1123,29 +1123,29 @@ export default class DataboxFamily extends DataboxCore {
      * There are three of them:
      * The Object:
      * It is a simple component that has no sequence, and you can access the values via property keys.
-     * The client will convert each JSON object to this component.
+     * The client will convert each JSON object into this component.
      *
      * The KeyArray:
      * This component allows you to keep data in a specific sequence,
      * but you still able to access the values via a string key.
      * To build a key-array, you can use the buildKeyArray function.
-     * Notice that JSON arrays will not be converted to this component type.
+     * Notice that JSON arrays will not be converted into this component type.
      *
      * The Array:
      * This component is a light way and simple component for an array.
      * Instead of the key-array, you only can access values via an array index.
      * Also, a difference is that the sequence of the elements is connected to the key (index).
      * That means sorting the values changes the keys.
-     * All JSON arrays will be converted to this type.
+     * All JSON arrays will be converted into this type.
      * If you need resorting, more specific keys, or you manipulate lots of data in the array,
      * you should use the key-array instead.
      *
      * Whenever you are using the socket to filter secure data for a specific user,
      * you also have to use the cud middleware to filter the cud events for the socket.
-     * You mostly should avoid this because if you are overwriting a cud middleware,
-     * the Databox switches to a more costly performance implementation.
-     * @param request
-     * @param connection
+     * But keep in mind when you overwrite a cud middleware the Databox switches
+     * to a less performant implementation.
+     * @param request {counter: number, input?: any, reload: boolean}
+     * @param connection {member: string, socket: Socket, initData?: any}
      */
     protected singleFetch(request: FetchRequest, connection: DbFamilyConnection): Promise<any> | any {
         this.noDataAvailable();
@@ -1242,7 +1242,7 @@ export default class DataboxFamily extends DataboxCore {
      * **Can be overridden.**
      * The insert middleware.
      * Notice that when you overwrite at least one of the cud middlewares,
-     * the Databox switches to a more costly performance implementation.
+     * the Databox switches to a less performant implementation.
      * It is not recommended to invoke long processes in this middleware.
      * Instead, try to prepare stuff in the token of the socket or the socket attachment.
      * The middleware will be called before each socket reaches a cud operation.
@@ -1262,7 +1262,7 @@ export default class DataboxFamily extends DataboxCore {
      * **Can be overridden.**
      * The update middleware.
      * Notice that when you overwrite at least one of the cud middlewares,
-     * the Databox switches to a more costly performance implementation.
+     * the Databox switches to a less performant implementation.
      * It is not recommended to invoke long processes in this middleware.
      * Instead, try to prepare stuff in the token of the socket or the socket attachment.
      * The middleware will be called before each socket reaches a cud operation.
@@ -1282,7 +1282,7 @@ export default class DataboxFamily extends DataboxCore {
      * **Can be overridden.**
      * The delete middleware.
      * Notice that when you overwrite at least one of the cud middlewares,
-     * the Databox switches to a more costly performance implementation.
+     * the Databox switches to a less performant implementation.
      * It is not recommended to invoke long processes in this middleware.
      * Instead, try to prepare stuff in the token of the socket or the socket attachment.
      * The middleware will be called before each socket reaches a cud operation.
@@ -1299,7 +1299,7 @@ export default class DataboxFamily extends DataboxCore {
      * **Can be overridden.**
      * The transmit signal middleware.
      * Notice that when you overwrite the transmit signal middleware,
-     * the Databox switches to a more costly performance implementation of processing signals.
+     * the Databox switches to a less performant implementation of processing signals.
      * It is not recommended to invoke long processes in this middleware.
      * Instead, try to prepare stuff in the token of the socket or the socket attachment.
      * The middleware will be called before each socket reaches a transmitted signal.
