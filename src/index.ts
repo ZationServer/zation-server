@@ -82,6 +82,7 @@ import Initializer                  from './lib/api/Initializer';
 import Singleton                    from './lib/api/Singleton';
 import Process, {ProcessType}       from './lib/api/Process';
 import {$and, $or}                  from './lib/api/RelationArrays';
+import {block}                      from './lib/main/middlewares/block';
 
 //Refresh bag instance export
 Bag._addReadyRefresher((bag) => exports.bag = bag);
@@ -170,6 +171,7 @@ export {
     ConsoleColor,
     Events,
     Middleware,
+    block,
     updateModelTranslatable,
     AnyModelTranslatable,
     AnyModel,

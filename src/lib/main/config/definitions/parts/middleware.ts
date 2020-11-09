@@ -6,6 +6,7 @@ Copyright(c) Luca Scaringella
 
 import ZationToken from '../../../internalApi/zationToken';
 import Socket      from '../../../../api/Socket';
+import {MiddlewareInvoker} from '../../../middlewares/middlewaresPreparer';
 
 export type MiddlewareAuthenticationFunction = (token: ZationToken) => Promise<boolean | object | any> | boolean | object | any;
 export type MiddlewareSocketFunction = (socket: Socket) => Promise<boolean | object | any> | boolean | object | any;
@@ -24,8 +25,7 @@ export interface Middleware {
      * If no more function is remaining, the action will be allowed.
      * If one function returns true, the chain is broken,
      * and the token is allowed without invoking the remaining functions.
-     * To block the token, you can return an object (that can be an error),
-     * return false or throw an error.
+     * To block the token, you can return an error, false or the block symbol or throwing the block symbol.
      * Runs on a worker process.
      * The Bag instance can be securely accessed with the variable 'bag'.
      * @example (zationToken) => {}
@@ -41,8 +41,7 @@ export interface Middleware {
      * If no more function is remaining, the action will be allowed.
      * If one function returns true, the chain is broken,
      * and the socket is allowed without invoking the remaining functions.
-     * To block the socket, you can return an object (that can be an error),
-     * return false or throw an error.
+     * To block the socket, you can return an error, false or the block symbol or throwing the block symbol.
      * Runs on a worker process.
      * The Bag instance can be securely accessed with the variable 'bag'.
      * @example (socket) => {}
@@ -64,8 +63,8 @@ export interface Middleware {
      * If one function returns true, the chain is broken,
      * and the authentication request is successful without
      * invoking the remaining functions.
-     * To deny the authentication request,
-     * you can return false or throw an error.
+     * To deny the authentication request, you can return an error, false or
+     * the block symbol or throwing the block symbol.
      * Runs on a worker process.
      * The Bag instance can be securely accessed with the variable 'bag'.
      * @example (username, password) => {}
@@ -73,8 +72,8 @@ export interface Middleware {
     panelAuth?: MiddlewareValue<MiddlewarePanelAuthFunction>;
 }
 
-export interface PreparedMiddleware extends Middleware{
-    authenticate ?: MiddlewareAuthenticationFunction;
-    socket?: MiddlewareSocketFunction;
-    panelAuth?: MiddlewarePanelAuthFunction;
+export interface PreparedMiddleware {
+    authenticate: MiddlewareInvoker<MiddlewareAuthenticationFunction>;
+    socket: MiddlewareInvoker<MiddlewareSocketFunction>;
+    panelAuth: MiddlewareInvoker<MiddlewarePanelAuthFunction>;
 }

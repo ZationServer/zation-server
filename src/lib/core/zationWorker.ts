@@ -45,7 +45,6 @@ import SidBuilder           from "../main/utils/sidBuilder";
 import TokenUtils, {TokenClusterKeyCheckFunction} from "../main/token/tokenUtils";
 import PanelOsInfo          from "../main/utils/panelOsInfo";
 import BackgroundTasksWorkerSaver from "../main/background/backgroundTasksWorkerSaver";
-import MiddlewareUtils      from "../main/utils/middlewareUtils";
 import ZationConfigFull     from "../main/config/manager/zationConfigFull";
 import ConfigLoader         from "../main/config/manager/configLoader";
 import RawSocketUpgradeFactory  from "../main/socket/rawSocketUpgradeFactory";
@@ -563,9 +562,7 @@ class ZationWorker extends SCWorker
                 this.initSocketEvents(socket);
                 await this.zc.event.socketInit(socket);
 
-                const zationMidRes = await MiddlewareUtils.checkMiddleware
-                (middleware.socket,true,socket);
-                zationMidRes === true ? next(): next(MiddlewareUtils.processBlockedResult(zationMidRes));
+                next(await middleware.socket(true,socket));
             }
             else{
                 const err = new Error('Cannot connect without providing a valid version and system key in URL query argument.');
@@ -612,14 +609,8 @@ class ZationWorker extends SCWorker
                 next(e,true);
             }
 
-            if(token.onlyPanelToken) {
-                next();
-            }
-            else {
-                const zationAuthMid = await MiddlewareUtils.checkMiddleware
-                (middleware.authenticate,true,new ZationToken(token));
-                zationAuthMid === true ? next(): next(MiddlewareUtils.processBlockedResult(zationAuthMid));
-            }
+            if(token.onlyPanelToken) next();
+            else next(await middleware.authenticate(true,new ZationToken(token)));
         });
     }
 

@@ -42,7 +42,7 @@ export default class ZationConfigFull extends ZationConfig {
         this._serviceConfig = otherConfigSet.serviceConfig;
 
         this._events = EventPreparer.prepare(this.appConfig.events);
-        this._middleware = MiddlewaresPreparer.prepare(this.appConfig.middleware);
+        this._middleware = MiddlewaresPreparer.prepare(this.appConfig.middleware,this._events.error);
     }
 
     get appConfig(): AppConfig {

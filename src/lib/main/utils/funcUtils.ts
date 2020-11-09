@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import Logger from '../log/logger';
+import Logger           from '../log/logger';
 import {PreparedEvents} from '../config/definitions/parts/events';
 
 type AnyFunction = (...args: any[]) => any
@@ -14,24 +14,19 @@ export type EventInvokerSync<P extends AnyFunction = any> = (...args: Parameters
 
 export default class FuncUtils
 {
+
     /**
-     * Creates an async closure for invoking a middleware.
-     * Will stop the middleware chain when a function returns some value.
+     * Creates an async closure for invoking async functions in a chain.
+     * It will stop the chain execution when a function had returned some value and returns it.
      * @param functions
      */
-    static createFuncMiddlewareAsyncInvoker<T extends AnyFunction>(functions: T[]): EventInvokerAsync<T> {
+    static createAsyncChainInvoker<T extends AnyFunction>(functions: T[]): EventInvokerAsync<T> {
         const length = functions.length;
         return async (...args) => {
             let res;
             for(let i = 0; i < length; i++) {
-                try {
-                    res = await functions[i](...args);
-                    if(res !== undefined) return res;
-                }
-                catch (err) {
-                    return typeof err === 'object' ? err
-                        : new Error(err.toString());
-                }
+                res = await functions[i](...args);
+                if(res !== undefined) return res;
             }
         }
     }
@@ -64,6 +59,7 @@ export default class FuncUtils
         }
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * Creates an sync closure for invoke a function or functions.
      * @param func
@@ -106,7 +102,8 @@ export default class FuncUtils
                 }
                 catch (e) {
                     Logger.log.error(beforeErrorMsg,e);
-                    await errorEvent(e);
+                    // noinspection ES6MissingAwait
+                    errorEvent(e);
                 }
             }
         }

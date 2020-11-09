@@ -8,7 +8,6 @@ import Timer               = NodeJS.Timer;
 import ZationWorker        = require("../../core/zationWorker");
 import {PanelUserConfig}     from "../config/definitions/main/mainConfig";
 import {AuthUserGroupConfig} from "../config/definitions/parts/userGroupsConfig";
-import MiddlewareUtils       from "../utils/middlewareUtils";
 import ZationConfigFull      from "../config/manager/zationConfigFull";
 import {INTERNAL_PANEL_CH}   from '../internalChannels/internalChannelEngine';
 import PanelChannel          from '../channel/systemChannels/channels/PanelChannel';
@@ -152,11 +151,7 @@ export default class PanelEngine
                 break;
             }
         }
-        if(!foundUser){
-            const middlewareRes = (await MiddlewareUtils.checkMiddleware
-            (this.zc.middleware.panelAuth,false,username,password));
-            return typeof middlewareRes === 'boolean'? middlewareRes : false;
-        }
+        if(!foundUser) return !await this.zc.middleware.panelAuth(false,username,password);
         return foundUser;
     }
 

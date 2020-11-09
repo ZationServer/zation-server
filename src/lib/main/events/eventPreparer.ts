@@ -1,3 +1,9 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+Copyright(c) Luca Scaringella
+ */
+
 import {Events, PreparedEvents} from '../config/definitions/parts/events';
 import {AnyFunction} from '../utils/typeUtils';
 import FuncUtils from '../utils/funcUtils';
