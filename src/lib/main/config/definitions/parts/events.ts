@@ -24,7 +24,7 @@ export type WorkerStartedFunction = (info: ServerInfo, leader: boolean, respawn:
 export type HttpServerStartedFunction = (info: ServerInfo) => Promise<void> | void;
 export type WsServerStartedFunction = (info: ServerInfo) => Promise<void> | void;
 export type StartedFunction = (info: ServerInfo) => Promise<void> | void;
-export type ErrorFunction = (error: object) => Promise<void> | void;
+export type ErrorFunction = (error: Error) => Promise<void> | void;
 export type BackErrorsFunction = (backErrors: BackError[]) => Promise<void> | void;
 export type CodeErrorFunction = (codeError: CodeError) => Promise<void> | void;
 export type WorkerMessageFunction = (data: any) => Promise<void> | void;
