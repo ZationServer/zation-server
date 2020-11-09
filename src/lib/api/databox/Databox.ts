@@ -7,6 +7,8 @@ Copyright(c) Luca Scaringella
 import Bag                           from '../Bag';
 import DataboxCore, {DbPreparedData} from './DataboxCore';
 import {RespondFunction}             from '../../main/sc/socket';
+// noinspection ES6PreferShortImport
+import {block}                       from '../../main/middlewares/block';
 import {
     CudOperation,
     CudPackage,
@@ -61,7 +63,6 @@ import CloneUtils                                 from '../../main/utils/cloneUt
 import {removeValueFromArray}                     from '../../main/utils/arrayUtils';
 import ObjectUtils                                from '../../main/utils/objectUtils';
 import FuncUtils                                  from '../../main/utils/funcUtils';
-import {ErrorEventHolder}                         from '../../main/error/errorEventHolder';
 import {isDefaultImpl, markAsDefaultImpl}         from '../../main/utils/defaultImplUtils';
 
 /**
@@ -141,11 +142,11 @@ export default class Databox extends DataboxCore {
 
         const errMessagePrefix = this.toString() + ' error was thrown in the function';
         this._onConnection = FuncUtils.createSafeCaller(this.onConnection,
-            `${errMessagePrefix} onConnection`,ErrorEventHolder.get());
+            `${errMessagePrefix} onConnection`,this._errorEvent);
         this._onDisconnection = FuncUtils.createSafeCaller(this.onDisconnection,
-            `${errMessagePrefix} onDisconnection`,ErrorEventHolder.get());
+            `${errMessagePrefix} onDisconnection`,this._errorEvent);
         this._onReceivedSignal = FuncUtils.createSafeCaller(this.onReceivedSignal,
-            `${errMessagePrefix} onReceivedSignal`,ErrorEventHolder.get());
+            `${errMessagePrefix} onReceivedSignal`,this._errorEvent);
     }
 
     private _getFetchImpl(): (request: FetchRequest, connection: DbConnection, session: Record<string, any>) => Promise<any> | any {
@@ -482,7 +483,10 @@ export default class Databox extends DataboxCore {
                 }})
                 socket._emit(this._dbEvent,dbPackage);
             }
-            catch (e) {}
+            catch (err) {
+                if(err !== block)
+                    this._handleUnexpectedMiddlewareError(err,nameof<Databox>(s => s.transmitSignalMiddleware))
+            }
         }
 
         const promises: Promise<void>[] = [];
@@ -518,7 +522,10 @@ export default class Databox extends DataboxCore {
                                 }});
                                 filteredOperations.push(innerOperation);
                             }
-                            catch (e) {}
+                            catch (err) {
+                                if(err !== block)
+                                    this._handleUnexpectedMiddlewareError(err,nameof<Databox>(s => s.updateMiddleware))
+                            }
                         })
                     }
                     continue;
@@ -534,7 +541,10 @@ export default class Databox extends DataboxCore {
                                 }});
                                 filteredOperations.push(innerOperation);
                             }
-                            catch (e) {}
+                            catch (err) {
+                                if(err !== block)
+                                    this._handleUnexpectedMiddlewareError(err,nameof<Databox>(s => s.insertMiddleware))
+                            }
                         })
                     }
                     continue;
@@ -547,7 +557,10 @@ export default class Databox extends DataboxCore {
                                 await this.deleteMiddleware(socket,{...preAction});
                                 filteredOperations.push(operation);
                             }
-                            catch (e) {}
+                            catch (err) {
+                                if(err !== block)
+                                    this._handleUnexpectedMiddlewareError(err,nameof<Databox>(s => s.deleteMiddleware))
+                            }
                         })
                     }
             }
@@ -1072,11 +1085,11 @@ export default class Databox extends DataboxCore {
      * It is not recommended to invoke long processes in this middleware.
      * Instead, try to prepare stuff in the token of the socket or the socket attachment.
      * The middleware will be called before each socket reaches a cud operation.
-     * You can change the value with the parameter changeValue by simply calling
+     * You can change the value for a socket with the property changeValue of the action by simply calling
      * the function with the new value.
      * With this functionality, you can make parts of the data invisible to some clients.
-     * You are also able to block the complete operation for the socket
-     * by calling the internal block method or throwing any error.
+     * You are also able to block the complete operation for a socket
+     * by calling the internal block method or throwing the block symbol.
      * @param socket
      * @param insertAction
      */
@@ -1091,11 +1104,11 @@ export default class Databox extends DataboxCore {
      * It is not recommended to invoke long processes in this middleware.
      * Instead, try to prepare stuff in the token of the socket or the socket attachment.
      * The middleware will be called before each socket reaches a cud operation.
-     * You can change the value with the parameter changeValue by simply calling
+     * You can change the value for a socket with the property changeValue of the action by simply calling
      * the function with the new value.
      * With this functionality, you can make parts of the data invisible to some clients.
-     * You are also able to block the complete operation for the socket
-     * by calling the internal block method or throwing any error.
+     * You are also able to block the complete operation for a socket
+     * by calling the internal block method or throwing the block symbol.
      * @param socket
      * @param updateAction
      */
@@ -1110,8 +1123,8 @@ export default class Databox extends DataboxCore {
      * It is not recommended to invoke long processes in this middleware.
      * Instead, try to prepare stuff in the token of the socket or the socket attachment.
      * The middleware will be called before each socket reaches a cud operation.
-     * You are able to block the complete operation for the socket
-     * by calling the internal block method or throwing any error.
+     * You are able to block the complete operation for a socket
+     * by calling the internal block method or throwing the block symbol.
      * @param socket
      * @param deleteAction
      */
@@ -1126,8 +1139,10 @@ export default class Databox extends DataboxCore {
      * It is not recommended to invoke long processes in this middleware.
      * Instead, try to prepare stuff in the token of the socket or the socket attachment.
      * The middleware will be called before each socket reaches a transmitted signal.
-     * You are able to block the complete signal for the socket
-     * by calling the internal block method or throwing any error.
+     * You can change the data for a socket with the property changeData of the action by simply calling
+     * the function with the new data.
+     * You are also able to block the complete action for a socket
+     * by calling the internal block method or throwing the block symbol.
      * @param socket
      * @param signalAction
      */

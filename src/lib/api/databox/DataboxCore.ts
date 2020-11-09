@@ -13,6 +13,8 @@ const  Jwt                              = require('jsonwebtoken');
 import {JwtSignFunction, JwtVerifyFunction, JwtVerifyOptions} from "../../main/definitions/jwt";
 // noinspection ES6PreferShortImport
 import {buildKeyArray}                    from "../../main/databox/keyArrayUtils.js";
+// noinspection ES6PreferShortImport
+import {block}                            from '../../main/middlewares/block';
 import {DataboxConnectReq, DataboxConnectRes, DataboxInfo, DbToken} from '../../main/databox/dbDefinitions';
 import {ConsumeInputFunction}             from "../../main/input/inputClosureCreator";
 import ErrorUtils                         from "../../main/utils/errorUtils";
@@ -21,6 +23,9 @@ import Component                          from '../component/Component';
 import {AnyDataboxClass}                  from './AnyDataboxClass';
 import {componentTypeSymbol}              from '../../main/component/componentUtils';
 import Socket                             from '../Socket';
+import Logger                             from '../../main/log/logger';
+import {ErrorEventHolder}                 from '../../main/error/errorEventHolder';
+import {PreparedEvents}                   from '../../main/config/definitions/parts/events';
 
 /**
  * If you always want to present the most recent data on the client,
@@ -53,6 +58,11 @@ export default abstract class DataboxCore extends Component {
     private readonly _parallelFetch: boolean;
     private readonly _initInputConsumer: ConsumeInputFunction;
     private readonly _fetchInputConsumer: ConsumeInputFunction;
+
+    /**
+     * @internal
+     */
+    protected readonly _errorEvent: PreparedEvents['error'] = ErrorEventHolder.get();
 
     protected constructor(identifier: string, bag: Bag, preparedData: DbPreparedData, apiLevel: number | undefined) {
         super(identifier,apiLevel);
@@ -235,11 +245,21 @@ export default abstract class DataboxCore extends Component {
     // noinspection JSMethodCanBeStatic
     /**
      * **Not override this method.**
-     * This method should be called in a cud middleware
-     * to block the operation.
+     * This method can be called in a
+     * databox middleware to block the action.
      */
     protected block(){
-        throw new Error('Block cud operation');
+        throw block;
+    }
+
+    /**
+     * **Not override this method.**
+     * @internal
+     * @private
+     */
+    protected _handleUnexpectedMiddlewareError(err: Error, midName: string) {
+        Logger.log.error(`${this.toString()} error was thrown in the middleware ${midName}`,err);
+        this._errorEvent(err);
     }
 
     // noinspection JSUnusedGlobalSymbols
