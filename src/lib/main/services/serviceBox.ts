@@ -32,16 +32,20 @@ export default class ServiceBox
     }
 
     private async initInstances(errorBox: string[]): Promise<void> {
+        const promises: Promise<void>[] = [];
         for(const instanceName in this.instancesConfig) {
             if(this.instancesConfig.hasOwnProperty(instanceName)) {
-                try {
-                    this.instances[instanceName] = await this.create(this.instancesConfig[instanceName],instanceName);
-                }
-                catch (e) {
-                    errorBox.push(`Service: Name:'${this.serviceName}', Instance:'${instanceName}', Error:'${e.toString()}'`);
-                }
+                promises.push((async () => {
+                    try {
+                        this.instances[instanceName] = await this.create(this.instancesConfig[instanceName],instanceName);
+                    }
+                    catch (e) {
+                        errorBox.push(`Service: Name:'${this.serviceName}', Instance:'${instanceName}', Error:'${e.toString()}'`);
+                    }
+                })());
             }
         }
+        await Promise.all(promises);
     }
 
     async getService(instance: string = 'default'): Promise<any> {
