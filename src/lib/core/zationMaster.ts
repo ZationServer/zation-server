@@ -449,7 +449,7 @@ export default class ZationMaster {
         const msg: string[] = [];
         msg.push(`Zation${this.license ? '': ' (Unlicensed)'} started 🚀`
             + (this.zc.inTestMode() ? ' in Test Mode 🛠': (this.zc.inProductionMode() ?
-                ' in Production Mode 🔒' : ' in Development Mode 👨‍💻👩‍💻')));
+                ' in Production Mode 🔒' : ' in Development Mode 🖥')));
         msg.push(`            Version: ${ZationMaster.version}`);
         msg.push(`            Your app: ${this.zc.mainConfig.appName}`);
         msg.push(`            Hostname: ${hostName}`);
