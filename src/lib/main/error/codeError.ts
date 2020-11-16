@@ -15,8 +15,8 @@ import BackError          from "./../../api/BackError";
 const codeErrorSymbol = Symbol();
 
 export default class CodeError extends BackError {
-    constructor(errorConstruct: BackErrorConstruct = {}, info?: object | string) {
-        super(errorConstruct,info);
+    constructor(errorConstruct: BackErrorConstruct = {}, info?: object | string, message?: string) {
+        super(errorConstruct,info,message);
     }
     [codeErrorSymbol] = true;
 }
