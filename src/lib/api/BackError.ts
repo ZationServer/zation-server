@@ -74,8 +74,9 @@ export default class BackError extends Error
      * For example, with an valueNotMatchesWithMinLength error,
      * the info object could include what the length of the input is and
      * what the minimum length is.
+     * @param message
      */
-    constructor(name: string, info?: object | string)
+    constructor(name: string, info?: object | string, message?: string)
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
@@ -92,11 +93,12 @@ export default class BackError extends Error
      * For example, with an valueNotMatchesWithMinLength error,
      * the info object could include what the length of the input is and
      * what the minimum length is.
+     * @param message
      */
-    constructor(backErrorConstruct: BackErrorConstruct, info?: object | string)
-    constructor(value: BackErrorConstruct | string = {}, info?: object | string)
+    constructor(backErrorConstruct: BackErrorConstruct, info?: object | string, message?: string)
+    constructor(value: BackErrorConstruct | string = {}, info?: object | string, message?: string)
     {
-        super();
+        super(message);
         if(typeof value === 'string'){
             value = {name: value} as BackErrorConstruct;
         }
