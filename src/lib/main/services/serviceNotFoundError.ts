@@ -13,7 +13,9 @@ export default class ServiceNotFoundError extends CodeError
     private readonly instanceName: string;
 
     constructor(serviceName: string, instanceName: string) {
-        super(MainBackErrors.serviceNotFound,{serviceName: serviceName,instanceName: instanceName});
+        super(MainBackErrors.serviceNotFound,
+            {serviceName: serviceName,instanceName: instanceName},
+            `Service instance: '${serviceName}'.'${instanceName}' not found.`);
     }
 
     // noinspection JSUnusedGlobalSymbols
