@@ -181,6 +181,9 @@ export default class ZationMaster {
             this.debugStopwatch.stop(`The Master has checked the license.`);
         }
 
+        if(this.startMode === StartMode.Production && !this.license)
+            this.killServer('The server can not be started in production mode without a license.')
+
         this.debugStopwatch.start();
         const portIsAvailable = await PortChecker.isPortAvailable(this.zc.mainConfig.port);
         if(!portIsAvailable) {
