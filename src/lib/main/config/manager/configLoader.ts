@@ -152,8 +152,8 @@ export default class ConfigLoader {
     private loadUserDataLocations(): ConfigLocations {
         return {
             mainConfig: this.loadZationConfigLocation(nameof<StarterConfig>(s => s.mainConfig)),
-            appConfig: this.loadZationConfigLocation(nameof<StarterConfig>(s => s.appConfig)),
-            serviceConfig: this.loadZationConfigLocation(nameof<StarterConfig>(s => s.serviceConfig))
+            serviceConfig: this.loadZationConfigLocation(nameof<StarterConfig>(s => s.serviceConfig)),
+            appConfig: this.loadZationConfigLocation(nameof<StarterConfig>(s => s.appConfig))
         };
     }
 
@@ -169,8 +169,8 @@ export default class ConfigLoader {
      */
     static loadOtherConfigsSafe(configLocations: ConfigLocations): OtherLoadedConfigSet {
         return {
-            appConfig: FuncUtils.callSafe(ConfigLoader.loadConfig,[configLocations.appConfig],{}),
-            serviceConfig: FuncUtils.callSafe(ConfigLoader.loadConfig,[configLocations.serviceConfig],{})
+            serviceConfig: FuncUtils.callSafe(ConfigLoader.loadConfig,[configLocations.serviceConfig],{}),
+            appConfig: FuncUtils.callSafe(ConfigLoader.loadConfig,[configLocations.appConfig],{})
         };
     }
 
@@ -211,10 +211,10 @@ export default class ConfigLoader {
      * Function for loading other configs on the master.
      */
     async loadOtherConfigs() {
-        this._appConfig = this.loadConfigWithErrorHandling(this._configLocations.appConfig,
-            nameof<StarterConfig>(s => s.appConfig));
         this._serviceConfig = this.loadConfigWithErrorHandling(this._configLocations.serviceConfig,
             nameof<StarterConfig>(s => s.serviceConfig));
+        this._appConfig = this.loadConfigWithErrorHandling(this._configLocations.appConfig,
+            nameof<StarterConfig>(s => s.appConfig));
     }
 
     private loadConfigWithErrorHandling(location: string,name: string) {
