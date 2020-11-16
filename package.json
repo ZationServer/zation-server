@@ -71,7 +71,7 @@
     "zation-client": "1.2.8",
     "zation-service": "0.4.3",
     "zation-bag-extension": "1.4.0",
-    "zation-panel": "0.6.7"
+    "zation-panel": "0.6.8"
   },
   "devDependencies": {
     "@types/chai": "4.1.7",
