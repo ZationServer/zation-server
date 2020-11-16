@@ -24,10 +24,19 @@ export class Server {
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @description
-     * Returns if the server runs in normal mode.
+     * Returns if the server runs in development mode.
      */
-    static inNormalMode(): boolean {
-        return global[startModeSymbol] === StartMode.Normal;
+    static inDevelopmentMode(): boolean {
+        return global[startModeSymbol] === StartMode.Development;
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns if the server runs in production mode.
+     */
+    static inProductionMode(): boolean {
+        return global[startModeSymbol] === StartMode.Development;
     }
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic

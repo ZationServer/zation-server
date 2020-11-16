@@ -7,13 +7,14 @@ Copyright(c) Luca Scaringella
 export const startModeSymbol = Symbol();
 
 export enum StartMode {
-    Normal = 0,
-    Test = 1,
-    Check = 2
+    Development = 'd',
+    Production = 'p',
+    Test = 't',
+    Check = 'c'
 }
 
-export function processRawStartMode(value: number | string): StartMode {
-    if(typeof value === 'string'){value = parseInt(value);}
-    value = value !== 0 && value !== 1 && value !== 2 ? 0: value;
-    return value;
+export function processRawStartMode(value: string): StartMode {
+    if(value === StartMode.Development || value === StartMode.Production ||
+        value === StartMode.Test || value === StartMode.Check) return value;
+    else return StartMode.Development;
 }

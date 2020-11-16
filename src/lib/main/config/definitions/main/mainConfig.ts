@@ -73,6 +73,7 @@ export interface MainConfig
     /**
      * Boolean that indicates if the debug mode is active.
      * In debug mode the server will console log information about the current status and actions of connected clients.
+     * When the server runs in production mode it will force to false.
      * @default false
      */
     debug?: boolean;
@@ -80,6 +81,7 @@ export interface MainConfig
      * Boolean that indicates if the start debug mode is active.
      * In start debug mode the server will console log all steps
      * for starting the server and how much time each step takes to process.
+     * When the server runs in production mode it will force to false.
      * @default false
      */
     startDebug?: boolean;
@@ -95,14 +97,6 @@ export interface MainConfig
      * @default true
      */
     showConfigWarnings?: boolean;
-    /**
-     * Should be either 'dev' or 'prod' -
-     * This affects the shutdown procedure
-     * when the master receives a 'SIGUSR2' signal. In 'dev' a SIGUSR2 will trigger an immediate shutdown of workers.
-     * In 'prod' workers will be terminated progressively in accordance with processTermTimeout.
-     * @default 'prod'
-     */
-    environment?: 'dev' | 'prod';
     /**
      * The timezone of the server,
      * it affects the calculation of the background task time.
@@ -634,7 +628,6 @@ export interface InternalMainConfig extends MainConfig {
     startDebug: boolean;
     killOnStartFailure: boolean;
     showConfigWarnings: boolean;
-    environment: 'dev' | 'prod';
     timeZone: string;
     workers: 'auto' | number;
     appName: string;

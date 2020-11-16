@@ -5,8 +5,8 @@ Copyright(c) Luca Scaringella
  */
 
 import {StarterConfig} from '../main/config/definitions/main/starterConfig';
-// noinspection TypeScriptPreferShortImport
-import {StartMode}     from "../../lib/core/startMode";
+// noinspection ES6PreferShortImport
+import {StartMode}     from '../../lib/core/startMode';
 import ZationMaster    from '../core/zationMaster';
 
 /**
@@ -21,8 +21,8 @@ import ZationMaster    from '../core/zationMaster';
  * 2 => check
  * @throws Error with the property: name of type StartErrorName.
  */
-export function start(options: StarterConfig,startMode: number | string | StartMode = 0) {
+export function start(options: StarterConfig,startMode: StartMode | any = StartMode.Development) {
     return new Promise((resolve,reject) => {
         new ZationMaster(options,resolve,reject,startMode);
     });
-};
+}

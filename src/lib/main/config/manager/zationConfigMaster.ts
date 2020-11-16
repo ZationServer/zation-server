@@ -7,13 +7,15 @@ Copyright(c) Luca Scaringella
 import {StarterConfig}      from "../definitions/main/starterConfig";
 import {InternalMainConfig} from "../definitions/main/mainConfig";
 import ZationConfig         from "./zationConfig";
+// noinspection ES6PreferShortImport
+import {StartMode}          from '../../../core/startMode';
 import crypto             = require('crypto');
 import ConfigLocations      from "./configLocations";
 import InternalData         from "../../definitions/internalData";
 
 export default class ZationConfigMaster extends ZationConfig {
 
-    constructor(starterConfig: StarterConfig,mainConfig: InternalMainConfig,configLocations: ConfigLocations,rootPath: string,startMode: number) {
+    constructor(starterConfig: StarterConfig,mainConfig: InternalMainConfig,configLocations: ConfigLocations,rootPath: string,startMode: StartMode) {
         super();
 
         this._starterConfig = starterConfig;

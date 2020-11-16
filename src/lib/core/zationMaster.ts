@@ -56,7 +56,7 @@ export default class ZationMaster {
 
     private readonly startResolve: () => void;
     private readonly startReject: (err: any) => void;
-    private readonly startMode: number;
+    private readonly startMode: StartMode;
 
     private debugStopwatch: StartDebugStopwatch;
 
@@ -72,7 +72,7 @@ export default class ZationMaster {
     private serverSettingsJs: string;
 
 
-    constructor(options: StarterConfig,startResolve: () => void,startReject: (err: any) => void,startMode: number | string = 0) {
+    constructor(options: StarterConfig,startResolve: () => void,startReject: (err: any) => void,startMode: StartMode | any = StartMode.Development) {
 
         startMode = processRawStartMode(startMode);
         global[startModeSymbol] = startMode;
@@ -92,7 +92,7 @@ export default class ZationMaster {
 
             (async () => {
                 try {
-                    await this.zcLoader.loadMainConfig();
+                    await this.zcLoader.loadMainConfig(startMode === StartMode.Production);
 
                     this.zc = new ZationConfigMaster(
                         this.zcLoader.starterConfig,
@@ -285,7 +285,7 @@ export default class ZationMaster {
             brokerController :__dirname  + '/zationBroker.js',
             workerClusterController: __dirname + '/workerClusterController.js',
             wsEngine: this.zc.mainConfig.wsEngine,
-            environment: this.zc.mainConfig.environment,
+            environment: this.zc.inProductionMode() ? 'prod' : 'dev',
             port: this.zc.mainConfig.port,
             path: this.zc.mainConfig.path,
             host: this.zc.mainConfig.hostname,
@@ -448,7 +448,8 @@ export default class ZationMaster {
 
         const msg: string[] = [];
         msg.push(`Zation${this.license ? '': ' (Unlicensed)'} started 🚀`
-            + (this.zc.inTestMode() ? ' in TestMode 🛠': ''));
+            + (this.zc.inTestMode() ? ' in Test Mode 🛠': (this.zc.inProductionMode() ?
+                ' in Production Mode 🔒' : ' in Development Mode 👨‍💻👩‍💻')));
         msg.push(`            Version: ${ZationMaster.version}`);
         msg.push(`            Your app: ${this.zc.mainConfig.appName}`);
         msg.push(`            Hostname: ${hostName}`);

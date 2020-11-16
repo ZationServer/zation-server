@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 import {InternalMainConfig}                         from "../definitions/main/mainConfig";
 import {StarterConfig}                              from "../definitions/main/starterConfig";
 import InternalData        from "../../definitions/internalData";
-// noinspection TypeScriptPreferShortImport
+// noinspection ES6PreferShortImport
 import {StartMode}         from "../../../core/startMode";
 import ServerInfo          from "../../internalApi/serverInfo";
 import ZcTransport         from "./zcTransport";
@@ -26,7 +26,7 @@ export default abstract class ZationConfig {
 
     protected _rootPath: string;
 
-    protected _startMode: number;
+    protected _startMode: StartMode;
 
     private readonly _preparedServerInfo: ServerInfo = new ServerInfo(this);
 
@@ -34,8 +34,8 @@ export default abstract class ZationConfig {
         return this._startMode == StartMode.Test;
     }
 
-    inNormalMode(): boolean {
-        return this._startMode == StartMode.Normal;
+    inProductionMode(): boolean {
+        return this._startMode == StartMode.Production;
     }
 
     getStartMode(): StartMode {

@@ -8,7 +8,7 @@ import {StarterConfig}     from "../definitions/main/starterConfig";
 import ObjectUtils         from "../../utils/objectUtils";
 import fs                = require('fs');
 import path              = require('path');
-import {InternalMainConfig, OPTION_AUTO, OPTION_HALF_AUTO} from "../definitions/main/mainConfig";
+import {InternalMainConfig, MainConfig, OPTION_AUTO, OPTION_HALF_AUTO} from '../definitions/main/mainConfig';
 import ConfigLocations     from "./configLocations";
 import crypto            = require('crypto');
 const  uuidV4            = require('uuid/v4');
@@ -37,7 +37,6 @@ export default class ConfigLoader {
         showConfigWarnings: true,
         port: 3000,
         hostname: 'localhost',
-        environment: 'prod',
         path: '/zation',
         appName: 'AppWithoutName',
         secure: false,
@@ -174,7 +173,7 @@ export default class ConfigLoader {
         };
     }
 
-    async loadMainConfig(): Promise<void>
+    async loadMainConfig(reconfigureForProduction: boolean): Promise<void>
     {
         try {
             const mainConfig = ConfigLoader.loadConfig(this._configLocations.mainConfig);
@@ -190,6 +189,11 @@ export default class ConfigLoader {
         this.readMainConfigEnvVariables();
 
         this.processMainConfig();
+
+        if(reconfigureForProduction) {
+            ObjectUtils.deepMergeTwoObjects(this._mainConfig,
+                {debug: false, startDebug: false} as MainConfig)
+        }
     }
 
     private readMainConfigEnvVariables() {
