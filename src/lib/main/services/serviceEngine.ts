@@ -8,7 +8,6 @@ import ZationWorker         = require("../../core/zationWorker");
 import ServiceBox             from "./serviceBox";
 import ZationConfig           from "../config/manager/zationConfig";
 import ServiceNotFoundError   from "./serviceNotFoundError";
-import Logger                 from "../log/logger";
 import ZationConfigFull       from '../config/manager/zationConfigFull';
 import {ServiceConfig}        from '../config/definitions/main/serviceConfig';
 
@@ -53,9 +52,7 @@ export default class ServiceEngine
             if(this.zc.mainConfig.killServerOnServicesCreateError){
                 await this.worker.killServer(info);
             }
-            else{
-                Logger.log.warn(info);
-            }
+            else throw new Error(info);
         }
     }
 
