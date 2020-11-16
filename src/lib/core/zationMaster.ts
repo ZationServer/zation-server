@@ -243,7 +243,7 @@ export default class ZationMaster {
             Logger.consoleLogErrorBag(configErrorBag);
             return this.rejectStart(StartErrorName.ConfigErrors,'The configs have errors.');
         }
-        console.log('\x1b[32m%s\x1b[0m', '   [CHECKED]','✅ No configuration errors found.');
+        console.log('\x1b[32m%s\x1b[0m', '   [CHECKED]','✅ No configuration errors detected.');
     }
 
     public async configFileLoad() {
