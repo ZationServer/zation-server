@@ -16,8 +16,8 @@ import {DefinitionModel}                                    from '../../main/mod
  * @param model
  */
 export function $canBeNull<T extends Model>(model: T):
-    T extends DefinitionModel ? MetaModel<T> :
-        T extends MetaModel ? T : MetaModel<any>
+    T extends DefinitionModel ? MetaModel<T> & {canBeNull: true} :
+        T extends MetaModel ? MetaModel<T["definitionModel"]> & {optional: T["optional"], canBeNull: true} : MetaModel<any>
 {
     return addNewMetaToModel(resolveIfModelTranslatable(model) as any,{canBeNull: true});
 }

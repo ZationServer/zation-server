@@ -20,8 +20,8 @@ import {DefinitionModel}                            from '../../main/models/defi
  * if the input had not provided the value.
  */
 export function $optional<T extends Model>(model: T, defaultValue?: any):
-    T extends DefinitionModel ? MetaModel<T> :
-        T extends MetaModel ? T : MetaModel<any>
+    T extends DefinitionModel ? MetaModel<T> & {optional: true} :
+        T extends MetaModel ? MetaModel<T["definitionModel"]> & {optional: true, canBeNull: T["canBeNull"]} : MetaModel<any>
 {
     return addNewMetaToModel(resolveIfModelTranslatable(model) as any,
         {optional: true, ...(defaultValue !== undefined ? {default: defaultValue} : {})});

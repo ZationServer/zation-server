@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {isModelTranslatable, resolveIfModelTranslatable, updateModelTranslatable} from '../../configTranslatable/modelTranslatable';
+import {isModelTranslatable, modelTranslateSymbol, resolveIfModelTranslatable} from '../../configTranslatable/modelTranslatable';
 import CloneUtils                                                         from "../../../main/utils/cloneUtils";
 // noinspection TypeScriptPreferShortImport
 import {$extends}                                                         from '../Extends';
@@ -86,6 +86,6 @@ export const ObjectModel = (name?: string) => {
             $extends(objectModel,resolveIfModelTranslatable(proto));
         }
 
-        updateModelTranslatable(target,() => objectModel);
+        target[modelTranslateSymbol] = objectModel;
     }
 };

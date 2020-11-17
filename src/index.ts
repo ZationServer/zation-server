@@ -32,7 +32,7 @@ import {
     $handshakeAttachmentMatches,
     $socketAttachmentMatches,
     $tokenPayloadMatches, $userId}                              from './lib/api/AccessApiUtils';
-import {updateModelTranslatable}                                from './lib/api/configTranslatable/modelTranslatable';
+import {ModelTranslatable, modelTranslateSymbol}                from './lib/api/configTranslatable/modelTranslatable';
 import {Model as AnyModel, DirectModel, AnyModelTranslatable}   from "./lib/main/models/model";
 import {$value, $key, $pair, $all, $any, $contains, $matches}   from './lib/api/databox/DbApiUtils';
 import {MetaModel, ModelMetaData}   from "./lib/main/models/metaModel";
@@ -83,6 +83,7 @@ import Singleton                    from './lib/api/Singleton';
 import Process, {ProcessType}       from './lib/api/Process';
 import {$and, $or}                  from './lib/api/RelationArrays';
 import {block}                      from './lib/main/middlewares/block';
+import {extractModelType}           from './lib/main/models/extractModelType';
 
 //Refresh bag instance export
 Bag._addReadyRefresher((bag) => exports.bag = bag);
@@ -172,10 +173,12 @@ export {
     Events,
     Middleware,
     block,
-    updateModelTranslatable,
     AnyModelTranslatable,
+    ModelTranslatable,
+    modelTranslateSymbol,
     AnyModel,
     MetaModel,
     ModelMetaData,
-    DirectModel
+    DirectModel,
+    extractModelType
 };

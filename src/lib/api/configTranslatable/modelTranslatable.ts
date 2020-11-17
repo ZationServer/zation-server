@@ -4,6 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
+// noinspection ES6PreferShortImport
 import {DirectModel} from '../../main/models/model';
 
 export const modelTranslateSymbol = Symbol();
@@ -11,17 +12,8 @@ export const modelTranslateSymbol = Symbol();
 /**
  * Interface for define that the object can be translated to a model.
  */
-export interface ModelTranslatable {
-    [modelTranslateSymbol]: () => DirectModel
-}
-
-/**
- * Makes an object ModelTranslatable or removes it when the value is undefined.
- * @param object
- * @param value
- */
-export function updateModelTranslatable<T>(object: T, value?: undefined | (() => DirectModel)) {
-    object[modelTranslateSymbol] = value;
+export interface ModelTranslatable<M extends DirectModel = any> {
+    [modelTranslateSymbol]: () => M
 }
 
 /**

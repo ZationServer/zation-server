@@ -15,7 +15,7 @@ import {setModelName}    from '../../main/models/modelName';
  * @param model
  * @param name
  */
-export function $model<T extends DefinitionModel>(model: T, name?: string): DefinitionModel {
+export function $model<T extends DefinitionModel>(model: T, name?: string): T {
     if(name) setModelName(model,name);
     return model;
 }
