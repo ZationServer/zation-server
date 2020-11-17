@@ -44,15 +44,15 @@ export type ValidationType =
     'mongoId' |
     'latLong';
 
-export type extractNonStrictValidationType<T> =
+export type ExtractNonStrictValidationType<T> =
     T extends 'int' ? number | string :
         T extends 'float' ? number | string :
             T extends 'number' ? number | string :
                 T extends 'date' ? any :
                     T extends 'boolean' ? boolean | number | string :
-                        extractStrictValidationType<T>;
+                        ExtractStrictValidationType<T>;
 
-export type extractStrictValidationType<T> =
+export type ExtractStrictValidationType<T> =
     T extends 'object' ? Record<string,any> :
         T extends 'array' ? any[] :
             T extends 'string' ? string :

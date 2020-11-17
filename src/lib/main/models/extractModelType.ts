@@ -4,49 +4,59 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {DefinitionModel, ObjectModel, ValueModel} from './definitionModel';
 import {DirectModel, Model}                       from './model';
 import {MetaModel}                                from './metaModel';
+// noinspection ES6PreferShortImport
 import {ModelTranslatable, modelTranslateSymbol}  from '../../api/configTranslatable/modelTranslatable';
-import {extractNonStrictValidationType, extractStrictValidationType} from './validator/validationType';
+import {AnyOfModel, DefinitionModel, ObjectModel, ValueModel}        from './definitionModel';
+import {ExtractNonStrictValidationType, ExtractStrictValidationType} from './validator/validationType';
 
-type extractMultiType<T,ST extends boolean> = T extends string ?
-    (ST extends true ? extractStrictValidationType<T> : extractNonStrictValidationType<T>) : never
+type ExtractMultiType<T,ST extends boolean> = T extends string ?
+    (ST extends true ? ExtractStrictValidationType<T> : ExtractNonStrictValidationType<T>) : never
 
-type extractType<T,ST extends boolean> =
-    T extends string[] ? extractMultiType<T[keyof T],ST> :
+type ExtractType<T,ST extends boolean> =
+    T extends string[] ? ExtractMultiType<T[keyof T],ST> :
         T extends string ?
-            (ST extends true ? extractStrictValidationType<T> : extractNonStrictValidationType<T>) : any;
+            (ST extends true ? ExtractStrictValidationType<T> : ExtractNonStrictValidationType<T>) : any;
 
-type extractValueModelType<T extends ValueModel> =
+type ExtractValueTypes<T extends any[] | Record<string,any>> = T extends any[] ? T[number] : T[keyof T];
+
+type ExtractAnyOfModelTypes<T extends Model[] | Record<string,Model>> = {
+    [key in keyof T]: ExtractModelType<T[key]>;
+};
+
+type ExtractAnyOfModelType<T extends AnyOfModel> = ExtractValueTypes<ExtractAnyOfModelTypes<T['anyOf']>>;
+
+type ExtractValueModelType<T extends ValueModel> =
     T["convertType"] extends false ?
-        T["strictType"] extends false ? extractType<T['type'],false> :
-            extractType<T['type'],true> :
-                extractType<T['type'],true>;
+        T["strictType"] extends false ? ExtractType<T['type'],false> :
+            ExtractType<T['type'],true> :
+                ExtractType<T['type'],true>;
 
-type extractObjectModelType<T extends Record<string,Model>> = {
-    [key in keyof T]: extractModelType<T[key]>
+type ExtractObjectModelType<T extends Record<string,Model>> = {
+    [key in keyof T]: ExtractModelType<T[key]>
 }
 
-type extractArrayModelType<T extends {"0": Model}> = (extractModelType<T["0"]>)[];
+type ExtractArrayModelType<T extends {"0": Model}> = (ExtractModelType<T["0"]>)[];
 
-type extractMetaModelType<T extends MetaModel> =
+type ExtractMetaModelType<T extends MetaModel> =
     T['optional'] extends true ?
-        T['canBeNull'] extends true ? undefined | null | extractDefinitionModelType<T["definitionModel"]> :
-            undefined | extractDefinitionModelType<T["definitionModel"]> :
-        T['canBeNull'] extends true ? null | extractDefinitionModelType<T["definitionModel"]> :
-            extractDefinitionModelType<T["definitionModel"]>;
+        T['canBeNull'] extends true ? undefined | null | ExtractDefinitionModelType<T["definitionModel"]> :
+            undefined | ExtractDefinitionModelType<T["definitionModel"]> :
+        T['canBeNull'] extends true ? null | ExtractDefinitionModelType<T["definitionModel"]> :
+            ExtractDefinitionModelType<T["definitionModel"]>;
 
-type extractDefinitionModelType<T extends DefinitionModel> =
-    T extends {"0": Model} ? extractArrayModelType<T> :
-        T extends ObjectModel ? extractObjectModelType<T["properties"]> :
-            T extends ValueModel ? extractValueModelType<T> : any
+type ExtractDefinitionModelType<T extends DefinitionModel> =
+    T extends {"0": Model} ? ExtractArrayModelType<T> :
+        T extends ObjectModel ? ExtractObjectModelType<T["properties"]> :
+            T extends ValueModel ? ExtractValueModelType<T> :
+                T extends AnyOfModel ? ExtractAnyOfModelType<T> : any;
 
-type extractDirectModelType<T extends DirectModel> =
-    T extends DefinitionModel ? extractDefinitionModelType<T> :
-        T extends MetaModel ? extractMetaModelType<T> : any;
+type ExtractDirectModelType<T extends DirectModel> =
+    T extends DefinitionModel ? ExtractDefinitionModelType<T> :
+        T extends MetaModel ? ExtractMetaModelType<T> : any;
 
-export type extractModelType<T extends Model> =
-    T extends DirectModel ? extractDirectModelType<T> :
-        T extends ModelTranslatable ? extractDirectModelType<ReturnType<T[typeof modelTranslateSymbol]>> :
+export type ExtractModelType<T extends Model> =
+    T extends DirectModel ? ExtractDirectModelType<T> :
+        T extends ModelTranslatable ? ExtractDirectModelType<ReturnType<T[typeof modelTranslateSymbol]>> :
             T extends { new(): any, prototype: {} } ? T["prototype"] : any;
