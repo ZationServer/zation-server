@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
-import {ValidationType}  from "../../definitions/validationType";
+import {ValidationType}  from "../validator/validationType";
 import {ConverterUtils}  from "./typeConverterUtils";
 import {PartialRecord}   from '../../utils/typeUtils';
 

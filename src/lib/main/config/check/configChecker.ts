@@ -8,19 +8,19 @@ import {ConfigNames, DEFAULT_USER_GROUP_FALLBACK}     from '../../definitions/in
 import {AppConfig}                                    from '../definitions/main/appConfig';
 import {PanelUserConfig}                              from '../definitions/main/mainConfig';
 // noinspection TypeScriptPreferShortImport
-import {OnlyBase64Functions, OnlyDateFunctions, OnlyNumberFunctions, OnlyStringFunctions, TypeTypes} from '../../definitions/validation';
+import {OnlyBase64Functions, OnlyDateFunctions, OnlyNumberFunctions, OnlyStringFunctions, TypeTypes} from '../../models/validator/validationFunctions';
 import ConfigCheckerTools                    from './configCheckerTools';
 import ConfigError                           from '../../error/configError';
 import Target                                from './target';
 import Logger                                from '../../log/logger';
 import * as ObjectPath                       from 'object-path';
 import Controller, {ControllerClass}         from '../../../api/Controller';
-import {ValidationTypeRecord}                from '../../definitions/validationType';
+import {ValidationTypeRecord}                from '../../models/validator/validationType';
 import Iterator                              from '../../utils/iterator';
 import ObjectUtils                           from '../../utils/objectUtils';
 import ConfigLoader                          from '../manager/configLoader';
 import {resolveIfModelTranslatable}          from '../../../api/configTranslatable/modelTranslatable';
-import {modelPrototypeSymbol}                from '../../definitions/model';
+import {modelPrototypeSymbol}                from '../../models/modelPrototype';
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig}               from '../definitions/parts/controllerConfig';
 // noinspection ES6PreferShortImport

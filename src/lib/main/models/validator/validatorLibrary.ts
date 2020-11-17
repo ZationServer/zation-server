@@ -5,8 +5,8 @@ Copyright(c) Luca Scaringella
  */
 
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
-import {ValidationType}   from "../../definitions/validationType";
-import {FormatLetters}    from "../../definitions/validation";
+import {ValidationType}   from "./validationType";
+import {FormatLetters}    from "./validationFunctions";
 import {ValidationBackErrors} from "../../systemBackErrors/validationBackErrors";
 import Base64Utils           from "../../utils/base64Utils";
 import ByteUtils             from "../../utils/byteUtils";

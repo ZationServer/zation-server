@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {FormatLetters}   from '../../../definitions/validation';
+import {FormatLetters}   from '../../../models/validator/validationFunctions';
 
 export type GetDateFunction = () => Promise<Date> | Date;
 

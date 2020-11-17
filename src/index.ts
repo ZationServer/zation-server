@@ -16,7 +16,7 @@ import AuthenticationRequiredError  from './lib/main/error/authenticationRequire
 import UndefinedUserIdError         from './lib/main/error/undefinedUserIdError';
 import CodeError                    from './lib/main/error/codeError';
 import {ErrorType}                  from "./lib/main/definitions/errorType";
-import {ValidationType}             from './lib/main/definitions/validationType';
+import {ValidationType}             from './lib/main/models/validator/validationType';
 import {ControllerConfig}           from "./lib/main/config/definitions/parts/controllerConfig";
 import {StartMode}                  from "./lib/core/startMode";
 import Router                       from "./lib/api/Router";

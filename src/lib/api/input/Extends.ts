@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {modelPrototypeSymbol}           from '../../main/definitions/model';
+import {modelPrototypeSymbol}           from '../../main/models/modelPrototype';
 import {resolveIfModelTranslatable}     from '../configTranslatable/modelTranslatable';
 import {isClassObjectModel}             from './decorator/ObjectModel';
 import ConfigBuildError                 from '../../main/config/manager/configBuildError';

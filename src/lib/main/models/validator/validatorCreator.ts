@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 // noinspection TypeScriptPreferShortImport
-import {ValidationTypeRecord}                              from '../../definitions/validationType';
+import {ValidationTypeRecord}                              from './validationType';
 import {ArraySettings, ValidateFunction, ValueModel}       from "../../models/definitionModel";
 // noinspection TypeScriptPreferShortImport
 import BackErrorBag                          from "../../../api/BackErrorBag";

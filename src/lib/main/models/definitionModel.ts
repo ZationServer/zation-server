@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 import BackErrorBag          from '../../api/BackErrorBag';
 import {ValidationFunctions} from '../config/definitions/parts/validationFunctions';
 // noinspection ES6PreferShortImport
-import {ValidationType}      from '../../main/definitions/validationType';
+import {ValidationType}      from './validator/validationType';
 import {Model}               from './model';
 
 export type DefinitionModel = ValueModel | ObjectModel | ArrayModel | AnyOfModel;

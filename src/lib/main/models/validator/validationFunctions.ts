@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ValidationFunctions} from '../config/definitions/parts/validationFunctions';
+import {ValidationFunctions} from '../../config/definitions/parts/validationFunctions';
 
 export enum FormatLetters {
     UpperCase              = 'uppercase',

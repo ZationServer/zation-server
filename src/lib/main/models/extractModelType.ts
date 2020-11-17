@@ -8,7 +8,7 @@ import {DefinitionModel, ObjectModel, ValueModel} from './definitionModel';
 import {DirectModel, Model}                       from './model';
 import {MetaModel}                                from './metaModel';
 import {ModelTranslatable, modelTranslateSymbol}  from '../../api/configTranslatable/modelTranslatable';
-import {extractNonStrictValidationType, extractStrictValidationType} from '../definitions/validationType';
+import {extractNonStrictValidationType, extractStrictValidationType} from './validator/validationType';
 
 type extractMultiType<T,ST extends boolean> = T extends string ?
     (ST extends true ? extractStrictValidationType<T> : extractNonStrictValidationType<T>) : never

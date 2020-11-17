@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 import {getModelMetaData, isMetaModel, unwrapIfMetaModel}     from './metaModel';
 import ModelProcessCreator, {Processable}                     from './modelProcessCreator';
 import {AnyOfModel, DefinitionModel, ObjectModel, ValueModel} from './definitionModel';
-import {modelPrototypeSymbol}                                 from '../definitions/model';
+import {modelPrototypeSymbol}                                 from './modelPrototype';
 import ObjectUtils                                            from '../utils/objectUtils';
 import Iterator                                               from '../utils/iterator';
 import {resolveIfModelTranslatable}                           from '../../api/configTranslatable/modelTranslatable';
