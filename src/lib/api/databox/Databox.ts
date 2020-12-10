@@ -219,7 +219,7 @@ export default class Databox extends DataboxCore {
         inputChIds.add(chInputId);
 
         const inputCh = this._dbEvent+'.'+chInputId;
-        const dbConnection: DbConnection = Object.freeze({socket,initData});
+        const dbConnection: DbConnection = Object.freeze({socket,initData,created: Date.now()});
 
         const fetchManager = this._buildFetchManager();
 

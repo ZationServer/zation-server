@@ -242,7 +242,7 @@ export default class DataboxFamily extends DataboxCore {
 
         const outputCh = this._dbEventPreFix+member;
         const inputCh = outputCh+'-'+chInputId;
-        const dbConnection: DbFamilyConnection = Object.freeze({member,socket,initData});
+        const dbConnection: DbFamilyConnection = Object.freeze({member,socket,initData,created: Date.now()});
 
         const fetchManager = this._buildFetchManager();
 
