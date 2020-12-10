@@ -139,6 +139,8 @@ export default class DataboxFamily extends DataboxCore {
     private readonly _onDisconnection: (member: string, socket: Socket) => Promise<void> | void;
     private readonly _onReceivedSignal: (connection: DbFamilyConnection, signal: string, data: any) => Promise<void> | void;
 
+    public unregisterMemberTimeout: number = 120000;
+
     constructor(identifier: string, bag: Bag, dbPreparedData: DbPreparedData, apiLevel: number | undefined) {
         super(identifier,bag,dbPreparedData,apiLevel);
         this._isMemberCheck = MemberCheckerUtils.createIsMemberChecker(this.isMember.bind(this));
@@ -481,7 +483,7 @@ export default class DataboxFamily extends DataboxCore {
      */
     private _clearUnregisterMemberTimeout(member: string): void {
         const timeout = this._unregisterMemberTimeoutMap.get(member);
-        if(timeout !== undefined){clearTimeout(timeout);}
+        if(timeout !== undefined) clearTimeout(timeout);
         this._unregisterMemberTimeoutMap.delete(member);
     }
 
@@ -492,11 +494,11 @@ export default class DataboxFamily extends DataboxCore {
      */
     private _createUnregisterMemberTimeout(member: string): void {
         const timeout = this._unregisterMemberTimeoutMap.get(member);
-        if(timeout !== undefined){clearTimeout(timeout);}
+        if(timeout !== undefined) clearTimeout(timeout);
         this._unregisterMemberTimeoutMap.set(member,setTimeout(() => {
             this._unregisterMember(member);
             this._unregisterMemberTimeoutMap.delete(member);
-        }, 120000));
+        }, this.unregisterMemberTimeout));
     }
 
     /**

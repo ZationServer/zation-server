@@ -69,6 +69,8 @@ export default class ChannelFamily extends ChannelCore {
     private readonly _onSubscription: (member: string,socket: Socket) => Promise<void> | void;
     private readonly _onUnsubscription: (member: string, socket: Socket, trigger: UnsubscribeTrigger) => Promise<void> | void;
 
+    public unregisterMemberTimeout: number = 120000;
+
     constructor(identifier: string, bag: Bag, chPreparedData: ChPreparedData, apiLevel: number | undefined)
     {
         super(identifier,bag,chPreparedData,apiLevel);
@@ -152,12 +154,8 @@ export default class ChannelFamily extends ChannelCore {
      */
     private _buildSocketFamilyMemberMap(member: string): Map<Socket,KickOutSocketFunction> {
         let memberMap = this._regMember.get(member);
-        if(!memberMap){
-            memberMap = this._registerMember(member);
-        }
-        else {
-            this._clearUnregisterMemberTimeout(member);
-        }
+        if(!memberMap) memberMap = this._registerMember(member);
+        else this._clearUnregisterMemberTimeout(member);
         return memberMap;
     }
 
@@ -200,18 +198,16 @@ export default class ChannelFamily extends ChannelCore {
         const memberMap = this._regMember.get(member);
         if(memberMap){
             memberMap.delete(socket);
-            if(memberMap.size === 0){
+            if(memberMap.size === 0)
                 this._createUnregisterMemberTimeout(member);
-            }
         }
 
         //socket member map
         const socketMemberSet = this._socketMembers.get(socket);
         if(socketMemberSet){
             socketMemberSet.delete(member);
-            if(socketMemberSet.size === 0) {
+            if(socketMemberSet.size === 0)
                 this._socketMembers.delete(socket);
-            }
         }
 
         socket._off(this._chEventPreFix+member);
@@ -226,7 +222,7 @@ export default class ChannelFamily extends ChannelCore {
      */
     private _clearUnregisterMemberTimeout(member: string): void {
         const timeout = this._unregisterMemberTimeoutMap.get(member);
-        if(timeout !== undefined){clearTimeout(timeout);}
+        if(timeout !== undefined) clearTimeout(timeout);
         this._unregisterMemberTimeoutMap.delete(member);
     }
 
@@ -237,11 +233,11 @@ export default class ChannelFamily extends ChannelCore {
      */
     private _createUnregisterMemberTimeout(member: string): void {
         const timeout = this._unregisterMemberTimeoutMap.get(member);
-        if(timeout !== undefined){clearTimeout(timeout);}
+        if(timeout !== undefined) clearTimeout(timeout);
         this._unregisterMemberTimeoutMap.set(member,setTimeout(() => {
             this._unregisterMember(member);
             this._unregisterMemberTimeoutMap.delete(member);
-        }, 120000));
+        }, this.unregisterMemberTimeout));
     }
 
     /**
