@@ -196,8 +196,7 @@ export default class Databox extends DataboxCore {
         const processedInitData = await this._consumeInitInput(dbToken.rawInitData);
         if(typeof processedInitData === 'object'){ObjectUtils.deepFreeze(processedInitData);}
 
-        const keys: DbRegisterResult = await this._registerSocket(socket,dbToken,processedInitData);
-
+        const keys: DbRegisterResult = this._registerSocket(socket,dbToken,processedInitData);
         return [keys.inputCh,keys.outputCh,this._getLastCudId(),this.isParallelFetch()];
     }
 
@@ -209,7 +208,7 @@ export default class Databox extends DataboxCore {
      * @param initData
      * @private
      */
-    async _registerSocket(socket: Socket, dbToken: DbToken, initData: any): Promise<DbRegisterResult> {
+    private _registerSocket(socket: Socket, dbToken: DbToken, initData: any): DbRegisterResult {
 
         const {inputChIds,unregisterSocket} = this._connectSocket(socket);
 
