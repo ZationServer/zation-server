@@ -69,10 +69,10 @@ export default class DataboxUtils {
              t: CudType.insert,
              s: DataboxUtils.processSelector(selector),
              v: value,
-             ...(ifOption !== undefined ? {i: Array.isArray(ifOption) ? ifOption: [ifOption]}: {}),
-             ...(potentialUpdate !== undefined ? {p: potentialUpdate ? 1: 0}: {}),
-             ...(code !== undefined ? {c: code}: {}),
-             ...(data !== undefined ? {d: data}: {})
+             i: ifOption !== undefined ? (Array.isArray(ifOption) ? ifOption: [ifOption]) : undefined,
+             p: potentialUpdate !== undefined ? (potentialUpdate ? 1 : 0) : undefined,
+             c: code,
+             d: data
          };
      }
 
@@ -82,10 +82,10 @@ export default class DataboxUtils {
             t: CudType.update,
             s: DataboxUtils.processSelector(selector),
             v: value,
-            ...(ifOption !== undefined ? {i: Array.isArray(ifOption) ? ifOption: [ifOption]}: {}),
-            ...(potentialInsert !== undefined ? {p: potentialInsert ? 1: 0}: {}),
-            ...(code !== undefined ? {c: code}: {}),
-            ...(data !== undefined ? {d: data}: {})
+            i: ifOption !== undefined ? (Array.isArray(ifOption) ? ifOption: [ifOption]) : undefined,
+            p: potentialInsert !== undefined ? (potentialInsert ? 1 : 0) : undefined,
+            c: code,
+            d: data
         };
     }
 
@@ -94,25 +94,25 @@ export default class DataboxUtils {
         return {
             t: CudType.delete,
             s: DataboxUtils.processSelector(selector),
-            ...(ifOption !== undefined ? {i: Array.isArray(ifOption) ? ifOption: [ifOption]}: {}),
-            ...(code !== undefined ? {c: code}: {}),
-            ...(data !== undefined ? {d: data}: {})
+            i: ifOption !== undefined ? (Array.isArray(ifOption) ? ifOption: [ifOption]) : undefined,
+            c: code,
+            d: data
         };
     }
 
     static buildClientReloadPackage(code?: number | string, data?: any): DbClientOutputReloadPackage {
         return {
             a: DbClientOutputEvent.reload,
-            ...(code !== undefined ? {c: code}: {}),
-            ...(data !== undefined ? {d: data}: {})
+            c: code,
+            d: data
         };
     }
 
     static buildClientClosePackage(code?: number | string, data?: any): DbClientOutputClosePackage {
         return {
             a: DbClientOutputEvent.close,
-            ...(code !== undefined ? {c: code}: {}),
-            ...(data !== undefined ? {d: data}: {})
+            c: code,
+            d: data
         };
     }
 
@@ -120,7 +120,7 @@ export default class DataboxUtils {
         return {
             a: DbClientOutputEvent.signal,
             s: signal,
-            ...(data !== undefined ? {d: data}: {})
+            d: data
         };
     }
 
