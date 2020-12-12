@@ -64,6 +64,8 @@ import {removeValueFromArray}                     from '../../main/utils/arrayUt
 import ObjectUtils                                from '../../main/utils/objectUtils';
 import FuncUtils                                  from '../../main/utils/funcUtils';
 import {isDefaultImpl, markAsDefaultImpl}         from '../../main/utils/defaultImplUtils';
+import NoMoreDataAvailableError                   from '../../main/databox/noMoreDataAvailable';
+import NoDataAvailableError                       from '../../main/databox/noDataAvailable';
 
 /**
  * If you always want to present the most recent data on the client,
@@ -155,7 +157,7 @@ export default class Databox extends DataboxCore {
                 if(request.counter === 0){
                     return this.singleFetch(request,connection);
                 }
-                else {this.noMoreDataAvailable();}
+                else throw new NoMoreDataAvailableError();
             };
         }
         else {
@@ -906,9 +908,9 @@ export default class Databox extends DataboxCore {
      * If you don't want to stream data you should look at the singleFetch method.
      * Notice that only one method can be overridden.
      * You usually request data from your database and return it, and if no more data is available,
-     * you should throw a NoMoreDataAvailableError or call the internal noMoreDataAvailable method.
+     * you should throw a NoMoreDataAvailableError.
      * If no data is available, for example the profile with the id ten is not found,
-     * you can throw a NoDataAvailableError or call the internal noDataAvailable method.
+     * you can throw a NoDataAvailableError.
      * The counter property of the request indicates the number of the current call, it starts counting at zero.
      * Notice that the counter only increases when the fetch was successful (means no error was thrown).
      * The client can send additional data when calling the fetch process (fetchInput),
@@ -958,7 +960,7 @@ export default class Databox extends DataboxCore {
      * @param session
      */
     protected fetch(request: FetchRequest, connection: DbConnection, session: Record<string,any>): Promise<any> | any {
-        this.noDataAvailable();
+        throw new NoDataAvailableError();
     }
 
     /**
@@ -1006,7 +1008,7 @@ export default class Databox extends DataboxCore {
      * @param connection {socket: Socket, initData?: any}
      */
     protected singleFetch(request: FetchRequest, connection: DbConnection): Promise<any> | any {
-        this.noDataAvailable();
+        throw new NoDataAvailableError();
     }
 
     /**
@@ -1088,7 +1090,7 @@ export default class Databox extends DataboxCore {
      * the function with the new value.
      * With this functionality, you can make parts of the data invisible to some clients.
      * You are also able to block the complete operation for a socket
-     * by calling the internal block method or throwing the block symbol.
+     * by throwing the block symbol.
      * @param socket
      * @param insertAction
      */
@@ -1107,7 +1109,7 @@ export default class Databox extends DataboxCore {
      * the function with the new value.
      * With this functionality, you can make parts of the data invisible to some clients.
      * You are also able to block the complete operation for a socket
-     * by calling the internal block method or throwing the block symbol.
+     * by throwing the block symbol.
      * @param socket
      * @param updateAction
      */
@@ -1123,7 +1125,7 @@ export default class Databox extends DataboxCore {
      * Instead, try to prepare stuff in the token of the socket or the socket attachment.
      * The middleware will be called before each socket reaches a cud operation.
      * You are able to block the complete operation for a socket
-     * by calling the internal block method or throwing the block symbol.
+     * by throwing the block symbol.
      * @param socket
      * @param deleteAction
      */
@@ -1141,7 +1143,7 @@ export default class Databox extends DataboxCore {
      * You can change the data for a socket with the property changeData of the action by simply calling
      * the function with the new data.
      * You are also able to block the complete action for a socket
-     * by calling the internal block method or throwing the block symbol.
+     * by throwing the block symbol.
      * @param socket
      * @param signalAction
      */

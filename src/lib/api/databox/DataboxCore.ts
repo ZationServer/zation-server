@@ -7,18 +7,14 @@ Copyright(c) Luca Scaringella
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {DataboxConfig, DbAccessFunction}  from '../../main/config/definitions/parts/databoxConfig';
 import Bag                                from "../Bag";
-import NoMoreDataAvailableError           from "../../main/databox/noMoreDataAvailable";
 import {ClientErrorName}                  from "../../main/definitions/clientErrorName";
 const  Jwt                              = require('jsonwebtoken');
 import {JwtSignFunction, JwtVerifyFunction, JwtVerifyOptions} from "../../main/definitions/jwt";
 // noinspection ES6PreferShortImport
 import {buildKeyArray}                    from "../../main/databox/keyArrayUtils.js";
-// noinspection ES6PreferShortImport
-import {block}                            from '../../main/middlewares/block';
 import {DataboxConnectReq, DataboxConnectRes, DataboxInfo, DbToken} from '../../main/databox/dbDefinitions';
 import {ConsumeInputFunction}             from "../../main/input/inputClosureCreator";
 import ErrorUtils                         from "../../main/utils/errorUtils";
-import NoDataAvailableError               from "../../main/databox/noDataAvailable";
 import Component                          from '../component/Component';
 import {AnyDataboxClass}                  from './AnyDataboxClass';
 import {componentTypeSymbol}              from '../../main/component/componentUtils';
@@ -218,38 +214,6 @@ export default abstract class DataboxCore extends Component {
                 err ? reject(new Error('Sign token failed')): resolve(signedToken);
             });
         });
-    }
-
-    // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols
-    /**
-     * **Not override this method.**
-     * This method should be called in the fetchData method
-     * whenever no more data is available for the client.
-     */
-    protected noMoreDataAvailable(){
-        throw new NoMoreDataAvailableError();
-    }
-
-    // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols
-    /**
-     * **Not override this method.**
-     * This method should be called in the fetchData method
-     * whenever no data is available for the client.
-     * @code Can be optionally provided for the client.
-     * @data Can be optionally provided for the client.
-     */
-    protected noDataAvailable(code?: string | number,data?: any){
-        throw new NoDataAvailableError(code,data);
-    }
-
-    // noinspection JSMethodCanBeStatic
-    /**
-     * **Not override this method.**
-     * This method can be called in a
-     * databox middleware to block the action.
-     */
-    protected block(){
-        throw block;
     }
 
     /**
