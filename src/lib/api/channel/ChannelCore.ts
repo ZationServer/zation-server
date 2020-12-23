@@ -13,7 +13,7 @@ import Socket                             from '../Socket';
 // noinspection ES6PreferShortImport
 import {ChannelInfo}                                              from '../../main/channel/channelDefinitions';
 // noinspection ES6PreferShortImport
-import {ChannelConfig, ChSubAccessFunction} from '../../main/config/definitions/parts/channelConfig';
+import {ChannelConfig, ChSubAccessFunction}                       from '../../main/config/definitions/parts/channelConfig';
 import {ScExchange}                                               from '../../main/sc/scServer';
 import {AnyChannelClass}                                          from './AnyChannelClass';
 import {componentTypeSymbol}                                      from '../../main/component/componentUtils';
