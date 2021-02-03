@@ -5,13 +5,12 @@ Copyright(c) Luca Scaringella
  */
 
 import {isModelTranslatable, modelTranslateSymbol, resolveIfModelTranslatable} from '../../configTranslatable/modelTranslatable';
-import CloneUtils                                                         from "../../../main/utils/cloneUtils";
 // noinspection TypeScriptPreferShortImport
 import {$extends}                                                         from '../Extends';
 import {$model}                                                           from '../Model';
+import {MetaModelProp, setReturnMetaPropModelMode}                        from './Model';
 
 export const classObjModelConstructorMethodsSymbol = Symbol();
-export const classObjModelPropertiesSymbol         = Symbol();
 export const classObjectModelSymbol                = Symbol();
 
 export interface ClassObjModel {
@@ -20,7 +19,6 @@ export interface ClassObjModel {
      */
     [classObjectModelSymbol]: true
     [classObjModelConstructorMethodsSymbol]?: Function[];
-    [classObjModelPropertiesSymbol]?: Record<string,any>;
 }
 
 /**
@@ -39,6 +37,8 @@ export function isClassObjectModel(value: any): boolean {
  * the model is received but notice that the input data is not available in the real class constructor.
  * But you can mark other methods as a constructor with the constructor method decorator.
  * That will give you the possibility to use the input data and create async constructors.
+ * To define properties with a model on the Object Model, you can use the Model function.
+ * Zation will create an instance at start and analysis all properties to create the object model.
  * You also can add normal methods or properties to the class.
  * You can use them later because the prototype of the input will
  * be set to a new instance of this class.
@@ -58,26 +58,42 @@ export const ObjectModel = (name?: string) => {
         const prototype: ClassObjModel = target.prototype;
 
         //constructorMethods
-        const constructorMethods = prototype.hasOwnProperty(classObjModelConstructorMethodsSymbol) &&
-        Array.isArray(prototype[classObjModelConstructorMethodsSymbol]) ?
-            CloneUtils.deepClone(prototype[classObjModelConstructorMethodsSymbol]!): [];
+        const constructorMethods: Function[] = [];
+        let tmpProto = prototype;
+        do {
+            if(tmpProto.hasOwnProperty(classObjModelConstructorMethodsSymbol) &&
+                Array.isArray(tmpProto[classObjModelConstructorMethodsSymbol])) {
+                constructorMethods.push(...(tmpProto[classObjModelConstructorMethodsSymbol] as Function[]))
+            }
+
+        } while((tmpProto = Object.getPrototypeOf(tmpProto)) && tmpProto !== Object.prototype);
         const constructorMethodsLength = constructorMethods.length;
 
-        const models = prototype.hasOwnProperty(classObjModelPropertiesSymbol) && typeof prototype[classObjModelPropertiesSymbol] === 'object' ?
-            prototype[classObjModelPropertiesSymbol]!: {};
+        //analyse object model props
+        setReturnMetaPropModelMode(true);
+        const instance = Reflect.construct(target, [true]);
+        setReturnMetaPropModelMode(false);
+        const models = {};
+        for(const k in instance) {
+            // noinspection JSUnfilteredForInLoop
+            const v = instance[k];
+            if(v instanceof MetaModelProp) models[k] = v.model;
+        }
 
         const objectModel = $model({
             properties: models,
             baseConstruct: async function() {
                 Object.setPrototypeOf(this, Reflect.construct(target, []));
             },
-            construct: async function() {
-                const promises: Promise<void>[] = [];
-                for (let i = 0; i < constructorMethodsLength; i++) {
-                    promises.push(constructorMethods[i].call(this));
+            ...(constructorMethodsLength > 0 ? {
+                construct: async function() {
+                    const promises: Promise<void>[] = [];
+                    for (let i = 0; i < constructorMethodsLength; i++) {
+                        promises.push(constructorMethods[i].call(this));
+                    }
+                    await Promise.all(promises);
                 }
-                await Promise.all(promises);
-            }
+            } : {})
         },typeof name === 'string' ? name : target.name)
 
         //extends

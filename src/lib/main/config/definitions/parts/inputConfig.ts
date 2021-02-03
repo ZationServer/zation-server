@@ -17,11 +17,9 @@ export interface InputConfig {
      * @ObjectModel()
      * class Person {
      *
-     *  @Model({type: 'string'})
-     *  name: string;
+     *  name = Model({type: 'string'});
      *
-     *  @Model({type: 'int', minValue: 14})
-     *  age: number;
+     *  age = Model({type: 'int', minValue: 14});
      *
      * }
      * input: Person

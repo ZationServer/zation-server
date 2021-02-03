@@ -25,11 +25,9 @@ export interface DataboxConfig extends AccessConfig<DbAccessFunction>
      * @ObjectModel()
      * class Person {
      *
-     *  @Model({type: 'string'})
-     *  name: string;
+     *  name = Model({type: 'string'});
      *
-     *  @Model({type: 'int', minValue: 14})
-     *  age: number;
+     *  age = Model({type: 'int', minValue: 14});
      *
      * }
      * fetchInput: Person
@@ -50,11 +48,9 @@ export interface DataboxConfig extends AccessConfig<DbAccessFunction>
      * @ObjectModel()
      * class Person {
      *
-     *  @Model({type: 'string'})
-     *  name: string;
+     *  name = Model({type: 'string'});
      *
-     *  @Model({type: 'int', minValue: 14})
-     *  age: number;
+     *  age = Model({type: 'int', minValue: 14});
      *
      * }
      * initInput: Person
