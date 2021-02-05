@@ -49,7 +49,7 @@ import {
     DbWorkerCudDataResponsePackage,
     DbWorkerCudDataRequestPackage, DbLastCudDataMemory,
 } from '../../main/databox/dbDefinitions';
-import {DbConnection,
+import {DbInConnection,
     DeleteAction,
     FetchRequest,
     InsertAction,
@@ -114,7 +114,7 @@ export default class Databox extends DataboxCore {
     private _internalRegistered: boolean = false;
     private _unregisterTimout: NodeJS.Timeout | undefined;
 
-    private readonly _fetchImpl: (request: FetchRequest, connection: DbConnection, session: Record<string, any>) => Promise<any> | any;
+    private readonly _fetchImpl: (request: FetchRequest, connection: DbInConnection, session: Record<string, any>) => Promise<any> | any;
     private readonly _buildFetchManager: FetchManagerBuilder<typeof Databox.prototype._fetch>;
     private readonly _sendCudToSockets: (dbClientCudPackage: DbClientOutputCudPackage) => Promise<void> | void;
     private readonly _sendSignalToSockets: (dbClientPackage: DbClientOutputSignalPackage) => Promise<void> | void;
@@ -125,7 +125,7 @@ export default class Databox extends DataboxCore {
 
     private readonly _onConnection: (socket: Socket) => Promise<void> | void;
     private readonly _onDisconnection: (socket: Socket) => Promise<void> | void;
-    private readonly _onReceivedSignal: (connection: DbConnection, signal: string, data: any) => Promise<void> | void;
+    private readonly _onReceivedSignal: (connection: DbInConnection, signal: string, data: any) => Promise<void> | void;
 
     constructor(identifier: string, bag: Bag, dbPreparedData: DbPreparedData, apiLevel: number | undefined) {
         super(identifier,bag,dbPreparedData,apiLevel);
@@ -187,7 +187,7 @@ export default class Databox extends DataboxCore {
         }
     }
 
-    private _getFetchImpl(): (request: FetchRequest, connection: DbConnection, session: Record<string, any>) => Promise<any> | any {
+    private _getFetchImpl(): (request: FetchRequest, connection: DbInConnection, session: Record<string, any>) => Promise<any> | any {
         if(!isDefaultImpl(this.singleFetch)) {
             return (request,connection) => {
                 if(request.counter === 0){
@@ -257,7 +257,7 @@ export default class Databox extends DataboxCore {
         inputChIds.add(chInputId);
 
         const inputCh = this._dbEvent+'.'+chInputId;
-        const dbConnection: DbConnection = Object.freeze({socket,initData,created: Date.now()});
+        const dbInConnection: DbInConnection = Object.freeze({socket,initData,created: Date.now()});
 
         const fetchManager = this._buildFetchManager();
 
@@ -266,7 +266,7 @@ export default class Databox extends DataboxCore {
                 switch (senderPackage.a) {
                     case DbClientInputAction.signal:
                         if(typeof (senderPackage as DbClientInputSignalPackage).s as any === 'string'){
-                            this._onReceivedSignal(dbConnection,(senderPackage as DbClientInputSignalPackage).s,
+                            this._onReceivedSignal(dbInConnection,(senderPackage as DbClientInputSignalPackage).s,
                                 (senderPackage as DbClientInputSignalPackage).d);
                         }
                         else {
@@ -284,7 +284,7 @@ export default class Databox extends DataboxCore {
                             (
                                 dbToken,
                                 processedFetchInput,
-                                dbConnection,
+                                dbInConnection,
                                 senderPackage.t
                             ),DataboxUtils.isReloadTarget(senderPackage.t)
                         );
@@ -331,7 +331,7 @@ export default class Databox extends DataboxCore {
         return this._lastCudData.id;
     }
 
-    private async _fetch(dbToken: DbToken, fetchInput: any, connection: DbConnection, target?: DBClientInputSessionTarget): Promise<DbClientInputFetchResponse> {
+    private async _fetch(dbToken: DbToken, fetchInput: any, connection: DbInConnection, target?: DBClientInputSessionTarget): Promise<DbClientInputFetchResponse> {
         const session = DataboxUtils.getSession(dbToken.sessions,target);
         const currentCounter = session.c;
         const clonedSessionData = CloneUtils.deepClone(session.d);
@@ -1001,7 +1001,7 @@ export default class Databox extends DataboxCore {
      * @param connection {socket: Socket, initData?: any}
      * @param session
      */
-    protected fetch(request: FetchRequest, connection: DbConnection, session: Record<string,any>): Promise<any> | any {
+    protected fetch(request: FetchRequest, connection: DbInConnection, session: Record<string,any>): Promise<any> | any {
         throw new NoDataAvailableError();
     }
 
@@ -1049,7 +1049,7 @@ export default class Databox extends DataboxCore {
      * @param request {counter: number, input?: any, reload: boolean}
      * @param connection {socket: Socket, initData?: any}
      */
-    protected singleFetch(request: FetchRequest, connection: DbConnection): Promise<any> | any {
+    protected singleFetch(request: FetchRequest, connection: DbInConnection): Promise<any> | any {
         throw new NoDataAvailableError();
     }
 
@@ -1117,7 +1117,7 @@ export default class Databox extends DataboxCore {
      * A function that gets triggered whenever a
      * socket from this Databox received a signal.
      */
-    protected onReceivedSignal(connection: DbConnection, signal: string, data: any): Promise<void> | void {
+    protected onReceivedSignal(connection: DbInConnection, signal: string, data: any): Promise<void> | void {
     }
 
     /**

@@ -49,7 +49,7 @@ import {
     DbClientOutputSignalPackage,
     DbWorkerSignalPackage, DbWorkerCudDataRequestPackage, DbMemberMemory, DbLastCudDataMemory, DbWorkerCudDataResponsePackage
 } from '../../main/databox/dbDefinitions';
-import {DbFamilyConnection,
+import {DbFamilyInConnection,
     DeleteAction,
     FetchRequest,
     InsertAction,
@@ -128,7 +128,7 @@ export default class DataboxFamily extends DataboxCore {
     private readonly _workerFullId: string;
     private readonly _maxSocketInputChannels: number;
 
-    private readonly _fetchImpl: (request: FetchRequest, connection: DbFamilyConnection, session: Record<string, any>) => Promise<any> | any;
+    private readonly _fetchImpl: (request: FetchRequest, connection: DbFamilyInConnection, session: Record<string, any>) => Promise<any> | any;
     private readonly _buildFetchManager: FetchManagerBuilder<typeof DataboxFamily.prototype._fetch>;
     private readonly _sendCudToSockets: (member: string,dbClientCudPackage: DbClientOutputCudPackage) => Promise<void> | void;
     private readonly _sendSignalToSockets: (member: string,dbClientPackage: DbClientOutputSignalPackage) => Promise<void> | void;
@@ -139,7 +139,7 @@ export default class DataboxFamily extends DataboxCore {
 
     private readonly _onConnection: (member: string, socket: Socket) => Promise<void> | void;
     private readonly _onDisconnection: (member: string, socket: Socket) => Promise<void> | void;
-    private readonly _onReceivedSignal: (connection: DbFamilyConnection, signal: string, data: any) => Promise<void> | void;
+    private readonly _onReceivedSignal: (connection: DbFamilyInConnection, signal: string, data: any) => Promise<void> | void;
 
     public unregisterMemberTimeout: number = 120000;
 
@@ -170,7 +170,7 @@ export default class DataboxFamily extends DataboxCore {
             `${errMessagePrefix} onReceivedSignal`,this._errorEvent);
     }
 
-    private _getFetchImpl(): (request: FetchRequest, connection: DbFamilyConnection, session: Record<string, any>) => Promise<any> | any {
+    private _getFetchImpl(): (request: FetchRequest, connection: DbFamilyInConnection, session: Record<string, any>) => Promise<any> | any {
         if(!isDefaultImpl(this.singleFetch)) {
             return (request,connection) => {
                 if(request.counter === 0){
@@ -244,7 +244,7 @@ export default class DataboxFamily extends DataboxCore {
 
         const outputCh = this._dbEventPreFix+member;
         const inputCh = outputCh+'-'+chInputId;
-        const dbConnection: DbFamilyConnection = Object.freeze({member,socket,initData,created: Date.now()});
+        const dbInConnection: DbFamilyInConnection = Object.freeze({member,socket,initData,created: Date.now()});
 
         const fetchManager = this._buildFetchManager();
 
@@ -253,7 +253,7 @@ export default class DataboxFamily extends DataboxCore {
                 switch (senderPackage.a) {
                     case DbClientInputAction.signal:
                         if(typeof (senderPackage as DbClientInputSignalPackage).s as any === 'string'){
-                            this._onReceivedSignal(dbConnection,(senderPackage as DbClientInputSignalPackage).s,
+                            this._onReceivedSignal(dbInConnection,(senderPackage as DbClientInputSignalPackage).s,
                                 (senderPackage as DbClientInputSignalPackage).d);
                         }
                         else {
@@ -271,7 +271,7 @@ export default class DataboxFamily extends DataboxCore {
                             (
                                 dbToken,
                                 processedFetchInput,
-                                dbConnection,
+                                dbInConnection,
                                 senderPackage.t
                             ),DataboxUtils.isReloadTarget(senderPackage.t)
                         );
@@ -328,7 +328,7 @@ export default class DataboxFamily extends DataboxCore {
         return DataboxUtils.generateStartCudId();
     }
 
-    private async _fetch(dbToken: DbToken, fetchInput: any, connection: DbFamilyConnection, target?: DBClientInputSessionTarget): Promise<DbClientInputFetchResponse> {
+    private async _fetch(dbToken: DbToken, fetchInput: any, connection: DbFamilyInConnection, target?: DBClientInputSessionTarget): Promise<DbClientInputFetchResponse> {
         const session = DataboxUtils.getSession(dbToken.sessions,target);
         const currentCounter = session.c;
         const clonedSessionData = CloneUtils.deepClone(session.d);
@@ -1157,7 +1157,7 @@ export default class DataboxFamily extends DataboxCore {
      * @param connection {member: string, socket: Socket, initData?: any}
      * @param session
      */
-    protected fetch(request: FetchRequest, connection: DbFamilyConnection, session: Record<string,any>): Promise<any> | any {
+    protected fetch(request: FetchRequest, connection: DbFamilyInConnection, session: Record<string,any>): Promise<any> | any {
         throw new NoDataAvailableError();
     }
 
@@ -1205,7 +1205,7 @@ export default class DataboxFamily extends DataboxCore {
      * @param request {counter: number, input?: any, reload: boolean}
      * @param connection {member: string, socket: Socket, initData?: any}
      */
-    protected singleFetch(request: FetchRequest, connection: DbFamilyConnection): Promise<any> | any {
+    protected singleFetch(request: FetchRequest, connection: DbFamilyInConnection): Promise<any> | any {
         throw new NoDataAvailableError();
     }
 
@@ -1293,7 +1293,7 @@ export default class DataboxFamily extends DataboxCore {
      * A function that gets triggered whenever a
      * socket from this Databox received a signal.
      */
-    protected onReceivedSignal(connection: DbFamilyConnection, signal: string, data: any): Promise<void> | void {
+    protected onReceivedSignal(connection: DbFamilyInConnection, signal: string, data: any): Promise<void> | void {
     }
 
     /**

@@ -57,7 +57,7 @@ export interface FetchRequest {
     reload: boolean
 }
 
-export interface DbConnection {
+export interface DbInConnection {
     socket: Socket,
     initData?: any,
     /**
@@ -67,6 +67,6 @@ export interface DbConnection {
     created: number
 }
 
-export interface DbFamilyConnection extends DbConnection {
+export interface DbFamilyInConnection extends DbInConnection {
     member: string
 }

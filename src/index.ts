@@ -21,8 +21,8 @@ import {ControllerConfig}           from "./lib/main/config/definitions/parts/co
 import {StartMode}                  from "./lib/core/startMode";
 import Router                       from "./lib/api/Router";
 import {Register}                   from "./lib/api/component/decorator/Register";
-import {DbConnection,
-    DbFamilyConnection,
+import {DbInConnection,
+    DbFamilyInConnection,
     DeleteAction,
     FetchRequest,
     InsertAction,
@@ -119,8 +119,8 @@ export {
     DeleteAction,
     SignalAction,
     FetchRequest,
-    DbConnection,
-    DbFamilyConnection,
+    DbInConnection,
+    DbFamilyInConnection,
     Channel,
     ChannelContainer,
     ChannelFamily,
