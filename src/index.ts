@@ -36,7 +36,8 @@ import {ModelTranslatable, modelTranslateSymbol}                from './lib/api/
 import {Model as AnyModel, DirectModel, AnyModelTranslatable}   from "./lib/main/models/model";
 import {$value, $key, $pair, $all, $any, $contains, $matches}   from './lib/api/databox/DbApiUtils';
 import {MetaModel, ModelMetaData}   from "./lib/main/models/metaModel";
-import {Model}                      from "./lib/api/input/decorator/Model";
+import {ModelProp}                  from "./lib/api/input/ModelProp";
+import {Model}                      from './lib/api/input/decorator/Model';
 import {ObjectModel}                from "./lib/api/input/decorator/ObjectModel";
 import {Constructor}                from "./lib/api/input/decorator/Constructor";
 import NoMoreDataAvailableError     from "./lib/main/databox/noMoreDataAvailable";
@@ -105,6 +106,7 @@ export {
     $model,
     $extends,
     Model,
+    ModelProp,
     Constructor,
     ObjectModel,
     NoMoreDataAvailableError,

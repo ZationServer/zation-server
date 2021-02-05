@@ -8,9 +8,10 @@ import {isModelTranslatable, modelTranslateSymbol, resolveIfModelTranslatable} f
 // noinspection TypeScriptPreferShortImport
 import {$extends}                                                         from '../Extends';
 import {$model}                                                           from '../Model';
-import {MetaModelProp, setReturnMetaPropModelMode}                        from './Model';
+import {MetaModelProp, setReturnMetaPropModelMode}                        from '../ModelProp';
 
 export const classObjModelConstructorMethodsSymbol = Symbol();
+export const classObjModelPropertiesSymbol         = Symbol();
 export const classObjectModelSymbol                = Symbol();
 
 export interface ClassObjModel {
@@ -19,6 +20,7 @@ export interface ClassObjModel {
      */
     [classObjectModelSymbol]: true
     [classObjModelConstructorMethodsSymbol]?: Function[];
+    [classObjModelPropertiesSymbol]?: Record<string,any>;
 }
 
 /**
@@ -37,7 +39,7 @@ export function isClassObjectModel(value: any): boolean {
  * the model is received but notice that the input data is not available in the real class constructor.
  * But you can mark other methods as a constructor with the constructor method decorator.
  * That will give you the possibility to use the input data and create async constructors.
- * To define properties with a model on the Object Model, you can use the Model function.
+ * To define properties with a model on the Object Model, you can use the ModelProp function or the Model decorator.
  * Zation will create an instance at start and analysis all properties to create the object model.
  * You also can add normal methods or properties to the class.
  * You can use them later because the prototype of the input will
@@ -57,23 +59,27 @@ export const ObjectModel = (name?: string) => {
 
         const prototype: ClassObjModel = target.prototype;
 
-        //constructorMethods
+        //process options
         const constructorMethods: Function[] = [];
+        let models = {};
+
         let tmpProto = prototype;
         do {
             if(tmpProto.hasOwnProperty(classObjModelConstructorMethodsSymbol) &&
                 Array.isArray(tmpProto[classObjModelConstructorMethodsSymbol])) {
                 constructorMethods.push(...(tmpProto[classObjModelConstructorMethodsSymbol] as Function[]))
             }
-
+            if(tmpProto.hasOwnProperty(classObjModelPropertiesSymbol) &&
+                typeof tmpProto[classObjModelPropertiesSymbol] === 'object') {
+                models = Object.assign({},tmpProto[classObjModelPropertiesSymbol],models);
+            }
         } while((tmpProto = Object.getPrototypeOf(tmpProto)) && tmpProto !== Object.prototype);
         const constructorMethodsLength = constructorMethods.length;
 
-        //analyse object model props
+        //analyse props with ModelProp
         setReturnMetaPropModelMode(true);
         const instance = Reflect.construct(target, [true]);
         setReturnMetaPropModelMode(false);
-        const models = {};
         for(const k in instance) {
             // noinspection JSUnfilteredForInLoop
             const v = instance[k];
