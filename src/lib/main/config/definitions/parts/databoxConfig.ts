@@ -86,4 +86,13 @@ export interface DataboxConfig extends AccessConfig<DbAccessFunction>
      * @default 20
      */
     maxSocketInputChannels?: number;
+    /**
+     * Defines the timeout for fetching the last cud data from the other workers.
+     * That process is done when the Databox initializes, or the DataboxFamily creates a new member.
+     * You also can deactivate this behaviour by specifying false or 0.
+     * But when you have more workers, this will tend to more reload-processes
+     * even if the client missed no cud operation.
+     * @default 500
+     */
+    fetchLastCudData?: number | false;
 }

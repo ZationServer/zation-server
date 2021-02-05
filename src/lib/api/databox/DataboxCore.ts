@@ -301,5 +301,6 @@ export interface DbPreparedData {
     consumeFetchInput: ConsumeInputFunction,
     parallelFetch: boolean,
     maxBackpressure: number,
-    maxSocketInputChannels: number
+    maxSocketInputChannels: number,
+    fetchLastCudData: number | false
 }

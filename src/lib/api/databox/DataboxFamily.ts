@@ -47,7 +47,7 @@ import {
     DataboxConnectReq,
     DataboxConnectRes,
     DbClientOutputSignalPackage,
-    DbWorkerSignalPackage
+    DbWorkerSignalPackage, DbWorkerCudDataRequestPackage, DbMemberMemory, DbLastCudDataMemory, DbWorkerCudDataResponsePackage
 } from '../../main/databox/dbDefinitions';
 import {DbFamilyConnection,
     DeleteAction,
@@ -113,14 +113,14 @@ import NoDataAvailableError                       from '../../main/databox/noDat
 export default class DataboxFamily extends DataboxCore {
 
     /**
-     * Maps the member to the sockets and remove socket function.
+     * Holds all information about every registered member.
      */
-    private readonly _regMember: Map<string,Map<Socket,DbSocketMemory>> = new Map();
+    private readonly _regMembers: Map<string,DbMemberMemory> = new Map();
     /**
      * Maps the sockets to the members.
      */
     private readonly _socketMembers: Map<Socket,Set<string>> = new Map<Socket, Set<string>>();
-    private readonly _lastCudData: Map<string,{timestamp: number,id: string}> = new Map();
+
     private readonly _unregisterMemberTimeoutMap: Map<string,Timeout> = new Map();
     private readonly _isMemberCheck: IsMemberChecker;
     private readonly _dbEventPreFix: string;
@@ -219,7 +219,7 @@ export default class DataboxFamily extends DataboxCore {
         const processedInitData = await this._consumeInitInput(dbToken.rawInitData);
         if(typeof processedInitData === 'object'){ObjectUtils.deepFreeze(processedInitData);}
 
-        const keys: DbRegisterResult = this._registerSocket(socket,member,dbToken,processedInitData);
+        const keys: DbRegisterResult = await this._registerSocket(socket,member,dbToken,processedInitData);
         return [keys.inputCh,keys.outputCh,this._getLastCudId(member),this.isParallelFetch()];
     }
 
@@ -232,9 +232,9 @@ export default class DataboxFamily extends DataboxCore {
      * @param initData
      * @private
      */
-    private _registerSocket(socket: Socket, member: string, dbToken: DbToken, initData: any): DbRegisterResult {
+    private async _registerSocket(socket: Socket, member: string, dbToken: DbToken, initData: any): Promise<DbRegisterResult> {
 
-        const {inputChIds,unregisterSocket} = this._connectSocket(socket,member);
+        const {inputChIds,unregisterSocket} = await this._connectSocket(socket,member);
 
         DataboxUtils.maxInputChannelsCheck(inputChIds.size,this._maxSocketInputChannels);
 
@@ -323,10 +323,8 @@ export default class DataboxFamily extends DataboxCore {
      * @private
      */
     _getLastCudId(member: string): string {
-        const lastCudId = this._lastCudData.get(member);
-        if(lastCudId){
-            return lastCudId.id;
-        }
+        const lastCudId = this._regMembers.get(member);
+        if(lastCudId) return lastCudId.lastCudData.id;
         return DataboxUtils.generateStartCudId();
     }
 
@@ -379,19 +377,17 @@ export default class DataboxFamily extends DataboxCore {
     }
 
     /**
-     * Returns the socket family member map or builds a new one and returns it.
+     * Access the socket family member mem securely.
+     * Will automatically build unknown members.
      * @param member
      * @private
      */
-    private _buildSocketFamilyMemberMap(member: string): Map<Socket,DbSocketMemory> {
-        let memberMap = this._regMember.get(member);
-        if(!memberMap){
-            memberMap = this._registerMember(member);
-        }
-        else {
-            this._clearUnregisterMemberTimeout(member);
-        }
-        return memberMap;
+    private async _accessFamilyMember(member: string): Promise<DbMemberMemory> {
+        let memberMem = this._regMembers.get(member);
+        if(!memberMem) memberMem = await this._registerMember(member);
+        else this._clearUnregisterMemberTimeout(member);
+        if(memberMem.lastCudData.fetchPromise) await memberMem.lastCudData.fetchPromise;
+        return memberMem;
     }
 
     /**
@@ -401,10 +397,10 @@ export default class DataboxFamily extends DataboxCore {
      * @param member
      * @private
      */
-    private _connectSocket(socket: Socket, member: string): DbSocketMemory {
-        const memberMap = this._buildSocketFamilyMemberMap(member);
+    private async _connectSocket(socket: Socket, member: string): Promise<DbSocketMemory> {
+        const memberMem = await this._accessFamilyMember(member);
 
-        let socketMemoryData = memberMap.get(socket);
+        let socketMemoryData = memberMem.sockets.get(socket);
         if(!socketMemoryData){
             //new socket = connect
             const inputChPrefix = `${this._dbEventPreFix}${member}-`;
@@ -435,7 +431,7 @@ export default class DataboxFamily extends DataboxCore {
                 unregisterSocket: unregisterSocketFunction
             };
 
-            memberMap.set(socket,socketMemoryData);
+            memberMem.sockets.set(socket,socketMemoryData);
 
             //socket member map
             let socketMemberSet = this._socketMembers.get(socket);
@@ -460,10 +456,10 @@ export default class DataboxFamily extends DataboxCore {
      */
     private _rmSocket(socket: Socket, member: string){
         //main member socket map
-        const memberMap = this._regMember.get(member);
+        const memberMap = this._regMembers.get(member);
         if(memberMap){
-            memberMap.delete(socket);
-            if(memberMap.size === 0){
+            memberMap.sockets.delete(socket);
+            if(memberMap.sockets.size === 0){
                 this._createUnregisterMemberTimeout(member);
             }
         }
@@ -503,15 +499,48 @@ export default class DataboxFamily extends DataboxCore {
         }, this.unregisterMemberTimeout));
     }
 
+    private _initLastCudDataMemory(member: string): DbLastCudDataMemory {
+        if(this._preparedData.fetchLastCudData) {
+            const lastCudData: Partial<DbLastCudDataMemory> = {
+                id: DataboxUtils.generateStartCudId(),
+                timestamp: 0
+            };
+            lastCudData.fetchPromise = new Promise<void>((res) => {
+                const timeout = setTimeout(() => {
+                    lastCudData.fetchResolve = undefined;
+                    res();
+                },this._preparedData.fetchLastCudData as number);
+                lastCudData.fetchResolve = () => {
+                    lastCudData.fetchResolve = undefined;
+                    clearTimeout(timeout);
+                    res();
+                };
+                this._sendToWorkers(member,[this._workerFullId,DbWorkerAction.cudDataRequest] as DbWorkerCudDataRequestPackage);
+            });
+            return lastCudData as DbLastCudDataMemory;
+        }
+        else return {
+            id: DataboxUtils.generateStartCudId(),
+            timestamp: 0
+        }
+    }
+
     /**
      * Registers for listening to a new family member.
      * @param member
      * @private
      */
-    private _registerMember(member: string): Map<Socket,DbSocketMemory> {
-        const memberMap = new Map<Socket,DbSocketMemory>();
-        this._regMember.set(member,memberMap);
-        this._lastCudData.set(member,{timestamp: Date.now(),id: DataboxUtils.generateStartCudId()});
+    private _registerMember(member: string): DbMemberMemory {
+
+        //Important non-async usage otherwise, the risk of missing a worker response to a cud request exists.
+        const lastCudData = this._initLastCudDataMemory(member)
+        const memberMap: DbMemberMemory = {
+            sockets: new Map<Socket,DbSocketMemory>(),
+            lastCudData: lastCudData
+        };
+        this._regMembers.set(member,memberMap);
+
+
         this._scExchange.subscribe(this._dbEventPreFix+member)
             .watch(async (data) => {
                 if((data as DbWorkerCudPackage)[0] !== this._workerFullId) {
@@ -528,6 +557,14 @@ export default class DataboxFamily extends DataboxCore {
                         case DbWorkerAction.broadcast:
                             this._sendToSockets(member,(data as DbWorkerBroadcastPackage)[2]);
                             break;
+                        case DbWorkerAction.cudDataRequest:
+                            if(lastCudData.timestamp <= 0) return;
+                            this._sendToWorkers(member,[this._workerFullId,DbWorkerAction.cudDataResponse,
+                                lastCudData.timestamp, lastCudData.id] as DbWorkerCudDataResponsePackage);
+                            break;
+                        case DbWorkerAction.cudDataResponse:
+                            this._updateLastCudData(member,(data as DbWorkerCudDataResponsePackage)[2],(data as DbWorkerCudDataResponsePackage)[3]);
+                            break;
                         default:
                     }
                 }
@@ -541,11 +578,10 @@ export default class DataboxFamily extends DataboxCore {
      * @private
      */
     private _unregisterMember(member: string) {
-        this._regMember.delete(member);
+        this._regMembers.delete(member);
         const channel = this._scExchange.channel(this._dbEventPreFix+member);
         channel.unwatch();
         channel.destroy();
-        this._lastCudData.delete(member);
     }
 
     /**
@@ -554,10 +590,10 @@ export default class DataboxFamily extends DataboxCore {
      * @param dbClientPackage
      */
     private _sendToSockets(member: string,dbClientPackage: DbClientOutputPackage) {
-        const socketSet = this._regMember.get(member);
+        const socketSet = this._regMembers.get(member);
         if(socketSet){
             const outputCh = this._dbEventPreFix+member;
-            for(const socket of socketSet.keys()) {
+            for(const socket of socketSet.sockets.keys()) {
                 socket._emit(outputCh,dbClientPackage);
             }
         }
@@ -571,8 +607,8 @@ export default class DataboxFamily extends DataboxCore {
      */
     private async _sendSignalToSocketsWithMiddleware(member: string,dbClientPackage: DbClientOutputSignalPackage) {
 
-        const socketSet = this._regMember.get(member);
-        if(!socketSet) return;
+        const memberMem = this._regMembers.get(member);
+        if(!memberMem) return;
 
         const outputCh = this._dbEventPreFix+member;
         const preAction = {signal: dbClientPackage.s, data: dbClientPackage.d};
@@ -591,7 +627,7 @@ export default class DataboxFamily extends DataboxCore {
         }
 
         const promises: Promise<void>[] = [];
-        for(const socket of socketSet.keys())
+        for(const socket of memberMem.sockets.keys())
             promises.push(middlewareInvoker(socket));
         await Promise.all(promises);
     }
@@ -604,8 +640,8 @@ export default class DataboxFamily extends DataboxCore {
      */
     private async _sendCudToSocketsWithMiddleware(member: string,dbClientPackage: DbClientOutputCudPackage) {
 
-        const socketSet = this._regMember.get(member);
-        if(!socketSet) return;
+        const memberMem = this._regMembers.get(member);
+        if(!memberMem) return;
 
         const operations = dbClientPackage.d.o;
         const operationsLookUps: ((socket: Socket, filteredOperations: CudOperation[]) => Promise<void>)[] = [];
@@ -674,12 +710,12 @@ export default class DataboxFamily extends DataboxCore {
         const outputCh = this._dbEventPreFix+member;
         const operationsLookupLength = operationsLookUps.length;
         if(operationsLookupLength === 0) {
-            for(const socket of socketSet.keys())
+            for(const socket of memberMem.sockets.keys())
                 socket._emit(outputCh,dbClientPackage);
         }
         else {
             const socketPromises: Promise<void>[] = [];
-            for(const socket of socketSet.keys()) {
+            for(const socket of memberMem.sockets.keys()) {
                 const promises: Promise<void>[] = [];
                 const filteredOperations: CudOperation[] = [...startOperations];
                 for(let i = 0; i < operationsLookupLength; i++)
@@ -695,6 +731,16 @@ export default class DataboxFamily extends DataboxCore {
         }
     }
 
+
+    private _updateLastCudData(member: string, timestamp: number, id: string) {
+        const memberMem = this._regMembers.get(member);
+        if(memberMem && memberMem.lastCudData.timestamp <= timestamp) {
+            memberMem.lastCudData.id = id;
+            memberMem.lastCudData.timestamp = timestamp;
+            if(memberMem.lastCudData.fetchResolve) memberMem.lastCudData.fetchResolve();
+        }
+    }
+
     /**
      * Processes new cud packages.
      * @param member
@@ -702,11 +748,7 @@ export default class DataboxFamily extends DataboxCore {
      */
     private async _processCudPackage(member: string,cudPackage: CudPackage){
         this._sendCudToSockets(member,{a: DbClientOutputEvent.cud,d: cudPackage} as DbClientOutputCudPackage);
-        //updated last cud id.
-        const lastCudId = this._lastCudData.get(member);
-        if((lastCudId && lastCudId.timestamp <= cudPackage.t) || !lastCudId){
-            this._lastCudData.set(member,{id: cudPackage.ci, timestamp: cudPackage.t});
-        }
+        this._updateLastCudData(member,cudPackage.t,cudPackage.ci);
     }
 
     /**
@@ -769,10 +811,10 @@ export default class DataboxFamily extends DataboxCore {
      * @private
      */
     private _close(member: string,closePackage: DbClientOutputClosePackage) {
-        const memberMap = this._regMember.get(member);
-        if(memberMap){
+        const memberMem = this._regMembers.get(member);
+        if(memberMem){
             const outputCh = this._dbEventPreFix+member;
-            for(let [socket, socketMemory] of memberMap.entries()) {
+            for(const [socket, socketMemory] of memberMem.sockets.entries()) {
                 socket._emit(outputCh,closePackage);
                 socketMemory.unregisterSocket();
             }
@@ -1013,9 +1055,9 @@ export default class DataboxFamily extends DataboxCore {
      */
     kickOut(member: string | number, socket: Socket, code?: number | string, data?: any): void {
         member = typeof member === "string" ? member: member.toString();
-        const memberMap = this._regMember.get(member);
+        const memberMap = this._regMembers.get(member);
         if(memberMap){
-            const socketMemory = memberMap.get(socket);
+            const socketMemory = memberMap.sockets.get(socket);
             if(socketMemory){
                 socket._emit(this._dbEventPreFix+member,
                     {a: DbClientOutputEvent.kickOut,c: code,d: data} as DbClientOutputKickOutPackage);

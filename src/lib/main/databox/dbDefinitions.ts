@@ -5,6 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import {ForintQuery} from "forint";
+import Socket        from '../../api/Socket';
 
 export interface DataboxConnectReq {
     /**
@@ -320,7 +321,15 @@ export const enum DbWorkerAction {
     /**
      * Broadcast a client package.
      */
-    broadcast
+    broadcast,
+    /**
+     * Current cud data request.
+     */
+    cudDataRequest,
+    /**
+     * Current cud data response.
+     */
+    cudDataResponse
 }
 
 /**
@@ -396,6 +405,34 @@ export interface DbWorkerBroadcastPackage extends DbWorkerPackage{
      * data
      */
     2: DbClientOutputPackage
+}
+
+/**
+ * Current cud data request package that the worker can send to other workers.
+ */
+export interface DbWorkerCudDataRequestPackage extends DbWorkerPackage{
+    /**
+     * action
+     */
+    1: DbWorkerAction.cudDataRequest
+}
+
+/**
+ * Current cud data response package that the worker can send to other workers.
+ */
+export interface DbWorkerCudDataResponsePackage extends DbWorkerPackage{
+    /**
+     * action
+     */
+    1: DbWorkerAction.cudDataResponse,
+    /**
+     * last cud timestamp
+     */
+    2: number,
+    /**
+     * last cud id
+     */
+    3: string
 }
 
 /**
@@ -556,12 +593,31 @@ export interface PotentialInsertOption {
 }
 
 /**
+ * The memory that Databoxes stores internally for last cud data.
+ */
+export interface DbLastCudDataMemory {
+    id: string,
+    timestamp: number,
+    fetchResolve?: () => void,
+    fetchPromise?: Promise<void>
+}
+
+/**
  * The memory that Databoxes stores internally for each socket.
  */
 export interface DbSocketMemory {
     unregisterSocket: UnregisterSocketFunction,
     inputChIds: Set<string>
 }
+
+/**
+ * The memory that DataboxFamilies stores internally for each member.
+ */
+export interface DbMemberMemory {
+    sockets: Map<Socket,DbSocketMemory>,
+    lastCudData: DbLastCudDataMemory
+}
+
 
 /**
  * The Databox register result.

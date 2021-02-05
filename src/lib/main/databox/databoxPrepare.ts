@@ -82,8 +82,8 @@ export default class DataboxPrepare extends ComponentPrepare<DataboxCore,Databox
             consumeFetchInput: InputClosureCreator.createInputConsumer(config.fetchInput),
             parallelFetch: config.parallelFetch !== undefined ? config.parallelFetch: false,
             maxBackpressure: config.maxBackpressure !== undefined ? config.maxBackpressure: 30,
-            maxSocketInputChannels: config.maxSocketInputChannels !== undefined ?
-                config.maxSocketInputChannels: 20
+            maxSocketInputChannels: config.maxSocketInputChannels !== undefined ? config.maxSocketInputChannels: 20,
+            fetchLastCudData: config.fetchLastCudData !== undefined ? config.fetchLastCudData : 500
         };
 
         const dbInstance = DynamicSingleton.create<AnyDataboxClass,Databox | DataboxFamily>
