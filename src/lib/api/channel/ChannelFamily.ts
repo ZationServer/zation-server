@@ -27,6 +27,7 @@ import {
 import Timeout = NodeJS.Timeout;
 import MemberCheckerUtils, {IsMemberChecker} from '../../main/member/memberCheckerUtils';
 import {familyTypeSymbol}                    from '../../main/component/componentUtils';
+import ChannelUtils                          from '../../main/channel/channelUtils';
 
 /**
  * Channels implements the subscribe/publish architecture.
@@ -61,6 +62,7 @@ export default class ChannelFamily extends ChannelCore {
     private readonly _socketMembers: Map<Socket,Set<string>> = new Map<Socket, Set<string>>();
     private readonly _unregisterMemberTimeoutMap: Map<string,Timeout> = new Map();
     private readonly _isMemberCheck: IsMemberChecker;
+    private readonly _maxSocketMembers: number;
 
     private readonly _chId: string;
     private readonly _chEventPreFix: string;
@@ -73,6 +75,8 @@ export default class ChannelFamily extends ChannelCore {
     {
         super(identifier,bag,chPreparedData,apiLevel);
         this._isMemberCheck = MemberCheckerUtils.createIsMemberChecker(this.isMember.bind(this));
+
+        this._maxSocketMembers = chPreparedData.maxSocketMembers;
 
         this._chId = CHANNEL_START_INDICATOR + this.identifier +
             (apiLevel !== undefined ? `@${apiLevel}`: '');
@@ -110,6 +114,10 @@ export default class ChannelFamily extends ChannelCore {
         //new subscription
         await this._isMemberCheck(member);
         await this._checkSubscribeAccess(socket,{identifier: this.identifier,member});
+
+        const memberSet = this._socketMembers.get(socket);
+        ChannelUtils.maxMembersCheck(memberSet ? memberSet.size : 0,this._maxSocketMembers);
+
         this._addSocket(member,socket);
         this._onSubscription(member,socket);
         return this._chId;

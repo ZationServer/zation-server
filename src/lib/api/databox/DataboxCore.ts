@@ -305,5 +305,6 @@ export interface DbPreparedData {
     maxBackpressure: number,
     maxSocketInputChannels: number,
     fetchLastCudData: number | false,
-    unregisterDelay: number
+    unregisterDelay: number,
+    maxSocketMembers: number
 }

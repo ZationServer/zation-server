@@ -19,4 +19,10 @@ export interface ChannelConfig extends AccessConfig<ChSubAccessFunction> {
      * @default 120000ms
      */
     unregisterDelay?: number;
+    /**
+     * The maximal amount of members where a socket can connect to within this Channel.
+     * Notice this option is only used in Channel Families.
+     * @default 20
+     */
+    maxSocketMembers?: number;
 }

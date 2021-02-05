@@ -11,7 +11,6 @@ export enum ClientErrorName {
     UnknownChannel               = 'UnknownChannel',
     AccessDenied                 = 'AccessDenied',
     InvalidMember                = 'InvalidMember',
-
     InvalidToken                 = 'InvalidToken',
     InvalidPackage               = 'InvalidPackage',
     InvalidRequest               = 'InvalidRequest',
@@ -25,4 +24,5 @@ export enum ClientErrorName {
     MaxBackpressureReached       = 'MaxBackpressureReached',
     InvalidInput                 = 'InvalidInput',
     MaxInputChannelsReached      = 'MaxInputChannelsReached',
+    MaxMembersReached            = 'MaxMembersReached'
 }

@@ -83,7 +83,7 @@ export interface DataboxConfig extends AccessConfig<DbAccessFunction>
      * Every input channel has its session,
      * that means that a client can have the same databox many times but independent of each other.
      * The minimum value is 1.
-     * @default 20
+     * @default 10
      */
     maxSocketInputChannels?: number;
     /**
@@ -102,4 +102,13 @@ export interface DataboxConfig extends AccessConfig<DbAccessFunction>
      * @default 120000ms
      */
     unregisterDelay?: number;
+    /**
+     * The maximal amount of members where a socket can connect to within this Databox.
+     * Notice this option is only used in Databox Families and the socket can have multiple
+     * input connection to a single member.
+     * If you want to limit the number of input connections to a single member
+     * you can use the option maxSocketInputChannels.
+     * @default 20
+     */
+    maxSocketMembers?: number;
 }

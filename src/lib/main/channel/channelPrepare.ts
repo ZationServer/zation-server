@@ -79,7 +79,8 @@ export class ChannelPrepare extends ComponentPrepare<ChannelCore,ChannelConfig>
         const chPreparedData: ChPreparedData = {
             checkAccess: AccessUtils.createAccessChecker<ChSubAccessFunction>
                 (config.access,`Channel: ${identifier}`),
-            unregisterDelay: config.unregisterDelay !== undefined ? config.unregisterDelay : 120000
+            unregisterDelay: config.unregisterDelay !== undefined ? config.unregisterDelay : 120000,
+            maxSocketMembers: config.maxSocketMembers !== undefined ? config.maxSocketMembers : 20
         };
 
         const chInstance = DynamicSingleton.create<AnyChannelClass,Channel | ChannelFamily>

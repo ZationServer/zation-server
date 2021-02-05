@@ -108,5 +108,6 @@ ChannelCore.prototype[componentTypeSymbol] = 'Channel';
 
 export interface ChPreparedData {
     checkAccess: ChSubAccessFunction,
-    unregisterDelay: number
+    unregisterDelay: number,
+    maxSocketMembers: number
 }

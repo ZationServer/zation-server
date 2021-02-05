@@ -127,6 +127,7 @@ export default class DataboxFamily extends DataboxCore {
     private readonly _scExchange: ScExchange;
     private readonly _workerFullId: string;
     private readonly _maxSocketInputChannels: number;
+    private readonly _maxSocketMembers: number;
 
     private readonly _fetchImpl: (request: FetchRequest, connection: DbFamilyInConnection, session: Record<string, any>) => Promise<any> | any;
     private readonly _buildFetchManager: FetchManagerBuilder<typeof DataboxFamily.prototype._fetch>;
@@ -147,6 +148,7 @@ export default class DataboxFamily extends DataboxCore {
         this._scExchange = bag.getWorker().scServer.exchange;
         this._workerFullId = bag.getWorker().getFullWorkerId();
         this._maxSocketInputChannels = dbPreparedData.maxSocketInputChannels;
+        this._maxSocketMembers = dbPreparedData.maxSocketMembers;
         this._dbEventPreFix = `${DATABOX_START_INDICATOR}${this.identifier}${apiLevel !== undefined ? `@${apiLevel}`: ''}.`;
 
         this._fetchImpl = this._getFetchImpl();
@@ -210,6 +212,9 @@ export default class DataboxFamily extends DataboxCore {
 
         await this._isMember(member);
         await this._checkAccess(socket,{identifier: this.identifier,member});
+
+        const memberSet = this._socketMembers.get(socket);
+        DataboxUtils.maxMembersCheck(memberSet ? memberSet.size : 0,this._maxSocketMembers);
 
         const dbToken: DbToken = typeof request.t === 'string' ?
             await this._processDbToken(request.t,member) : DataboxUtils.createDbToken(request.i);

@@ -243,15 +243,29 @@ export default class DataboxUtils {
     }
 
     /**
-     * Checker for checking the max socket input channel limit,
+     * Checker for checking the max input channel limit,
      * it will throw an error to deny access.
      * @param current
      * @param max
      */
     static maxInputChannelsCheck(current: number,max: number): void {
         if(current >= max){
-            const err: any = new Error('Maximum socket input channels reached.');
+            const err: any = new Error('Maximum input channels reached.');
             err.name = ClientErrorName.MaxInputChannelsReached;
+            throw err;
+        }
+    }
+
+    /**
+     * Checker for checking the max member limit,
+     * it will throw an error to deny access.
+     * @param current
+     * @param max
+     */
+    static maxMembersCheck(current: number,max: number): void {
+        if(current >= max){
+            const err: any = new Error('Maximum members reached.');
+            err.name = ClientErrorName.MaxMembersReached;
             throw err;
         }
     }

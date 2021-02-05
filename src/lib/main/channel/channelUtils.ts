@@ -10,6 +10,7 @@ import ChannelFamily, {ChannelFamilyClass} from '../../api/channel/ChannelFamily
 import ChannelFamilyContainer              from '../../api/channel/container/channelFamilyContainer';
 import ChannelContainer                    from '../../api/channel/container/channelContainer';
 import DynamicSingleton                    from '../utils/dynamicSingleton';
+import {ClientErrorName}                   from '../definitions/clientErrorName';
 
 export default class ChannelUtils {
 
@@ -35,6 +36,20 @@ export default class ChannelUtils {
 
         return chInstances.length > 0 ? (new ChannelContainer(chInstances))
             : (new ChannelFamilyContainer(chFamilyInstances));
+    }
+
+    /**
+     * Checker for checking the max member limit,
+     * it will throw an error to deny access.
+     * @param current
+     * @param max
+     */
+    static maxMembersCheck(current: number,max: number): void {
+        if(current >= max){
+            const err: any = new Error('Maximum members reached.');
+            err.name = ClientErrorName.MaxMembersReached;
+            throw err;
+        }
     }
 
 }
