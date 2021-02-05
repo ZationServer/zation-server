@@ -23,6 +23,7 @@ export default abstract class ChannelCore extends Component {
     protected readonly _scExchange: ScExchange;
     protected readonly _workerFullId: string;
     protected readonly _preparedData: ChPreparedData;
+    protected readonly _unregisterDelay: number;
 
     protected constructor(identifier: string, bag: Bag, preparedData: ChPreparedData, apiLevel: number | undefined) {
         super(identifier,apiLevel);
@@ -30,6 +31,7 @@ export default abstract class ChannelCore extends Component {
         this._scExchange = bag.getWorker().scServer.exchange;
         this._workerFullId = bag.getWorker().getFullWorkerId();
         this._preparedData = preparedData;
+        this._unregisterDelay = preparedData.unregisterDelay;
     }
 
     /**
@@ -105,5 +107,6 @@ export default abstract class ChannelCore extends Component {
 ChannelCore.prototype[componentTypeSymbol] = 'Channel';
 
 export interface ChPreparedData {
-    checkAccess: ChSubAccessFunction
+    checkAccess: ChSubAccessFunction,
+    unregisterDelay: number
 }

@@ -83,7 +83,8 @@ export default class DataboxPrepare extends ComponentPrepare<DataboxCore,Databox
             parallelFetch: config.parallelFetch !== undefined ? config.parallelFetch: false,
             maxBackpressure: config.maxBackpressure !== undefined ? config.maxBackpressure: 30,
             maxSocketInputChannels: config.maxSocketInputChannels !== undefined ? config.maxSocketInputChannels: 20,
-            fetchLastCudData: config.fetchLastCudData !== undefined ? config.fetchLastCudData : 500
+            fetchLastCudData: config.fetchLastCudData !== undefined ? config.fetchLastCudData : 500,
+            unregisterDelay: config.unregisterDelay !== undefined ? config.unregisterDelay : 120000
         };
 
         const dbInstance = DynamicSingleton.create<AnyDataboxClass,Databox | DataboxFamily>

@@ -69,8 +69,6 @@ export default class ChannelFamily extends ChannelCore {
     private readonly _onSubscription: (member: string,socket: Socket) => Promise<void> | void;
     private readonly _onUnsubscription: (member: string, socket: Socket, trigger: UnsubscribeTrigger) => Promise<void> | void;
 
-    public unregisterMemberTimeout: number = 120000;
-
     constructor(identifier: string, bag: Bag, chPreparedData: ChPreparedData, apiLevel: number | undefined)
     {
         super(identifier,bag,chPreparedData,apiLevel);
@@ -237,7 +235,7 @@ export default class ChannelFamily extends ChannelCore {
         this._unregisterMemberTimeoutMap.set(member,setTimeout(() => {
             this._unregisterMember(member);
             this._unregisterMemberTimeoutMap.delete(member);
-        }, this.unregisterMemberTimeout));
+        }, this._unregisterDelay));
     }
 
     /**

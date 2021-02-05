@@ -452,7 +452,7 @@ export default class Databox extends DataboxCore {
         this._unregisterTimout = setTimeout(() => {
             this._unregister();
             this._unregisterTimout = undefined;
-        }, 120000);
+        }, this._unregisterDelay);
     }
 
     /**

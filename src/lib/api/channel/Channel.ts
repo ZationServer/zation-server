@@ -157,7 +157,7 @@ export default class Channel extends ChannelCore {
         this._unregisterTimout = setTimeout(() => {
             this._unregister();
             this._unregisterTimout = undefined;
-        }, 120000);
+        }, this._unregisterDelay);
     }
 
     /**

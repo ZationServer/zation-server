@@ -42,11 +42,12 @@ export default abstract class DataboxCore extends Component {
      * @description
      * The Databox token version indicates the version of the data tokens.
      * You should change that version whenever you make a significant change in the session data structure.
-     * Than this prevent you for old tokens with old structures.
+     * It helps to protect your system against old tokens with different structures.
      * @default 0
      */
     protected readonly dbTokenVersion: number = 0;
 
+    protected readonly _unregisterDelay: number;
     protected readonly _preparedData: DbPreparedData;
     private readonly _sendErrorDescription: boolean;
     private readonly _preparedTokenSessionKey: string;
@@ -68,6 +69,7 @@ export default abstract class DataboxCore extends Component {
         this._parallelFetch = preparedData.parallelFetch;
         this._initInputConsumer = preparedData.consumeInitInput;
         this._fetchInputConsumer = preparedData.consumeFetchInput;
+        this._unregisterDelay = preparedData.unregisterDelay;
 
         this._preparedTokenSessionKey =
             `${bag.getZationConfig().getDataboxKey()}.${this.dbTokenVersion}.${this.identifier}${apiLevel !== undefined ? apiLevel: ''}`;
@@ -302,5 +304,6 @@ export interface DbPreparedData {
     parallelFetch: boolean,
     maxBackpressure: number,
     maxSocketInputChannels: number,
-    fetchLastCudData: number | false
+    fetchLastCudData: number | false,
+    unregisterDelay: number
 }

@@ -95,4 +95,11 @@ export interface DataboxConfig extends AccessConfig<DbAccessFunction>
      * @default 500
      */
     fetchLastCudData?: number | false;
+    /**
+     * Defines the delay to unregister the Databox or a member of the DataboxFamily
+     * internally when no one uses it anymore.
+     * When a client starts to use it again, the delay timeout will be cancelled.
+     * @default 120000ms
+     */
+    unregisterDelay?: number;
 }
