@@ -11,7 +11,13 @@ import {block}                          from './block';
 import {PreparedEvents}                 from '../config/definitions/parts/events';
 import Logger                           from '../log/logger';
 
-export type MiddlewareInvoker<T extends AnyFunction> = (defaultAllow: boolean,...args: Parameters<T>) => Promise<Error | undefined> | Error | undefined;
+export type MiddlewareInvoker<T extends AnyFunction> = (...args: Parameters<T>) => Promise<Error | void> | Error | void;
+
+const DEFAULT_ALLOW: Record<keyof Middleware,boolean> = {
+    authenticate: true,
+    socket: true,
+    panelAuth: false
+}
 
 export default class MiddlewaresPreparer {
 
@@ -20,7 +26,7 @@ export default class MiddlewaresPreparer {
         for(const k in middlewares) {
             if(middlewares.hasOwnProperty(k)){
                 res[k] = MiddlewaresPreparer.createMiddlewareAsyncSafeInvoker
-                    (middlewares[k], `An error was thrown in the middleware: '${k}' :`, errorEvent);
+                    (middlewares[k], DEFAULT_ALLOW[k],`An error was thrown in the middleware: '${k}' :`, errorEvent);
             }
         }
         return res as PreparedMiddleware;
@@ -31,20 +37,20 @@ export default class MiddlewaresPreparer {
      * Will stop the middleware chain when a function returns some value.
      * Returns an error when the action was denied.
      * @param value
+     * @param defaultAllow
      * @param beforeErrorMsg
      * @param errorEvent
      */
-    static createMiddlewareAsyncSafeInvoker<T extends AnyFunction>(value: T[] | T | undefined, beforeErrorMsg: string, errorEvent: PreparedEvents['error']): MiddlewareInvoker<T> {
-        if(!value) return (defaultAllow,..._) => {
-            if(defaultAllow) return;
-            else {
-                const err: any = new Error('Unexpected error in middleware.');
-                err.code = 4650;
-                return err;
-            }
-        };
+    static createMiddlewareAsyncSafeInvoker<T extends AnyFunction>(value: T[] | T | undefined, defaultAllow: boolean,
+                                                                   beforeErrorMsg: string, errorEvent: PreparedEvents['error']): MiddlewareInvoker<T>
+    {
+        if(!value) return defaultAllow ? (..._) => {} : (..._) => {
+            const err: any = new Error('Unexpected error in middleware.');
+            err.code = 4650;
+            return err;
+        }
         const middleware = Array.isArray(value) ? FuncUtils.createAsyncChainInvoker(value) : value;
-        return async (defaultAllow,...params) => {
+        return async (...params) => {
             try {
                 const res = await middleware(...params);
                 if(res === true) return;
@@ -57,7 +63,7 @@ export default class MiddlewaresPreparer {
                 else {
                     if(defaultAllow) return;
                     else {
-                        const err: any = new Error('Unexpected error in middleware.');
+                        const err: any = new Error('Middleware silent block.');
                         err.code = 4650;
                         return err;
                     }

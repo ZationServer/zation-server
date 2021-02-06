@@ -151,7 +151,7 @@ export default class PanelEngine
                 break;
             }
         }
-        if(!foundUser) return !await this.zc.middleware.panelAuth(false,username,password);
+        if(!foundUser) return !await this.zc.middleware.panelAuth(username,password);
         return foundUser;
     }
 

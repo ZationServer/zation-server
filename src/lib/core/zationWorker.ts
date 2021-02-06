@@ -562,7 +562,7 @@ class ZationWorker extends SCWorker
                 this.initSocketEvents(socket);
                 await this.zc.event.socketInit(socket);
 
-                next(await middleware.socket(true,socket));
+                next(await middleware.socket(socket));
             }
             else{
                 const err = new Error('Cannot connect without providing a valid version and system key in URL query argument.');
@@ -610,7 +610,7 @@ class ZationWorker extends SCWorker
             }
 
             if(token.onlyPanelToken) next();
-            else next(await middleware.authenticate(true,new ZationToken(token)));
+            else next(await middleware.authenticate(new ZationToken(token)));
         });
     }
 
