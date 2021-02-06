@@ -9,7 +9,6 @@ import Bag                           from "../Bag";
 import {RespondFunction}             from "../../main/sc/socket";
 // noinspection ES6PreferShortImport
 import {block}                                           from '../../main/middlewares/block';
-import MemberCheckerUtils, {IsMemberChecker}             from "../../main/member/memberCheckerUtils";
 import {ScExchange}                                      from "../../main/sc/scServer";
 import {
     CudOperation,
@@ -69,6 +68,7 @@ import {isDefaultImpl, markAsDefaultImpl}         from '../../main/utils/default
 import Timeout                                    = NodeJS.Timeout;
 import NoMoreDataAvailableError                   from '../../main/databox/noMoreDataAvailable';
 import NoDataAvailableError                       from '../../main/databox/noDataAvailable';
+import MiddlewaresPreparer, {MiddlewareInvoker}   from '../../main/middlewares/middlewaresPreparer';
 
 /**
  * If you always want to present the most recent data on the client,
@@ -92,7 +92,6 @@ import NoDataAvailableError                       from '../../main/databox/noDat
  * You can override these methods:
  * - initialize
  * - fetch / singleFetch
- * - isMember
  *
  * events:
  * - onConnection
@@ -108,6 +107,7 @@ import NoDataAvailableError                       from '../../main/databox/noDat
  * - updateMiddleware
  * - deleteMiddleware
  * other
+ * - memberMiddleware
  * - signalMiddleware
  */
 export default class DataboxFamily extends DataboxCore {
@@ -122,7 +122,6 @@ export default class DataboxFamily extends DataboxCore {
     private readonly _socketMembers: Map<Socket,Set<string>> = new Map<Socket, Set<string>>();
 
     private readonly _unregisterMemberTimeoutMap: Map<string,Timeout> = new Map();
-    private readonly _isMemberCheck: IsMemberChecker;
     private readonly _dbEventPreFix: string;
     private readonly _scExchange: ScExchange;
     private readonly _workerFullId: string;
@@ -141,10 +140,10 @@ export default class DataboxFamily extends DataboxCore {
     private readonly _onConnection: (member: string, socket: Socket) => Promise<void> | void;
     private readonly _onDisconnection: (member: string, socket: Socket) => Promise<void> | void;
     private readonly _onReceivedSignal: (connection: DbFamilyInConnection, signal: string, data: any) => Promise<void> | void;
+    private readonly _memberMiddleware: MiddlewareInvoker<typeof DataboxFamily['prototype']['memberMiddleware']>;
 
     constructor(identifier: string, bag: Bag, dbPreparedData: DbPreparedData, apiLevel: number | undefined) {
         super(identifier,bag,dbPreparedData,apiLevel);
-        this._isMemberCheck = MemberCheckerUtils.createIsMemberChecker(this.isMember.bind(this));
         this._scExchange = bag.getWorker().scServer.exchange;
         this._workerFullId = bag.getWorker().getFullWorkerId();
         this._maxSocketInputChannels = dbPreparedData.maxSocketInputChannels;
@@ -168,6 +167,9 @@ export default class DataboxFamily extends DataboxCore {
             `${errMessagePrefix} onDisconnection`,this._errorEvent);
         this._onReceivedSignal = FuncUtils.createSafeCaller(this.onReceivedSignal,
             `${errMessagePrefix} onReceivedSignal`,this._errorEvent);
+        this._memberMiddleware = MiddlewaresPreparer.createMiddlewareAsyncSafeInvoker(
+            !isDefaultImpl(this.memberMiddleware) ? this.memberMiddleware : undefined,
+            true, this.toString() + ' error was thrown in the member middleware', this._errorEvent);
     }
 
     private _getFetchImpl(): (request: FetchRequest, connection: DbFamilyInConnection, session: Record<string, any>) => Promise<any> | any {
@@ -210,7 +212,9 @@ export default class DataboxFamily extends DataboxCore {
             throw err;
         }
 
-        await this._isMember(member);
+        const memberMidRes = await this._memberMiddleware(member);
+        if(memberMidRes) throw memberMidRes;
+
         await this._checkAccess(socket,{identifier: this.identifier,member});
 
         const memberSet = this._socketMembers.get(socket);
@@ -366,17 +370,6 @@ export default class DataboxFamily extends DataboxCore {
     private async _copySession(member: string,dbToken: DbToken,target?: DBClientInputSessionTarget): Promise<string> {
         DataboxUtils.copySession(dbToken.sessions,target);
         return this._signDbToken(dbToken,member);
-    }
-
-    /**
-     * @internal
-     * **Not override this method.**
-     * Is member check is used internally.
-     * @param member
-     * @private
-     */
-    _isMember(member: string): Promise<void> {
-        return this._isMemberCheck(member);
     }
 
     /**
@@ -1212,21 +1205,17 @@ export default class DataboxFamily extends DataboxCore {
         throw new NoDataAvailableError();
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * **Can be overridden.**
-     * Check if it is a member of the DataboxFamily.
-     * Use this check only for security reason, for example,
-     * checking the format of the value.
-     * To mark the value as invalid,
-     * you only need to return an object (that can be error information) or false.
-     * Also if you throw an error, the value is marked as invalid.
-     * If you want to mark the value as a member,
-     * you have to return nothing or a true.
+     * With the member middleware, you can protect your DataboxFamily against invalid members.
+     * For example, when you have a Databox for user-profiles and the member represents
+     * the user id you can block invalid user ids. To block the member, you can return an error,
+     * false or the block symbol or throwing the block symbol.
+     * If you don't return anything, the member will be allowed.
      * The Bag instance can be securely accessed with the variable 'bag'.
-     * @param value
+     * @param member
      */
-    public isMember(value: string): Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void {
+    public memberMiddleware(member: string): Promise<boolean | object | any> | boolean | object | any {
     }
 
     /**
@@ -1383,6 +1372,8 @@ markAsDefaultImpl(DataboxFamily.prototype['insertMiddleware']);
 markAsDefaultImpl(DataboxFamily.prototype['updateMiddleware']);
 markAsDefaultImpl(DataboxFamily.prototype['deleteMiddleware']);
 markAsDefaultImpl(DataboxFamily.prototype['transmitSignalMiddleware']);
+
+markAsDefaultImpl(DataboxFamily.prototype['memberMiddleware']);
 
 markAsDefaultImpl(DataboxFamily.prototype['beforeInsert']);
 markAsDefaultImpl(DataboxFamily.prototype['beforeUpdate']);

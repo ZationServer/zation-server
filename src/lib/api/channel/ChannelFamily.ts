@@ -25,9 +25,11 @@ import {
     UnsubscribeTrigger
 } from '../../main/channel/channelDefinitions';
 import Timeout = NodeJS.Timeout;
-import MemberCheckerUtils, {IsMemberChecker} from '../../main/member/memberCheckerUtils';
 import {familyTypeSymbol}                    from '../../main/component/componentUtils';
 import ChannelUtils                          from '../../main/channel/channelUtils';
+import {isDefaultImpl, markAsDefaultImpl}    from '../../main/utils/defaultImplUtils';
+import DataboxFamily                         from '../databox/DataboxFamily';
+import MiddlewaresPreparer, {MiddlewareInvoker} from '../../main/middlewares/middlewaresPreparer';
 
 /**
  * Channels implements the subscribe/publish architecture.
@@ -43,12 +45,14 @@ import ChannelUtils                          from '../../main/channel/channelUti
  *
  * You can override these methods:
  * - initialize
- * - isMember
  *
  * events:
  * - onSubscription
  * - onUnsubscription
  * - onPublish
+ *
+ * middleware methods:
+ * - memberMiddleware
  */
 export default class ChannelFamily extends ChannelCore {
 
@@ -61,7 +65,6 @@ export default class ChannelFamily extends ChannelCore {
      */
     private readonly _socketMembers: Map<Socket,Set<string>> = new Map<Socket, Set<string>>();
     private readonly _unregisterMemberTimeoutMap: Map<string,Timeout> = new Map();
-    private readonly _isMemberCheck: IsMemberChecker;
     private readonly _maxSocketMembers: number;
 
     private readonly _chId: string;
@@ -70,11 +73,11 @@ export default class ChannelFamily extends ChannelCore {
     private readonly _onPublish: (member: string,event: string, data: any) => Promise<void> | void;
     private readonly _onSubscription: (member: string,socket: Socket) => Promise<void> | void;
     private readonly _onUnsubscription: (member: string, socket: Socket, trigger: UnsubscribeTrigger) => Promise<void> | void;
+    private readonly _memberMiddleware: MiddlewareInvoker<typeof ChannelFamily['prototype']['memberMiddleware']>;
 
     constructor(identifier: string, bag: Bag, chPreparedData: ChPreparedData, apiLevel: number | undefined)
     {
         super(identifier,bag,chPreparedData,apiLevel);
-        this._isMemberCheck = MemberCheckerUtils.createIsMemberChecker(this.isMember.bind(this));
 
         this._maxSocketMembers = chPreparedData.maxSocketMembers;
 
@@ -89,6 +92,9 @@ export default class ChannelFamily extends ChannelCore {
             `${errMessagePrefix} onSubscription`,ErrorEventHolder.get());
         this._onUnsubscription = FuncUtils.createSafeCaller(this.onUnsubscription,
             `${errMessagePrefix} onUnsubscription`,ErrorEventHolder.get());
+        this._memberMiddleware = MiddlewaresPreparer.createMiddlewareAsyncSafeInvoker(
+            !isDefaultImpl(this.memberMiddleware) ? this.memberMiddleware : undefined,
+            true, this.toString() + ' error was thrown in the member middleware', ErrorEventHolder.get());
     }
 
     /**
@@ -112,7 +118,9 @@ export default class ChannelFamily extends ChannelCore {
         }
 
         //new subscription
-        await this._isMemberCheck(member);
+        const memberMidRes = await this._memberMiddleware(member);
+        if(memberMidRes) throw memberMidRes;
+
         await this._checkSubscribeAccess(socket,{identifier: this.identifier,member});
 
         const memberSet = this._socketMembers.get(socket);
@@ -339,21 +347,17 @@ export default class ChannelFamily extends ChannelCore {
         }
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * **Can be overridden.**
-     * Check if it is a member of the ChannelFamily.
-     * Use this check only for security reason, for example,
-     * checking the format of the value.
-     * To mark the value as invalid,
-     * you only need to return an object (that can be error information) or false.
-     * Also if you throw an error, the value is marked as invalid.
-     * If you want to mark the value as a member,
-     * you have to return nothing or a true.
+     * With the member middleware, you can protect your ChannelFamily against invalid members.
+     * For example, when you have a Channel for user-notifications and the member represents
+     * the user id you can block invalid user ids. To block the member, you can return an error,
+     * false or the block symbol or throwing the block symbol.
+     * If you don't return anything, the member will be allowed.
      * The Bag instance can be securely accessed with the variable 'bag'.
-     * @param value
+     * @param member
      */
-    public isMember(value: string): Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void {
+    public memberMiddleware(member: string): Promise<boolean | object | any> | boolean | object | any {
     }
 
     /**
@@ -388,5 +392,7 @@ export default class ChannelFamily extends ChannelCore {
 
 ChannelFamily[familyTypeSymbol] = true;
 ChannelFamily.prototype[familyTypeSymbol] = true;
+
+markAsDefaultImpl(DataboxFamily.prototype['memberMiddleware']);
 
 export type ChannelFamilyClass = typeof ChannelFamily;
