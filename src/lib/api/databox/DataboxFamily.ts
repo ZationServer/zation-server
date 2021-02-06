@@ -824,13 +824,12 @@ export default class DataboxFamily extends DataboxCore {
      */
     async _recheckSocketAccess(socket: Socket): Promise<void> {
         const members = this.getSocketRegMembers(socket);
-        for(let i = 0; i < members.length; i++){
+        await Promise.all(members.map(async member => {
             if(!(await this._preparedData.checkAccess(socket,
-                {identifier: this.identifier,member: members[i]})))
-            {
-                this.kickOut(members[i],socket);
+                {identifier: this.identifier,member}))) {
+                this.kickOut(member,socket);
             }
-        }
+        }));
     }
 
     /**
