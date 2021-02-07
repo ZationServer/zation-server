@@ -40,7 +40,6 @@ import {ModelProp}                  from "./lib/api/input/ModelProp";
 import {Model}                      from './lib/api/input/decorator/Model';
 import {ObjectModel}                from "./lib/api/input/decorator/ObjectModel";
 import {Constructor}                from "./lib/api/input/decorator/Constructor";
-import NoMoreDataAvailableError     from "./lib/main/databox/noMoreDataAvailable";
 import DataboxFamily                from "./lib/api/databox/DataboxFamily";
 import Databox                      from "./lib/api/databox/Databox";
 import {DataboxConfig}              from "./lib/main/config/definitions/parts/databoxConfig";
@@ -54,7 +53,7 @@ import AsymmetricKeyPairs           from "./lib/main/internalApi/asymmetricKeyPa
 import DbCudOperationSequence       from "./lib/main/databox/dbCudOperationSequence";
 import {ObjectPathSequence}         from "./lib/main/internalApi/objectPathSequence/objectPathSequence";
 import {StartErrorName}             from "./lib/main/definitions/startErrorName";
-import NoDataAvailableError         from "./lib/main/databox/noDataAvailable";
+import NoDataError                  from "./lib/main/databox/noData";
 import {$not}                       from './lib/api/Not';
 import {Server}                     from './lib/api/Server';
 import BackErrorConstruct           from './lib/main/definitions/backErrorConstruct';
@@ -109,8 +108,7 @@ export {
     ModelProp,
     Constructor,
     ObjectModel,
-    NoMoreDataAvailableError,
-    NoDataAvailableError,
+    NoDataError,
     DataboxFamily,
     DataboxFamilyContainer,
     Databox,

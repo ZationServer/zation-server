@@ -66,8 +66,7 @@ import ObjectUtils                                from '../../main/utils/objectU
 import FuncUtils                                  from '../../main/utils/funcUtils';
 import {isDefaultImpl, markAsDefaultImpl}         from '../../main/utils/defaultImplUtils';
 import Timeout                                    = NodeJS.Timeout;
-import NoMoreDataAvailableError                   from '../../main/databox/noMoreDataAvailable';
-import NoDataAvailableError                       from '../../main/databox/noDataAvailable';
+import NoDataError                                from '../../main/databox/noData';
 import MiddlewaresPreparer, {MiddlewareInvoker}   from '../../main/middlewares/middlewaresPreparer';
 
 /**
@@ -178,7 +177,7 @@ export default class DataboxFamily extends DataboxCore {
                 if(request.counter === 0){
                     return this.singleFetch(request,connection);
                 }
-                else throw new NoMoreDataAvailableError();
+                else throw new NoDataError(1);
             };
         }
         else {
@@ -1141,9 +1140,7 @@ export default class DataboxFamily extends DataboxCore {
      * If you don't want to stream data you should look at the singleFetch method.
      * Notice that only one method can be overridden.
      * You usually request data from your database and return it, and if no more data is available,
-     * you should throw a NoMoreDataAvailableError.
-     * If no data is available, for example the profile with the id ten is not found,
-     * you can throw a NoDataAvailableError.
+     * you should throw a NoDataError. If you return undefined or null, the NoDataError is automatically thrown.
      * The counter property of the request indicates the number of the current call, it starts counting at zero.
      * Notice that the counter only increases when the fetch was successful (means no error was thrown).
      * The client can send additional data when calling the fetch process (fetchInput),
@@ -1193,7 +1190,7 @@ export default class DataboxFamily extends DataboxCore {
      * @param session
      */
     protected fetch(request: FetchRequest, connection: DbFamilyInConnection, session: Record<string,any>): Promise<any> | any {
-        throw new NoDataAvailableError();
+        throw new NoDataError();
     }
 
     /**
@@ -1205,8 +1202,6 @@ export default class DataboxFamily extends DataboxCore {
      * If you want more freedom or stream data you should look at the fetch method.
      * Notice that only one method can be overridden.
      * You usually request data from your database and return it.
-     * If no data is available, for example the profile with the id ten is not found,
-     * you can throw a NoDataAvailableError or call the internal noDataAvailable method.
      * The client can send additional data when calling the fetch process (fetchInput),
      * this data is available in the input property of the request.
      *
@@ -1241,7 +1236,7 @@ export default class DataboxFamily extends DataboxCore {
      * @param connection {member: string, socket: Socket, initData?: any}
      */
     protected singleFetch(request: FetchRequest, connection: DbFamilyInConnection): Promise<any> | any {
-        throw new NoDataAvailableError();
+        throw new NoDataError();
     }
 
     /**

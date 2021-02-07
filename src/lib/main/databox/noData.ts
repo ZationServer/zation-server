@@ -6,13 +6,13 @@ Copyright(c) Luca Scaringella
 
 import {ClientErrorName} from "../definitions/clientErrorName";
 
-export default class NoDataAvailableError extends Error
+export default class NoDataError extends Error
 {
     private readonly info: {code?: string |number,data?: any} = {};
 
     constructor(code?: string | number,data?: any) {
         super();
-        this.name = ClientErrorName.NoDataAvailable;
+        this.name = ClientErrorName.NoData;
         this.info.code = code;
         this.info.data = data;
     }
