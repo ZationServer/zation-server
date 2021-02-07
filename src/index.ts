@@ -53,7 +53,7 @@ import AsymmetricKeyPairs           from "./lib/main/internalApi/asymmetricKeyPa
 import DbCudOperationSequence       from "./lib/main/databox/dbCudOperationSequence";
 import {ObjectPathSequence}         from "./lib/main/internalApi/objectPathSequence/objectPathSequence";
 import {StartErrorName}             from "./lib/main/definitions/startErrorName";
-import NoDataError                  from "./lib/main/databox/noData";
+import NoDataError                  from "./lib/main/databox/noDataError";
 import {$not}                       from './lib/api/Not';
 import {Server}                     from './lib/api/Server';
 import BackErrorConstruct           from './lib/main/definitions/backErrorConstruct';
@@ -84,6 +84,7 @@ import Process, {ProcessType}       from './lib/api/Process';
 import {$and, $or}                  from './lib/api/RelationArrays';
 import {block}                      from './lib/main/middlewares/block';
 import {TypeofModel}                from './lib/main/models/typeofModel';
+import InvalidMemberError           from './lib/main/databox/invalidMemberError';
 
 //Refresh bag instance export
 Bag._addReadyRefresher((bag) => exports.bag = bag);
@@ -109,6 +110,7 @@ export {
     Constructor,
     ObjectModel,
     NoDataError,
+    InvalidMemberError,
     DataboxFamily,
     DataboxFamilyContainer,
     Databox,

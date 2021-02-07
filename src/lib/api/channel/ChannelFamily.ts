@@ -400,7 +400,7 @@ export default class ChannelFamily extends ChannelCore {
      * **Can be overridden.**
      * With the member middleware, you can protect your ChannelFamily against invalid members.
      * For example, when you have a Channel for user-notifications and the member represents
-     * the user id you can block invalid user ids. To block the member, you can return an error,
+     * the user id you can block invalid user ids. To block the member, you can return an error (You can make use of the InvalidMemberError),
      * false or the block symbol or throwing the block symbol.
      * If you don't return anything, the member will be allowed.
      * The Bag instance can be securely accessed with the variable 'bag'.

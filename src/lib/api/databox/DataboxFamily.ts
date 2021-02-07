@@ -66,7 +66,7 @@ import ObjectUtils                                from '../../main/utils/objectU
 import FuncUtils                                  from '../../main/utils/funcUtils';
 import {isDefaultImpl, markAsDefaultImpl}         from '../../main/utils/defaultImplUtils';
 import Timeout                                    = NodeJS.Timeout;
-import NoDataError                                from '../../main/databox/noData';
+import NoDataError                                from '../../main/databox/noDataError';
 import MiddlewaresPreparer, {MiddlewareInvoker}   from '../../main/middlewares/middlewaresPreparer';
 
 /**
@@ -1247,7 +1247,7 @@ export default class DataboxFamily extends DataboxCore {
      * **Can be overridden.**
      * With the member middleware, you can protect your DataboxFamily against invalid members.
      * For example, when you have a Databox for user-profiles and the member represents
-     * the user id you can block invalid user ids. To block the member, you can return an error,
+     * the user id you can block invalid user ids. To block the member, you can return an error (You can make use of the InvalidMemberError),
      * false or the block symbol or throwing the block symbol.
      * If you don't return anything, the member will be allowed.
      * The Bag instance can be securely accessed with the variable 'bag'.

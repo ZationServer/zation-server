@@ -66,7 +66,7 @@ import {removeValueFromArray}                     from '../../main/utils/arrayUt
 import ObjectUtils                                from '../../main/utils/objectUtils';
 import FuncUtils                                  from '../../main/utils/funcUtils';
 import {isDefaultImpl, markAsDefaultImpl}         from '../../main/utils/defaultImplUtils';
-import NoDataError                                from '../../main/databox/noData';
+import NoDataError                                from '../../main/databox/noDataError';
 
 /**
  * If you always want to present the most recent data on the client,
