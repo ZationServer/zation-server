@@ -341,6 +341,10 @@ export default class Databox extends DataboxCore {
                 reload: target === DBClientInputSessionTarget.reloadSession
                 },connection,clonedSessionData);
 
+            if(data == null) { // noinspection ExceptionCaughtLocallyJS
+                throw new NoDataError(2);
+            }
+
             //success fetch
             session.c++;
             session.d = clonedSessionData;
