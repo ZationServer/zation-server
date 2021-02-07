@@ -19,6 +19,8 @@ import {
     ChClientInputPackage,
     ChClientOutputKickOutPackage,
     ChClientOutputPublishPackage,
+    ChWorkerAction,
+    ChWorkerPackage,
     ChWorkerPublishPackage,
     KickOutSocketFunction,
     PublishPackage,
@@ -186,9 +188,14 @@ export default class Channel extends ChannelCore {
      */
     private _register() {
         this._scExchange.subscribe(this._chEvent)
-            .watch(async (data: ChWorkerPublishPackage) => {
+            .watch(async (data: ChWorkerPackage) => {
                 if(data[0] !== this._workerFullId) {
-                    this._processPublish(data[1]);
+                    switch (data[1]) {
+                        case ChWorkerAction.publish:
+                            this._processPublish((data as ChWorkerPublishPackage)[2]);
+                            break;
+                        default:
+                    }
                 }
             });
         this._internalRegistered = true;
@@ -231,7 +238,8 @@ export default class Channel extends ChannelCore {
             ...(data !== undefined ? {d: data} : {}),
             ...(publisherSid !== undefined ? {p: publisherSid} : {})
         };
-        this._scExchange.publish(this._chEvent,[this._workerFullId,publishPackage] as ChWorkerPublishPackage);
+        this._scExchange.publish(this._chEvent,
+            [this._workerFullId,ChWorkerAction.publish,publishPackage] as ChWorkerPublishPackage);
         this._processPublish(publishPackage);
         this._onPublish(event,data);
     }

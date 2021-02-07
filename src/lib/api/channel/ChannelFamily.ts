@@ -13,23 +13,26 @@ import {ErrorEventHolder}            from '../../main/error/errorEventHolder';
 import {removeValueFromArray}        from '../../main/utils/arrayUtils';
 import {
     CH_CLIENT_OUTPUT_KICK_OUT,
-    CH_CLIENT_OUTPUT_PUBLISH, CHANNEL_MEMBER_SPLIT,
+    CH_CLIENT_OUTPUT_PUBLISH,
+    CHANNEL_MEMBER_SPLIT,
     CHANNEL_START_INDICATOR,
     ChClientInputAction,
     ChClientInputPackage,
     ChClientOutputKickOutPackage,
     ChClientOutputPublishPackage,
-    ChWorkerPublishPackage,
+    ChWorkerAction,
+    ChWorkerPackage,
+    ChWorkerPublishPackage, ChWorkerRecheckMemberAccessPackage,
     KickOutSocketFunction,
     PublishPackage,
     UnsubscribeTrigger
 } from '../../main/channel/channelDefinitions';
-import Timeout = NodeJS.Timeout;
-import {familyTypeSymbol}                    from '../../main/component/componentUtils';
-import ChannelUtils                          from '../../main/channel/channelUtils';
-import {isDefaultImpl, markAsDefaultImpl}    from '../../main/utils/defaultImplUtils';
-import DataboxFamily                         from '../databox/DataboxFamily';
+import {familyTypeSymbol}                       from '../../main/component/componentUtils';
+import ChannelUtils                             from '../../main/channel/channelUtils';
+import {isDefaultImpl, markAsDefaultImpl}       from '../../main/utils/defaultImplUtils';
+import DataboxFamily                            from '../databox/DataboxFamily';
 import MiddlewaresPreparer, {MiddlewareInvoker} from '../../main/middlewares/middlewaresPreparer';
+import Timeout = NodeJS.Timeout;
 
 /**
  * Channels implements the subscribe/publish architecture.
@@ -59,7 +62,7 @@ export default class ChannelFamily extends ChannelCore {
     /**
      * Maps the member to the sockets and kick out function.
      */
-    private readonly _regMember: Map<string,Map<Socket,KickOutSocketFunction>> = new Map();
+    private readonly _regMembers: Map<string,Map<Socket,KickOutSocketFunction>> = new Map();
     /**
      * Maps the sockets to the members.
      */
@@ -111,7 +114,7 @@ export default class ChannelFamily extends ChannelCore {
 
         const chEvent = this._chEventPreFix + member;
 
-        const memberMap = this._regMember.get(member);
+        const memberMap = this._regMembers.get(member);
         if(memberMap && memberMap.has(socket)){
             //already subscribed
             return chEvent;
@@ -167,7 +170,7 @@ export default class ChannelFamily extends ChannelCore {
      * @private
      */
     private _buildSocketFamilyMemberMap(member: string): Map<Socket,KickOutSocketFunction> {
-        let memberMap = this._regMember.get(member);
+        let memberMap = this._regMembers.get(member);
         if(!memberMap) memberMap = this._registerMember(member);
         else this._clearUnregisterMemberTimeout(member);
         return memberMap;
@@ -180,11 +183,19 @@ export default class ChannelFamily extends ChannelCore {
      */
     private _registerMember(member: string): Map<Socket,KickOutSocketFunction> {
         const memberMap = new Map<Socket,KickOutSocketFunction>();
-        this._regMember.set(member,memberMap);
+        this._regMembers.set(member,memberMap);
         this._scExchange.subscribe(this._chEventPreFix + member)
-            .watch(async (data: ChWorkerPublishPackage) => {
+            .watch(async (data: ChWorkerPackage) => {
                 if(data[0] !== this._workerFullId) {
-                    this._processPublish(member,data[1]);
+                    switch (data[1]) {
+                        case ChWorkerAction.publish:
+                            this._processPublish(member,(data as ChWorkerPublishPackage)[2]);
+                            break;
+                        case ChWorkerAction.recheckMemberAccess:
+                            await this._recheckMemberAccess(member);
+                            break;
+                        default:
+                    }
                 }
             });
         return memberMap;
@@ -196,7 +207,7 @@ export default class ChannelFamily extends ChannelCore {
      * @private
      */
     private _unregisterMember(member: string) {
-        this._regMember.delete(member);
+        this._regMembers.delete(member);
         const channel = this._scExchange.channel(this._chEventPreFix+member);
         channel.unwatch();
         channel.destroy();
@@ -209,7 +220,7 @@ export default class ChannelFamily extends ChannelCore {
 
     private _rmSocket(member: string, socket: Socket, disconnectHandler: () => void) {
         //main member socket map
-        const memberMap = this._regMember.get(member);
+        const memberMap = this._regMembers.get(member);
         if(memberMap){
             memberMap.delete(socket);
             if(memberMap.size === 0)
@@ -259,7 +270,7 @@ export default class ChannelFamily extends ChannelCore {
      * @private
      */
     private _processPublish(member: string,publish: PublishPackage) {
-        const memberMap = this._regMember.get(member);
+        const memberMap = this._regMembers.get(member);
         if(memberMap){
             const outputPackage = {i: this._chId,m: member,e: publish.e,d: publish.d} as ChClientOutputPublishPackage;
             if(publish.p === undefined){
@@ -289,7 +300,27 @@ export default class ChannelFamily extends ChannelCore {
                 {identifier: this.identifier,member}))) {
                 this.kickOut(member,socket);
             }
+        }));
+    }
+
+    /**
+     * @internal
+     * @param member
+     * @private
+     */
+    private async _recheckMemberAccess(member: string): Promise<void> {
+        const memberMem = this._regMembers.get(member);
+        if(!memberMem) return;
+        const promises: Promise<void>[] = [];
+        for(const socket of memberMem.keys()) {
+            promises.push((async () => {
+                if(!(await this._preparedData.checkAccess(socket,
+                    {identifier: this.identifier,member}))) {
+                    this.kickOut(member,socket);
+                }
+            })())
         }
+        await Promise.all(promises);
     }
 
     /**
@@ -321,7 +352,8 @@ export default class ChannelFamily extends ChannelCore {
             ...(data !== undefined ? {d: data} : {}),
             ...(publisherSid !== undefined ? {p: publisherSid} : {})
         };
-        this._scExchange.publish(this._chEventPreFix+member,[this._workerFullId,publishPackage] as ChWorkerPublishPackage);
+        this._scExchange.publish(this._chEventPreFix+member,
+            [this._workerFullId,ChWorkerAction.publish,publishPackage] as ChWorkerPublishPackage);
         this._processPublish(member,publishPackage);
         this._onPublish(member,event,data);
     }
@@ -337,7 +369,7 @@ export default class ChannelFamily extends ChannelCore {
      */
     kickOut(member: string | number, socket: Socket, code?: number | string, data?: any) {
         member = typeof member === "string" ? member: member.toString();
-        const memberMap = this._regMember.get(member);
+        const memberMap = this._regMembers.get(member);
         if(memberMap){
             const kickOutFunction = memberMap.get(socket);
             if(kickOutFunction){
@@ -345,6 +377,23 @@ export default class ChannelFamily extends ChannelCore {
                 kickOutFunction();
             }
         }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * With this function, you can do a recheck of all sockets on a specific member.
+     * It can be useful when the access rights to member have changed,
+     * and you want to kick out all sockets that not have access anymore.
+     * @param member
+     * @param forEveryWorker
+     */
+    async recheckMemberAccess(member: string | number, forEveryWorker: boolean = true): Promise<void> {
+        member = typeof member === "string" ? member: member.toString();
+        if(forEveryWorker){
+            this._scExchange.publish(this._chEventPreFix+member,
+                [this._workerFullId,ChWorkerAction.recheckMemberAccess] as ChWorkerRecheckMemberAccessPackage);
+        }
+        await this._recheckMemberAccess(member);
     }
 
     /**

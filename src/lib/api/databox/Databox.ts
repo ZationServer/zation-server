@@ -463,9 +463,9 @@ export default class Databox extends DataboxCore {
         //Important non-async usage otherwise, the risk of missing a worker response to a cud request exists.
         this._lastCudData = this._initLastCudDataMemory();
         this._scExchange.subscribe(this._dbEvent)
-            .watch(async (data) => {
-                if((data as DbWorkerPackage)[0] !== this._workerFullId) {
-                    switch ((data as DbWorkerPackage)[1]) {
+            .watch(async (data: DbWorkerPackage) => {
+                if(data[0] !== this._workerFullId) {
+                    switch (data[1]) {
                         case DbWorkerAction.cud:
                             await this._processCudOperations((data as DbWorkerCudPackage)[2]);
                             break;

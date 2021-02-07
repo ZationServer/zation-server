@@ -329,7 +329,11 @@ export const enum DbWorkerAction {
     /**
      * Current cud data response.
      */
-    cudDataResponse
+    cudDataResponse,
+    /**
+     * Recheck member access request.
+     */
+    recheckMemberAccess
 }
 
 /**
@@ -433,6 +437,16 @@ export interface DbWorkerCudDataResponsePackage extends DbWorkerPackage{
      * last cud id
      */
     3: string
+}
+
+/**
+ * Recheck member access request package that the worker can send to other workers.
+ */
+export interface DbWorkerRecheckMemberAccessPackage extends DbWorkerPackage{
+    /**
+     * action
+     */
+    1: DbWorkerAction.recheckMemberAccess
 }
 
 /**

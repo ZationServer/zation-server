@@ -46,7 +46,7 @@ import {
     DataboxConnectReq,
     DataboxConnectRes,
     DbClientOutputSignalPackage,
-    DbWorkerSignalPackage, DbWorkerCudDataRequestPackage, DbMemberMemory, DbLastCudDataMemory, DbWorkerCudDataResponsePackage
+    DbWorkerSignalPackage, DbWorkerCudDataRequestPackage, DbMemberMemory, DbLastCudDataMemory, DbWorkerCudDataResponsePackage, DbWorkerRecheckMemberAccessPackage
 } from '../../main/databox/dbDefinitions';
 import {DbFamilyInConnection,
     DeleteAction,
@@ -538,9 +538,9 @@ export default class DataboxFamily extends DataboxCore {
 
 
         this._scExchange.subscribe(this._dbEventPreFix+member)
-            .watch(async (data) => {
-                if((data as DbWorkerCudPackage)[0] !== this._workerFullId) {
-                    switch ((data as DbWorkerPackage)[1]) {
+            .watch(async (data: DbWorkerPackage) => {
+                if(data[0] !== this._workerFullId) {
+                    switch (data[1]) {
                         case DbWorkerAction.cud:
                             await this._processCudPackage(member,(data as DbWorkerCudPackage)[2]);
                             break;
@@ -560,6 +560,9 @@ export default class DataboxFamily extends DataboxCore {
                             break;
                         case DbWorkerAction.cudDataResponse:
                             this._updateLastCudData(member,(data as DbWorkerCudDataResponsePackage)[2],(data as DbWorkerCudDataResponsePackage)[3]);
+                            break;
+                        case DbWorkerAction.recheckMemberAccess:
+                            await this._recheckMemberAccess(member);
                             break;
                         default:
                     }
@@ -833,6 +836,26 @@ export default class DataboxFamily extends DataboxCore {
     }
 
     /**
+     * @internal
+     * @param member
+     * @private
+     */
+    private async _recheckMemberAccess(member: string): Promise<void> {
+        const memberMem = this._regMembers.get(member);
+        if(!memberMem) return;
+        const promises: Promise<void>[] = [];
+        for(const socket of memberMem.sockets.keys()) {
+            promises.push((async () => {
+                if(!(await this._preparedData.checkAccess(socket,
+                    {identifier: this.identifier,member}))) {
+                    this.kickOut(member,socket);
+                }
+            })())
+        }
+        await Promise.all(promises);
+    }
+
+    /**
      * **Not override this method.**
      * Insert a new value in the Databox.
      * Notice that this method will only update the Databox.
@@ -1059,6 +1082,23 @@ export default class DataboxFamily extends DataboxCore {
                 socketMemory.unregisterSocket();
             }
         }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * With this function, you can do a recheck of all sockets on a specific member.
+     * It can be useful when the access rights to member have changed,
+     * and you want to kick out all sockets that not have access anymore.
+     * @param member
+     * @param forEveryWorker
+     */
+    async recheckMemberAccess(member: string | number, forEveryWorker: boolean = true): Promise<void> {
+        member = typeof member === "string" ? member: member.toString();
+        if(forEveryWorker){
+            this._sendToWorkers(member,
+                [this._workerFullId,DbWorkerAction.recheckMemberAccess] as DbWorkerRecheckMemberAccessPackage);
+        }
+        await this._recheckMemberAccess(member);
     }
 
     // noinspection JSUnusedGlobalSymbols

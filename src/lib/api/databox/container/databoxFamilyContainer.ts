@@ -14,8 +14,8 @@ import {
     TimestampOption,
     DbSelector,
     PotentialUpdateOption,
-    PotentialInsertOption
-} from "../../../main/databox/dbDefinitions";
+    PotentialInsertOption,
+} from '../../../main/databox/dbDefinitions';
 
 export default class DataboxFamilyContainer {
 
@@ -235,6 +235,22 @@ export default class DataboxFamilyContainer {
         for(let i = 0; i < this._count;i++) {
             this._databoxes[i].kickOut(member,socket,code,data);
         }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * With this function, you can do a recheck of all sockets on a specific member.
+     * It can be useful when the access rights to member have changed,
+     * and you want to kick out all sockets that not have access anymore.
+     * @param member
+     * @param forEveryWorker
+     */
+    async recheckMemberAccess(member: string | number, forEveryWorker: boolean = true): Promise<void> {
+        const promises: Promise<void>[] = [];
+        for(let i = 0; i < this._count;i++) {
+            promises.push(this._databoxes[i].recheckMemberAccess(member,forEveryWorker));
+        }
+        await Promise.all(promises);
     }
 
     // noinspection JSUnusedGlobalSymbols

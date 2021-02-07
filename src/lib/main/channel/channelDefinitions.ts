@@ -38,17 +38,63 @@ export interface PublishPackage {
 }
 
 /**
+ * Actions that a worker can send to another worker.
+ */
+export const enum ChWorkerAction {
+    /**
+     * New publish.
+     */
+    publish,
+    /**
+     * Recheck member access request.
+     */
+    recheckMemberAccess
+}
+
+/**
+ * A package that a worker can send to the other workers.
+ */
+export interface ChWorkerPackage {
+    /**
+     * source workerFullId
+     */
+    0: string,
+    /**
+     * action
+     */
+    1: ChWorkerAction,
+    /**
+     * data
+     */
+    2?: any
+}
+
+/**
  * A publish package that a worker can send to the other workers.
  */
-export interface ChWorkerPublishPackage {
+export interface ChWorkerPublishPackage extends ChWorkerPackage {
     /**
      * workerFullId
      */
     0: string,
     /**
+     * action
+     */
+    1: ChWorkerAction.publish,
+    /**
      * Publish
      */
-    1: PublishPackage
+    2: PublishPackage
+}
+
+/**
+ * Recheck member access request package that the worker can send to other workers.
+ */
+export interface ChWorkerRecheckMemberAccessPackage extends ChWorkerPackage{
+    /**
+     * action
+     */
+    1: ChWorkerAction.recheckMemberAccess
 }
 
 /**

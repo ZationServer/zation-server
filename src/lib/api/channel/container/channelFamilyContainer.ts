@@ -54,6 +54,22 @@ export default class ChannelFamilyContainer {
 
     // noinspection JSUnusedGlobalSymbols
     /**
+     * With this function, you can do a recheck of all sockets on a specific member.
+     * It can be useful when the access rights to member have changed,
+     * and you want to kick out all sockets that not have access anymore.
+     * @param member
+     * @param forEveryWorker
+     */
+    async recheckMemberAccess(member: string | number, forEveryWorker: boolean = true): Promise<void> {
+        const promises: Promise<void>[] = [];
+        for(let i = 0; i < this._count;i++) {
+            promises.push(this._channels[i].recheckMemberAccess(member,forEveryWorker));
+        }
+        await Promise.all(promises);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
      * This method returns a string array
      * with all members that the socket has subscribed.
      * @param socket
