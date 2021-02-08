@@ -234,7 +234,14 @@ export default class Databox extends DataboxCore {
         if(typeof processedOptions === 'object') ObjectUtils.deepFreeze(processedOptions);
 
         const keys: DbRegisterResult = await this._registerSocket(socket,dbToken,processedOptions);
-        return [keys.inputCh,keys.outputCh,this._getLastCudId(),this.isParallelFetch()];
+        const resp: DataboxConnectRes = {
+            i: keys.inputCh,
+            o: keys.outputCh,
+            lc: this._getLastCudId(),
+            p: this.isParallelFetch(),
+        };
+        if(this._initialData !== undefined) resp.id = this._initialData;
+        return resp;
     }
 
     /**
@@ -334,6 +341,7 @@ export default class Databox extends DataboxCore {
         const session = DataboxUtils.getSession(dbToken.sessions,target);
         const currentCounter = session.c;
         const clonedSessionData = CloneUtils.deepClone(session.d);
+        const timestamp = Date.now();
         try {
             const data = await this._fetchImpl({
                 counter: currentCounter,
@@ -352,7 +360,8 @@ export default class Databox extends DataboxCore {
             return {
                 c: currentCounter,
                 d: data,
-                t: await this._signDbToken(dbToken)
+                t: await this._signDbToken(dbToken),
+                ti: timestamp
             };
         }
         catch (e) {

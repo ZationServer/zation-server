@@ -36,19 +36,23 @@ export interface DataboxConnectRes {
     /**
      * Input key
      */
-    0: string,
+    i: string,
     /**
      * Output key
      */
-    1: string,
+    o: string,
     /**
      * Last cud id
      */
-    2: string,
+    lc: string,
     /**
      * Parallel fetching
      */
-    3: boolean
+    p: boolean,
+    /**
+     * Initial data
+     */
+    id?: any
 }
 
 export type UnregisterSocketFunction = (inputChannelId?: string) => void;
@@ -175,7 +179,11 @@ export interface DbClientInputFetchResponse {
     /**
      * data
      */
-    d: any
+    d: any,
+    /**
+     * Timestamp
+     */
+    ti: number
 }
 
 /**

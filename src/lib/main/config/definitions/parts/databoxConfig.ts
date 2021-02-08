@@ -111,4 +111,12 @@ export interface DataboxConfig extends AccessConfig<DbAccessFunction>
      * @default 20
      */
     maxSocketMembers?: number;
+    /**
+     * Define initial data where the connected clients should start-with.
+     * That option could be useful when you want to start with an empty data structure.
+     * For example, a key array where you want to insert messages later on.
+     * Notice that the value undefined will be ignored and not transmitted to the clients.
+     * @default undefined
+     */
+    initialData?: any;
 }

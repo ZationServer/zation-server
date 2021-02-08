@@ -85,7 +85,8 @@ export default class DataboxPrepare extends ComponentPrepare<DataboxCore,Databox
             maxSocketInputChannels: config.maxSocketInputChannels !== undefined ? config.maxSocketInputChannels: 10,
             fetchLastCudData: config.fetchLastCudData !== undefined ? config.fetchLastCudData : 500,
             unregisterDelay: config.unregisterDelay !== undefined ? config.unregisterDelay : 120000,
-            maxSocketMembers: config.maxSocketMembers !== undefined ? config.maxSocketMembers : 20
+            maxSocketMembers: config.maxSocketMembers !== undefined ? config.maxSocketMembers : 20,
+            initialData: config.initialData
         };
 
         const dbInstance = DynamicSingleton.create<AnyDataboxClass,Databox | DataboxFamily>

@@ -47,6 +47,7 @@ export default abstract class DataboxCore extends Component {
      */
     protected readonly dbTokenVersion: number = 0;
 
+    protected readonly _initialData: any;
     protected readonly _unregisterDelay: number;
     protected readonly _preparedData: DbPreparedData;
     private readonly _sendErrorDescription: boolean;
@@ -70,6 +71,7 @@ export default abstract class DataboxCore extends Component {
         this._optionsInputConsumer = preparedData.consumeInitInput;
         this._fetchInputConsumer = preparedData.consumeFetchInput;
         this._unregisterDelay = preparedData.unregisterDelay;
+        this._initialData = preparedData.initialData;
 
         this._preparedTokenSessionKey =
             `${bag.getZationConfig().getDataboxKey()}.${this.dbTokenVersion}.${this.identifier}${apiLevel !== undefined ? apiLevel: ''}`;
@@ -306,5 +308,6 @@ export interface DbPreparedData {
     maxSocketInputChannels: number,
     fetchLastCudData: number | false,
     unregisterDelay: number,
-    maxSocketMembers: number
+    maxSocketMembers: number,
+    initialData: any
 }
