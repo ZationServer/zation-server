@@ -53,7 +53,7 @@ export default abstract class DataboxCore extends Component {
     private readonly _preparedTokenSessionKey: string;
 
     private readonly _parallelFetch: boolean;
-    private readonly _initInputConsumer: ConsumeInputFunction;
+    private readonly _optionsInputConsumer: ConsumeInputFunction;
     private readonly _fetchInputConsumer: ConsumeInputFunction;
 
     /**
@@ -67,7 +67,7 @@ export default abstract class DataboxCore extends Component {
         this._sendErrorDescription = bag.getMainConfig().sendErrorDescription;
 
         this._parallelFetch = preparedData.parallelFetch;
-        this._initInputConsumer = preparedData.consumeInitInput;
+        this._optionsInputConsumer = preparedData.consumeInitInput;
         this._fetchInputConsumer = preparedData.consumeFetchInput;
         this._unregisterDelay = preparedData.unregisterDelay;
 
@@ -111,17 +111,17 @@ export default abstract class DataboxCore extends Component {
     /**
      * @internal
      * **Not override this method.**
-     * A function to consume the init input.
-     * @param input
+     * A function to consume the options input.
+     * @param options
      * @private
      */
-    async _consumeInitInput(input: any): Promise<any>
+    async _consumeOptionsInput(options: any): Promise<any>
     {
         try {
-            return await this._initInputConsumer(input);
+            return await this._optionsInputConsumer(options);
         }
         catch (inputError) {
-            const err: any = new Error('Invalid init input.');
+            const err: any = new Error('Invalid options input.');
             err.name = ClientErrorName.InvalidInput;
             err.backErrors = ErrorUtils.dehydrate(inputError,this._sendErrorDescription);
             throw err;

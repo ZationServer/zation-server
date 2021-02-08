@@ -78,7 +78,7 @@ export default class DataboxPrepare extends ComponentPrepare<DataboxCore,Databox
 
         const dbPreparedData: DbPreparedData = {
             checkAccess: AccessUtils.createAccessChecker<DbAccessFunction>(config.access,`Databox: ${identifier}`),
-            consumeInitInput: InputClosureCreator.createInputConsumer(config.initInput),
+            consumeInitInput: InputClosureCreator.createInputConsumer(config.optionsInput),
             consumeFetchInput: InputClosureCreator.createInputConsumer(config.fetchInput),
             parallelFetch: config.parallelFetch !== undefined ? config.parallelFetch: false,
             maxBackpressure: config.maxBackpressure !== undefined ? config.maxBackpressure: 30,

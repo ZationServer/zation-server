@@ -220,12 +220,12 @@ export default class DataboxFamily extends DataboxCore {
         DataboxUtils.maxMembersCheck(memberSet ? memberSet.size : 0,this._maxSocketMembers);
 
         const dbToken: DbToken = typeof request.t === 'string' ?
-            await this._processDbToken(request.t,member) : DataboxUtils.createDbToken(request.i);
+            await this._processDbToken(request.t,member) : DataboxUtils.createDbToken(request.o);
 
-        const processedInitData = await this._consumeInitInput(dbToken.rawInitData);
-        if(typeof processedInitData === 'object'){ObjectUtils.deepFreeze(processedInitData);}
+        const processedOptions = await this._consumeOptionsInput(dbToken.rawOptions);
+        if(typeof processedOptions === 'object') ObjectUtils.deepFreeze(processedOptions);
 
-        const keys: DbRegisterResult = await this._registerSocket(socket,member,dbToken,processedInitData);
+        const keys: DbRegisterResult = await this._registerSocket(socket,member,dbToken,processedOptions);
         return [keys.inputCh,keys.outputCh,this._getLastCudId(member),this.isParallelFetch()];
     }
 
@@ -235,10 +235,10 @@ export default class DataboxFamily extends DataboxCore {
      * @param socket
      * @param member
      * @param dbToken
-     * @param initData
+     * @param options
      * @private
      */
-    private async _registerSocket(socket: Socket, member: string, dbToken: DbToken, initData: any): Promise<DbRegisterResult> {
+    private async _registerSocket(socket: Socket, member: string, dbToken: DbToken, options: any): Promise<DbRegisterResult> {
 
         const {inputChIds,unregisterSocket} = await this._connectSocket(socket,member);
 
@@ -250,7 +250,7 @@ export default class DataboxFamily extends DataboxCore {
 
         const outputCh = this._dbEventPreFix+member;
         const inputCh = outputCh+'-'+chInputId;
-        const dbInConnection: DbFamilyInConnection = Object.freeze({member,socket,initData,created: Date.now()});
+        const dbInConnection: DbFamilyInConnection = Object.freeze({member,socket,options: options,created: Date.now()});
 
         const fetchManager = this._buildFetchManager();
 
@@ -1190,7 +1190,7 @@ export default class DataboxFamily extends DataboxCore {
      * But keep in mind when you overwrite a cud middleware the Databox switches
      * to a less performant implementation.
      * @param request {counter: number, input?: any, reload: boolean}
-     * @param connection {member: string, socket: Socket, initData?: any}
+     * @param connection {member: string, socket: Socket, options?: any}
      * @param session
      */
     protected fetch(request: FetchRequest, connection: DbFamilyInConnection, session: Record<string,any>): Promise<any> | any {
@@ -1237,7 +1237,7 @@ export default class DataboxFamily extends DataboxCore {
      * But keep in mind when you overwrite a cud middleware the Databox switches
      * to a less performant implementation.
      * @param request {counter: number, input?: any, reload: boolean}
-     * @param connection {member: string, socket: Socket, initData?: any}
+     * @param connection {member: string, socket: Socket, options?: any}
      */
     protected singleFetch(request: FetchRequest, connection: DbFamilyInConnection): Promise<any> | any {
         throw new NoDataError();

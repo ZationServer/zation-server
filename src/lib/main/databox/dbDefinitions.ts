@@ -23,13 +23,13 @@ export interface DataboxConnectReq {
     /**
      * token
      * If defined will be used instead of
-     * creating a new token with initData.
+     * creating a new token with options.
      */
     t?: string,
     /**
-     * initInput
+     * options
      */
-    i?: any
+    o?: any
 }
 
 export interface DataboxConnectRes {
@@ -454,9 +454,9 @@ export interface DbWorkerRecheckMemberAccessPackage extends DbWorkerPackage{
  */
 export interface DbToken {
     /**
-     * The raw init data.
+     * The raw options.
      */
-    rawInitData: any;
+    rawOptions: any;
     /**
      * The Databox sessions.
      */

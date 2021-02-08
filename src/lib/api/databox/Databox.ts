@@ -228,12 +228,12 @@ export default class Databox extends DataboxCore {
         await this._checkAccess(socket,{identifier: this.identifier});
 
         const dbToken: DbToken = typeof request.t === 'string' ?
-            await this._processDbToken(request.t) : DataboxUtils.createDbToken(request.i);
+            await this._processDbToken(request.t) : DataboxUtils.createDbToken(request.o);
 
-        const processedInitData = await this._consumeInitInput(dbToken.rawInitData);
-        if(typeof processedInitData === 'object') ObjectUtils.deepFreeze(processedInitData);
+        const processedOptions = await this._consumeOptionsInput(dbToken.rawOptions);
+        if(typeof processedOptions === 'object') ObjectUtils.deepFreeze(processedOptions);
 
-        const keys: DbRegisterResult = await this._registerSocket(socket,dbToken,processedInitData);
+        const keys: DbRegisterResult = await this._registerSocket(socket,dbToken,processedOptions);
         return [keys.inputCh,keys.outputCh,this._getLastCudId(),this.isParallelFetch()];
     }
 
@@ -242,10 +242,10 @@ export default class Databox extends DataboxCore {
      * **Not override this method.**
      * @param socket
      * @param dbToken
-     * @param initData
+     * @param options
      * @private
      */
-    private async _registerSocket(socket: Socket, dbToken: DbToken, initData: any): Promise<DbRegisterResult> {
+    private async _registerSocket(socket: Socket, dbToken: DbToken, options: any): Promise<DbRegisterResult> {
 
         const {inputChIds,unregisterSocket} = await this._connectSocket(socket);
 
@@ -256,7 +256,7 @@ export default class Databox extends DataboxCore {
         inputChIds.add(chInputId);
 
         const inputCh = this._dbEvent+'.'+chInputId;
-        const dbInConnection: DbInConnection = Object.freeze({socket,initData,created: Date.now()});
+        const dbInConnection: DbInConnection = Object.freeze({socket,options: options,created: Date.now()});
 
         const fetchManager = this._buildFetchManager();
 
@@ -999,7 +999,7 @@ export default class Databox extends DataboxCore {
      * But keep in mind when you overwrite a cud middleware the Databox switches
      * to a less performant implementation.
      * @param request {counter: number, input?: any, reload: boolean}
-     * @param connection {socket: Socket, initData?: any}
+     * @param connection {socket: Socket, options?: any}
      * @param session
      */
     protected fetch(request: FetchRequest, connection: DbInConnection, session: Record<string,any>): Promise<any> | any {
@@ -1046,7 +1046,7 @@ export default class Databox extends DataboxCore {
      * But keep in mind when you overwrite a cud middleware the Databox switches
      * to a less performant implementation.
      * @param request {counter: number, input?: any, reload: boolean}
-     * @param connection {socket: Socket, initData?: any}
+     * @param connection {socket: Socket, options?: any}
      */
     protected singleFetch(request: FetchRequest, connection: DbInConnection): Promise<any> | any {
         throw new NoDataError();

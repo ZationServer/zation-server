@@ -150,11 +150,11 @@ export default class DataboxUtils {
 
     /**
      * Creates a new Databox token.
-     * @param rawInitData
+     * @param rawOptions
      */
-    static createDbToken(rawInitData: any): DbToken {
+    static createDbToken(rawOptions: any): DbToken {
         return {
-            rawInitData: rawInitData,
+            rawOptions: rawOptions,
             sessions: DataboxUtils.createDbSessionData()
         };
     }

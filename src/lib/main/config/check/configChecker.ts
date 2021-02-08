@@ -600,7 +600,7 @@ export default class ConfigChecker
 
         this.checkAccessConfig(config, target);
 
-        this.checkInput(config.initInput, target.addPath('initInput'));
+        this.checkInput(config.optionsInput, target.addPath('initInput'));
         this.checkInput(config.fetchInput, target.addPath('fetchInput'));
     }
 

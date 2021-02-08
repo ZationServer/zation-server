@@ -59,7 +59,7 @@ export interface FetchRequest {
 
 export interface DbInConnection {
     socket: Socket,
-    initData?: any,
+    options?: any,
     /**
      * @description
      * Timestamp that indicates the creation time of the connection.

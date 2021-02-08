@@ -36,11 +36,11 @@ export interface DataboxConfig extends AccessConfig<DbAccessFunction>
      */
     fetchInput?: Input;
     /**
-     * This property defines the init input.
-     * The client can send these init input when it builds the connection.
-     * You can access the init input whenever the fetch / singleFetch method gets triggered,
-     * but you not able to change these input in the whole connection.
-     * It will be used to validate and format the init data that flows into the component.
+     * This property defines the options input.
+     * The client can send these options when it builds the connection.
+     * You can access the options whenever the fetch / singleFetch method gets triggered,
+     * but you not able to change these options in the whole connection.
+     * It will be used to validate and format the options data that flows into the component.
      * The input can be defined with a model, or you can allow any input with 'any' literal.
      * If you don't want to have any input you can use the 'nothing' literal.
      * @default 'nothing'
@@ -57,7 +57,7 @@ export interface DataboxConfig extends AccessConfig<DbAccessFunction>
      * //Client can send  ->
      * {name: 'Luca', age: 20}
      */
-    initInput?: Input;
+    optionsInput?: Input;
     /**
      * This option can be activated when you have designed
      * this Databox in such a way that the fetching of data
