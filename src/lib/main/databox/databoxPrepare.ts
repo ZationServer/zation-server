@@ -21,6 +21,7 @@ import DynamicSingleton                                         from '../utils/d
 import ObjectUtils                                              from '../utils/objectUtils';
 import {Writable}                                               from '../utils/typeUtils';
 import AccessUtils                                              from '../access/accessUtils';
+import {buildOptions}                                           from '../utils/buildOptions';
 
 export default class DataboxPrepare extends ComponentPrepare<DataboxCore,DataboxConfig>
 {
@@ -76,18 +77,18 @@ export default class DataboxPrepare extends ComponentPrepare<DataboxCore,Databox
         ObjectUtils.mergeTwoObjects(config, this.componentDefaultConfig, false);
         (databox as Writable<AnyDataboxClass>).config = config;
 
-        const dbPreparedData: DbPreparedData = {
+        const dbPreparedData: DbPreparedData = buildOptions<DbPreparedData>({
             checkAccess: AccessUtils.createAccessChecker<DbAccessFunction>(config.access,`Databox: ${identifier}`),
-            consumeInitInput: InputClosureCreator.createInputConsumer(config.optionsInput),
+            consumeOptionsInput: InputClosureCreator.createInputConsumer(config.optionsInput),
             consumeFetchInput: InputClosureCreator.createInputConsumer(config.fetchInput),
-            parallelFetch: config.parallelFetch !== undefined ? config.parallelFetch: false,
-            maxBackpressure: config.maxBackpressure !== undefined ? config.maxBackpressure: 30,
-            maxSocketInputChannels: config.maxSocketInputChannels !== undefined ? config.maxSocketInputChannels: 10,
-            fetchLastCudData: config.fetchLastCudData !== undefined ? config.fetchLastCudData : 500,
-            unregisterDelay: config.unregisterDelay !== undefined ? config.unregisterDelay : 120000,
-            maxSocketMembers: config.maxSocketMembers !== undefined ? config.maxSocketMembers : 20,
-            initialData: config.initialData
-        };
+            parallelFetch: false,
+            maxBackpressure: 30,
+            maxSocketInputChannels: 10,
+            fetchLastCudData: 500,
+            unregisterDelay: 120000,
+            maxSocketMembers: 20,
+            initialData: undefined
+        }, config);
 
         const dbInstance = DynamicSingleton.create<AnyDataboxClass,Databox | DataboxFamily>
             (databox,identifier,this.bag,dbPreparedData,apiLevel);

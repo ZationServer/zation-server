@@ -68,7 +68,7 @@ export default abstract class DataboxCore extends Component {
         this._sendErrorDescription = bag.getMainConfig().sendErrorDescription;
 
         this._parallelFetch = preparedData.parallelFetch;
-        this._optionsInputConsumer = preparedData.consumeInitInput;
+        this._optionsInputConsumer = preparedData.consumeOptionsInput;
         this._fetchInputConsumer = preparedData.consumeFetchInput;
         this._unregisterDelay = preparedData.unregisterDelay;
         this._initialData = preparedData.initialData;
@@ -301,7 +301,7 @@ DataboxCore.prototype[componentTypeSymbol] = 'Databox';
 
 export interface DbPreparedData {
     checkAccess: DbAccessFunction,
-    consumeInitInput: ConsumeInputFunction,
+    consumeOptionsInput: ConsumeInputFunction,
     consumeFetchInput: ConsumeInputFunction,
     parallelFetch: boolean,
     maxBackpressure: number,
