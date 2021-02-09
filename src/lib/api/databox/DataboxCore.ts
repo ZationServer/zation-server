@@ -47,6 +47,7 @@ export default abstract class DataboxCore extends Component {
      */
     protected readonly dbTokenVersion: number = 0;
 
+    protected readonly _parsedReloadStrategy?: [string,any];
     protected readonly _initialData: any;
     protected readonly _unregisterDelay: number;
     protected readonly _preparedData: DbPreparedData;
@@ -72,6 +73,10 @@ export default abstract class DataboxCore extends Component {
         this._fetchInputConsumer = preparedData.consumeFetchInput;
         this._unregisterDelay = preparedData.unregisterDelay;
         this._initialData = preparedData.initialData;
+        if(preparedData.reloadStrategy) {
+            this._parsedReloadStrategy = [preparedData.reloadStrategy.name,
+                preparedData.reloadStrategy.options];
+        }
 
         this._preparedTokenSessionKey =
             `${bag.getZationConfig().getDataboxKey()}.${this.dbTokenVersion}.${this.identifier}${apiLevel !== undefined ? apiLevel: ''}`;
@@ -309,5 +314,6 @@ export interface DbPreparedData {
     fetchLastCudData: number | false,
     unregisterDelay: number,
     maxSocketMembers: number,
-    initialData: any
+    initialData: any,
+    reloadStrategy: {name: string, options?: any} | null
 }

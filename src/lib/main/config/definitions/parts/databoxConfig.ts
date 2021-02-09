@@ -119,4 +119,42 @@ export interface DataboxConfig extends AccessConfig<DbAccessFunction>
      * @default undefined
      */
     initialData?: any;
+    /**
+     * Defines the reload strategy that the client Databox should
+     * use to reload the data in a newer state.
+     * Notice that the client can overwrite the reload strategy.
+     * It is also possible to register custom strategies on the client-side
+     * and specify them on the server-side with JSON friendly options.
+     * If no strategy is defined on the client and server-side,
+     * the history-based strategy will be used.
+     */
+    reloadStrategy?: HistoryBasedReloadStrategy | TimeBasedListReloadStrategy | AnyReloadStrategy
+}
+
+interface AnyReloadStrategy {
+    name: string,
+    options?: any
+}
+interface HistoryBasedReloadStrategy {
+    name: 'HistoryBased',
+}
+interface TimeBasedListReloadStrategy {
+    name: 'TimeBasedList',
+    options?: {
+        /**
+         * The property name where the timestamp is located.
+         * @default 'created'
+         */
+        timestampKey?: string,
+        /**
+         * The maximal amount of fetches before give up.
+         * @default 100
+         */
+        maxFetchTries?: number
+        /**
+         * Time delta of disconnected timestamp.
+         * @default 5000
+         */
+        disconnectTimeDelta?: number
+    }
 }

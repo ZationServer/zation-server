@@ -233,6 +233,7 @@ export default class DataboxFamily extends DataboxCore {
             p: this.isParallelFetch(),
         };
         if(this._initialData !== undefined) resp.id = this._initialData;
+        if(this._parsedReloadStrategy != null) resp.rs = this._parsedReloadStrategy;
         return resp;
     }
 

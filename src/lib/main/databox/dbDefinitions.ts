@@ -52,7 +52,11 @@ export interface DataboxConnectRes {
     /**
      * Initial data
      */
-    id?: any
+    id?: any,
+    /**
+     * Reload strategy
+     */
+    rs?: [string,any]
 }
 
 export type UnregisterSocketFunction = (inputChannelId?: string) => void;

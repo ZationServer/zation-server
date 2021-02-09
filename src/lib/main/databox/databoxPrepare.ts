@@ -87,7 +87,8 @@ export default class DataboxPrepare extends ComponentPrepare<DataboxCore,Databox
             fetchLastCudData: 500,
             unregisterDelay: 120000,
             maxSocketMembers: 20,
-            initialData: undefined
+            initialData: undefined,
+            reloadStrategy: null
         }, config);
 
         const dbInstance = DynamicSingleton.create<AnyDataboxClass,Databox | DataboxFamily>
