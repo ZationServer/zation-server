@@ -242,6 +242,8 @@ export default class DataboxFamilyContainer {
      * With this function, you can do a recheck of all sockets on a specific member.
      * It can be useful when the access rights to member have changed,
      * and you want to kick out all sockets that not have access anymore.
+     * Notice that the promise is resolved when the access was checked
+     * on the current worker and request sent to other workers.
      * @param member
      * @param forEveryWorker
      */
