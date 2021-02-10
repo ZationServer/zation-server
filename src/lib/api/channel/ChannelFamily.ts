@@ -12,25 +12,28 @@ import FuncUtils                     from '../../main/utils/funcUtils';
 import {ErrorEventHolder}            from '../../main/error/errorEventHolder';
 import {removeValueFromArray}        from '../../main/utils/arrayUtils';
 import {
+    CH_CLIENT_OUTPUT_CLOSE,
     CH_CLIENT_OUTPUT_KICK_OUT,
     CH_CLIENT_OUTPUT_PUBLISH,
     CHANNEL_MEMBER_SPLIT,
     CHANNEL_START_INDICATOR,
     ChClientInputAction,
     ChClientInputPackage,
+    ChClientOutputClosePackage,
     ChClientOutputKickOutPackage,
     ChClientOutputPublishPackage,
     ChWorkerAction,
+    ChWorkerClosePackage,
     ChWorkerPackage,
-    ChWorkerPublishPackage, ChWorkerRecheckMemberAccessPackage,
-    KickOutSocketFunction,
+    ChWorkerPublishPackage,
+    ChWorkerRecheckMemberAccessPackage,
     PublishPackage,
+    UnsubscribeSocketFunction,
     UnsubscribeTrigger
 } from '../../main/channel/channelDefinitions';
 import {familyTypeSymbol}                       from '../../main/component/componentUtils';
 import ChannelUtils                             from '../../main/channel/channelUtils';
 import {isDefaultImpl, markAsDefaultImpl}       from '../../main/utils/defaultImplUtils';
-import DataboxFamily                            from '../databox/DataboxFamily';
 import MiddlewaresPreparer, {MiddlewareInvoker} from '../../main/middlewares/middlewaresPreparer';
 import Timeout = NodeJS.Timeout;
 
@@ -62,7 +65,7 @@ export default class ChannelFamily extends ChannelCore {
     /**
      * Maps the member to the sockets and kick out function.
      */
-    private readonly _regMembers: Map<string,Map<Socket,KickOutSocketFunction>> = new Map();
+    private readonly _regMembers: Map<string,Map<Socket,UnsubscribeSocketFunction>> = new Map();
     /**
      * Maps the sockets to the members.
      */
@@ -151,7 +154,7 @@ export default class ChannelFamily extends ChannelCore {
             }
         });
         socket._on('disconnect',disconnectHandler);
-        memberMap.set(socket,() => this._unsubscribeSocket(member,socket,disconnectHandler,UnsubscribeTrigger.KickOut));
+        memberMap.set(socket,(trigger: UnsubscribeTrigger) => this._unsubscribeSocket(member,socket,disconnectHandler,trigger));
 
         //socket member map
         let socketMemberSet = this._socketMembers.get(socket);
@@ -169,7 +172,7 @@ export default class ChannelFamily extends ChannelCore {
      * @param member
      * @private
      */
-    private _buildSocketFamilyMemberMap(member: string): Map<Socket,KickOutSocketFunction> {
+    private _buildSocketFamilyMemberMap(member: string): Map<Socket,UnsubscribeSocketFunction> {
         let memberMap = this._regMembers.get(member);
         if(!memberMap) memberMap = this._registerMember(member);
         else this._clearUnregisterMemberTimeout(member);
@@ -181,8 +184,8 @@ export default class ChannelFamily extends ChannelCore {
      * @param member
      * @private
      */
-    private _registerMember(member: string): Map<Socket,KickOutSocketFunction> {
-        const memberMap = new Map<Socket,KickOutSocketFunction>();
+    private _registerMember(member: string): Map<Socket,UnsubscribeSocketFunction> {
+        const memberMap = new Map<Socket,UnsubscribeSocketFunction>();
         this._regMembers.set(member,memberMap);
         this._scExchange.subscribe(this._chEventPreFix + member)
             .watch(async (data: ChWorkerPackage) => {
@@ -193,6 +196,9 @@ export default class ChannelFamily extends ChannelCore {
                             break;
                         case ChWorkerAction.recheckMemberAccess:
                             await this._recheckMemberAccess(member);
+                            break;
+                        case ChWorkerAction.close:
+                            this._close(member,(data as ChWorkerClosePackage)[2]);
                             break;
                         default:
                     }
@@ -324,6 +330,26 @@ export default class ChannelFamily extends ChannelCore {
     }
 
     /**
+     * Close the family member of this Channel.
+     * @param member
+     * @param closePackage
+     * @private
+     */
+    private _close(member: string,closePackage: ChClientOutputClosePackage) {
+        const memberMem = this._regMembers.get(member);
+        if(memberMem){
+            for(const [socket, unsubscribeSocketFunction] of memberMem.entries()) {
+                socket._emit(CH_CLIENT_OUTPUT_CLOSE,closePackage);
+                unsubscribeSocketFunction(UnsubscribeTrigger.Close);
+            }
+        }
+    }
+
+    private _sendToWorkers(member: string,workerPackage: ChWorkerPackage) {
+        this._scExchange.publish(this._chEventPreFix+member,workerPackage);
+    }
+
+    /**
      * **Not override this method.**
      * This method returns a string array
      * with all members that the socket has subscribed.
@@ -352,10 +378,30 @@ export default class ChannelFamily extends ChannelCore {
             ...(data !== undefined ? {d: data} : {}),
             ...(publisherSid !== undefined ? {p: publisherSid} : {})
         };
-        this._scExchange.publish(this._chEventPreFix+member,
-            [this._workerFullId,ChWorkerAction.publish,publishPackage] as ChWorkerPublishPackage);
+        this._sendToWorkers(member, [this._workerFullId,ChWorkerAction.publish,publishPackage] as ChWorkerPublishPackage);
         this._processPublish(member,publishPackage);
         this._onPublish(member,event,data);
+    }
+
+    /**
+     * **Not override this method.**
+     * The close function will close a Channel member for every client on every server.
+     * You optionally can provide a code or any other information for the client.
+     * Usually, the close function is used when the data is completely deleted from the system.
+     * For example, a chat that doesn't exist anymore.
+     * @param member The member of the family you want to close.
+     * Numbers will be converted to a string.
+     * @param code
+     * @param data
+     * @param forEveryWorker
+     */
+    close(member: string | number,code?: number | string,data?: any,forEveryWorker: boolean = true){
+        member = typeof member === "string" ? member: member.toString();
+        const clientPackage: ChClientOutputClosePackage = {i: this._chId,m: member,c: code,d: data};
+        if(forEveryWorker){
+            this._sendToWorkers(member,[this._workerFullId,ChWorkerAction.close,clientPackage] as ChWorkerClosePackage)
+        }
+        this._close(member,clientPackage);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -371,10 +417,10 @@ export default class ChannelFamily extends ChannelCore {
         member = typeof member === "string" ? member: member.toString();
         const memberMap = this._regMembers.get(member);
         if(memberMap){
-            const kickOutFunction = memberMap.get(socket);
-            if(kickOutFunction){
+            const unsubscribeSocketFunction = memberMap.get(socket);
+            if(unsubscribeSocketFunction){
                 socket._emit(CH_CLIENT_OUTPUT_KICK_OUT,{i: this._chId,m: member,c: code,d: data} as ChClientOutputKickOutPackage);
-                kickOutFunction();
+                unsubscribeSocketFunction(UnsubscribeTrigger.KickOut);
             }
         }
     }
@@ -390,8 +436,7 @@ export default class ChannelFamily extends ChannelCore {
     async recheckMemberAccess(member: string | number, forEveryWorker: boolean = true): Promise<void> {
         member = typeof member === "string" ? member: member.toString();
         if(forEveryWorker){
-            this._scExchange.publish(this._chEventPreFix+member,
-                [this._workerFullId,ChWorkerAction.recheckMemberAccess] as ChWorkerRecheckMemberAccessPackage);
+            this._sendToWorkers(member, [this._workerFullId,ChWorkerAction.recheckMemberAccess] as ChWorkerRecheckMemberAccessPackage);
         }
         await this._recheckMemberAccess(member);
     }
@@ -442,6 +487,6 @@ export default class ChannelFamily extends ChannelCore {
 ChannelFamily[familyTypeSymbol] = true;
 ChannelFamily.prototype[familyTypeSymbol] = true;
 
-markAsDefaultImpl(DataboxFamily.prototype['memberMiddleware']);
+markAsDefaultImpl(ChannelFamily.prototype['memberMiddleware']);
 
 export type ChannelFamilyClass = typeof ChannelFamily;

@@ -12,18 +12,19 @@ import FuncUtils                     from '../../main/utils/funcUtils';
 import {ErrorEventHolder}            from '../../main/error/errorEventHolder';
 import {removeValueFromArray}        from '../../main/utils/arrayUtils';
 import {
+    CH_CLIENT_OUTPUT_CLOSE,
     CH_CLIENT_OUTPUT_KICK_OUT,
     CH_CLIENT_OUTPUT_PUBLISH,
     CHANNEL_START_INDICATOR,
     ChClientInputAction,
-    ChClientInputPackage,
+    ChClientInputPackage, ChClientOutputClosePackage,
     ChClientOutputKickOutPackage,
     ChClientOutputPublishPackage,
-    ChWorkerAction,
+    ChWorkerAction, ChWorkerClosePackage,
     ChWorkerPackage,
     ChWorkerPublishPackage,
-    KickOutSocketFunction,
     PublishPackage,
+    UnsubscribeSocketFunction,
     UnsubscribeTrigger
 } from '../../main/channel/channelDefinitions';
 
@@ -46,7 +47,7 @@ export default class Channel extends ChannelCore {
     /**
      * Maps the sockets to the kick out function.
      */
-    private readonly _subSockets: Map<Socket,KickOutSocketFunction> = new Map();
+    private readonly _subSockets: Map<Socket,UnsubscribeSocketFunction> = new Map();
 
     /**
      * Also the channel id.
@@ -194,6 +195,9 @@ export default class Channel extends ChannelCore {
                         case ChWorkerAction.publish:
                             this._processPublish((data as ChWorkerPublishPackage)[2]);
                             break;
+                        case ChWorkerAction.close:
+                            this._close((data as ChWorkerClosePackage)[2]);
+                            break;
                         default:
                     }
                 }
@@ -223,6 +227,22 @@ export default class Channel extends ChannelCore {
         }
     }
 
+    private _sendToWorkers(workerPackage: ChWorkerPackage) {
+        this._scExchange.publish(this._chEvent,workerPackage);
+    }
+
+    /**
+     * Close this Channel.
+     * @param closePackage
+     * @private
+     */
+    private _close(closePackage: ChClientOutputClosePackage) {
+        for(const [socket, unsubscribeSocketFunction] of this._subSockets.entries()) {
+            socket._emit(CH_CLIENT_OUTPUT_CLOSE,closePackage);
+            unsubscribeSocketFunction(UnsubscribeTrigger.Close);
+        }
+    }
+
     /**
      * **Not override this method.**
      * Publish into this channel.
@@ -238,10 +258,27 @@ export default class Channel extends ChannelCore {
             ...(data !== undefined ? {d: data} : {}),
             ...(publisherSid !== undefined ? {p: publisherSid} : {})
         };
-        this._scExchange.publish(this._chEvent,
-            [this._workerFullId,ChWorkerAction.publish,publishPackage] as ChWorkerPublishPackage);
+        this._sendToWorkers([this._workerFullId,ChWorkerAction.publish,publishPackage] as ChWorkerPublishPackage);
         this._processPublish(publishPackage);
         this._onPublish(event,data);
+    }
+
+    /**
+     * **Not override this method.**
+     * The close function will close the Channel for every client on every server.
+     * You optionally can provide a code or any other information for the client.
+     * Usually, the close function is used when the data is completely deleted from the system.
+     * For example, a chat that doesn't exist anymore.
+     * @param code
+     * @param data
+     * @param forEveryWorker
+     */
+    close(code?: number | string,data?: any,forEveryWorker: boolean = true){
+        const clientPackage: ChClientOutputClosePackage = {i: this._chEvent,c: code,d: data};
+        if(forEveryWorker){
+            this._sendToWorkers([this._workerFullId,ChWorkerAction.close,clientPackage] as ChWorkerClosePackage);
+        }
+        this._close(clientPackage);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -253,10 +290,10 @@ export default class Channel extends ChannelCore {
      * @param data
      */
     kickOut(socket: Socket, code?: number | string, data?: any) {
-        const kickOutFunction = this._subSockets.get(socket);
-        if(kickOutFunction){
+        const unsubscribeSocketFunction = this._subSockets.get(socket);
+        if(unsubscribeSocketFunction){
             socket._emit(CH_CLIENT_OUTPUT_KICK_OUT,{i: this._chEvent,c: code,d: data} as ChClientOutputKickOutPackage);
-            kickOutFunction();
+            unsubscribeSocketFunction(UnsubscribeTrigger.KickOut);
         }
     }
 

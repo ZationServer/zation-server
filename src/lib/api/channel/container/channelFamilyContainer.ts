@@ -37,6 +37,23 @@ export default class ChannelFamilyContainer {
         }
     }
 
+    /**
+     * The close function will close a Channel member for every client on every server.
+     * You optionally can provide a code or any other information for the client.
+     * Usually, the close function is used when the data is completely deleted from the system.
+     * For example, a chat that doesn't exist anymore.
+     * @param member The member of the family you want to close.
+     * Numbers will be converted to a string.
+     * @param code
+     * @param data
+     * @param forEveryWorker
+     */
+    close(member: string | number,code?: number | string, data?: any,forEveryWorker: boolean = true): void {
+        for(let i = 0; i < this._count; i++) {
+            this._channels[i].close(member,code,data,forEveryWorker);
+        }
+    }
+
     // noinspection JSUnusedGlobalSymbols
     /**
      * **Not override this method.**

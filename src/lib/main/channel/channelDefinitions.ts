@@ -48,7 +48,11 @@ export const enum ChWorkerAction {
     /**
      * Recheck member access request.
      */
-    recheckMemberAccess
+    recheckMemberAccess,
+    /**
+     * Close the Channel
+     */
+    close
 }
 
 /**
@@ -95,6 +99,24 @@ export interface ChWorkerRecheckMemberAccessPackage extends ChWorkerPackage{
      * action
      */
     1: ChWorkerAction.recheckMemberAccess
+}
+
+/**
+ * A close package that a worker can send to the other workers.
+ */
+export interface ChWorkerClosePackage extends ChWorkerPackage {
+    /**
+     * workerFullId
+     */
+    0: string,
+    /**
+     * action
+     */
+    1: ChWorkerAction.close,
+    /**
+     * Close
+     */
+    2: ChClientOutputClosePackage
 }
 
 /**
@@ -156,12 +178,34 @@ export interface ChClientOutputKickOutPackage {
     d?: any;
 }
 
-export type KickOutSocketFunction = () => void;
+export const CH_CLIENT_OUTPUT_CLOSE = 'C>C';
+
+export interface ChClientOutputClosePackage {
+    /**
+     * Channel id
+     */
+    i: string;
+    /**
+     * Member
+     */
+    m?: string;
+    /**
+     * code
+     */
+    c?: number | string;
+    /**
+     * data
+     */
+    d?: any;
+}
+
+export type UnsubscribeSocketFunction = (trigger: UnsubscribeTrigger) => void;
 
 export enum UnsubscribeTrigger {
     Client,
     Disconnect,
-    KickOut
+    KickOut,
+    Close
 }
 
 /**
