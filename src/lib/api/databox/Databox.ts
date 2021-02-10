@@ -47,14 +47,16 @@ import {
     PreCudPackage,
     TimestampOption,
     DbWorkerCudDataResponsePackage,
-    DbWorkerCudDataRequestPackage, DbLastCudDataMemory,
+    DbWorkerCudDataRequestPackage, DbLastCudDataMemory, DbSessionData,
 } from '../../main/databox/dbDefinitions';
-import {DbInConnection,
+import {
+    DbInConnection,
     DeleteAction,
     FetchRequest,
     InsertAction,
     SignalAction,
-    UpdateAction} from './DataboxApiDefinitions';
+    UpdateAction
+} from './DataboxApiDefinitions';
 import {ScExchange}                               from '../../main/sc/scServer';
 import DataboxUtils                               from '../../main/databox/databoxUtils';
 import DbCudOperationSequence                     from '../../main/databox/dbCudOperationSequence';
@@ -67,6 +69,7 @@ import ObjectUtils                                from '../../main/utils/objectU
 import FuncUtils                                  from '../../main/utils/funcUtils';
 import {isDefaultImpl, markAsDefaultImpl}         from '../../main/utils/defaultImplUtils';
 import NoDataError                                from '../../main/databox/noDataError';
+import {Writeable}                                from '../../../../../zation-js-client/src/lib/main/utils/typeUtils';
 
 /**
  * If you always want to present the most recent data on the client,
@@ -113,7 +116,7 @@ export default class Databox extends DataboxCore {
     private _internalRegistered: boolean = false;
     private _unregisterTimout: NodeJS.Timeout | undefined;
 
-    private readonly _fetchImpl: (request: FetchRequest, connection: DbInConnection, session: Record<string, any>) => Promise<any> | any;
+    private readonly _fetchImpl: (request: FetchRequest, connection: DbInConnection, session: DbSessionData) => Promise<any> | any;
     private readonly _buildFetchManager: FetchManagerBuilder<typeof Databox.prototype._fetch>;
     private readonly _sendCudToSockets: (dbClientCudPackage: DbClientOutputCudPackage) => Promise<void> | void;
     private readonly _sendSignalToSockets: (dbClientPackage: DbClientOutputSignalPackage) => Promise<void> | void;
@@ -186,7 +189,7 @@ export default class Databox extends DataboxCore {
         }
     }
 
-    private _getFetchImpl(): (request: FetchRequest, connection: DbInConnection, session: Record<string, any>) => Promise<any> | any {
+    private _getFetchImpl(): (request: FetchRequest, connection: DbInConnection, session: DbSessionData) => Promise<any> | any {
         if(!isDefaultImpl(this.singleFetch)) {
             return (request,connection) => {
                 if(request.counter === 0){
@@ -218,7 +221,7 @@ export default class Databox extends DataboxCore {
     }
 
     //Core
-    async _processConRequest(socket: Socket, request: DataboxConnectReq): Promise<DataboxConnectRes> {
+    async _processConRequest(socket: Socket, request: DataboxConnectReq, sendResponse: (response: DataboxConnectRes) => void): Promise<void> {
         if(request.m != undefined){
             const err: any = new Error(`Unnecessary member provided to request a Databox.`);
             err.name = ClientErrorName.UnnecessaryMember;
@@ -233,7 +236,8 @@ export default class Databox extends DataboxCore {
         const processedOptions = await this._consumeOptionsInput(dbToken.rawOptions);
         if(typeof processedOptions === 'object') ObjectUtils.deepFreeze(processedOptions);
 
-        const keys: DbRegisterResult = await this._registerSocket(socket,dbToken,processedOptions);
+        const dbInConnection: DbInConnection = Object.freeze({socket,options: processedOptions,created: Date.now()});
+        const keys: DbRegisterResult = await this._registerSocket(socket,dbToken,dbInConnection);
         const resp: DataboxConnectRes = {
             i: keys.inputCh,
             o: keys.outputCh,
@@ -242,7 +246,11 @@ export default class Databox extends DataboxCore {
         };
         if(this._initialData !== undefined) resp.id = this._initialData;
         if(this._parsedReloadStrategy != null) resp.rs = this._parsedReloadStrategy;
-        return resp;
+        sendResponse(resp);
+
+        //update connection created timestamp
+        (dbInConnection as Writeable<DbInConnection>).created = Date.now();
+        Object.freeze(dbInConnection);
     }
 
     /**
@@ -250,10 +258,11 @@ export default class Databox extends DataboxCore {
      * **Not override this method.**
      * @param socket
      * @param dbToken
-     * @param options
+     * @param dbInConnection
      * @private
      */
-    private async _registerSocket(socket: Socket, dbToken: DbToken, options: any): Promise<DbRegisterResult> {
+    private async _registerSocket(socket: Socket, dbToken: DbToken,
+                                  dbInConnection: DbInConnection): Promise<DbRegisterResult> {
 
         const {inputChIds,unregisterSocket} = await this._connectSocket(socket);
 
@@ -264,7 +273,6 @@ export default class Databox extends DataboxCore {
         inputChIds.add(chInputId);
 
         const inputCh = this._dbEvent+'.'+chInputId;
-        const dbInConnection: DbInConnection = Object.freeze({socket,options: options,created: Date.now()});
 
         const fetchManager = this._buildFetchManager();
 
@@ -1012,7 +1020,7 @@ export default class Databox extends DataboxCore {
      * @param connection {socket: Socket, options?: any}
      * @param session
      */
-    protected fetch(request: FetchRequest, connection: DbInConnection, session: Record<string,any>): Promise<any> | any {
+    protected fetch(request: FetchRequest, connection: DbInConnection, session: DbSessionData): Promise<any> | any {
         throw new NoDataError();
     }
 

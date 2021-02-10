@@ -16,7 +16,7 @@ import {
     DbProcessedSelector,
     DbSelector,
     DbSession,
-    DbSessionData,
+    DbSessions,
     DbToken,
     IfOptionValue,
     PreCudPackage
@@ -162,7 +162,7 @@ export default class DataboxUtils {
     /**
      * Create db session data.
      */
-    static createDbSessionData(): DbSessionData
+    static createDbSessionData(): DbSessions
     {
         return {
             main: {d:{},c:0},
@@ -176,7 +176,7 @@ export default class DataboxUtils {
      * @param dbSessionData
      * @param target
      */
-    static getSession(dbSessionData: DbSessionData,target?: DBClientInputSessionTarget): DbSession
+    static getSession(dbSessionData: DbSessions, target?: DBClientInputSessionTarget): DbSession
     {
         if(target === undefined){
             return dbSessionData.main;
@@ -206,7 +206,7 @@ export default class DataboxUtils {
      * @param dbSessionData
      * @param target
      */
-    static copySession(dbSessionData: DbSessionData,target?: DBClientInputSessionTarget): void
+    static copySession(dbSessionData: DbSessions, target?: DBClientInputSessionTarget): void
     {
         const selectedSession = DataboxUtils.getSession(dbSessionData,target);
         if(dbSessionData.main !== selectedSession){
@@ -222,7 +222,7 @@ export default class DataboxUtils {
      * @param dbSessionData
      * @param target
      */
-    static resetSession(dbSessionData: DbSessionData,target?: DBClientInputSessionTarget): void
+    static resetSession(dbSessionData: DbSessions, target?: DBClientInputSessionTarget): void
     {
         const selectedSession = DataboxUtils.getSession(dbSessionData,target);
         if(dbSessionData.main === selectedSession){

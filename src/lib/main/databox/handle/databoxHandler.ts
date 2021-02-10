@@ -33,13 +33,11 @@ export default class DataboxHandler
     }
 
     async processConnectReq(input: DataboxConnectReq, socket: Socket, respond: RespondFunction): Promise<void> {
-        try {
-            respond(null,(await this._processConnectReq(input,socket)));
-        }
+        try {await this._processConnectReq(input,socket, data => respond(null,data))}
         catch (err) {respond(err);}
     }
 
-    private async _processConnectReq(request: DataboxConnectReq, socket: Socket): Promise<DataboxConnectRes>
+    private async _processConnectReq(request: DataboxConnectReq, socket: Socket, sendResponse: (response: DataboxConnectRes) => void): Promise<void>
     {
         //check request valid
         if(!isValidDataboxConnectionRequest(request)) {
@@ -62,7 +60,7 @@ export default class DataboxHandler
             Logger.log.debug(`Databox Connection Request -> `,request);
         }
 
-        return await db._processConRequest(socket,request);
+        await db._processConRequest(socket,request,sendResponse);
     }
 
 }

@@ -472,13 +472,13 @@ export interface DbToken {
     /**
      * The Databox sessions.
      */
-    sessions: DbSessionData,
+    sessions: DbSessions,
 }
 
 /**
  * All session data of a client.
  */
-export interface DbSessionData {
+export interface DbSessions {
     /**
      * mainSession
      */
@@ -500,8 +500,10 @@ export interface DbSession {
     /**
      * data
      */
-    d: object
+    d: DbSessionData
 }
+
+export type DbSessionData = Record<string, any>;
 
 export interface InfoOption {
     /**

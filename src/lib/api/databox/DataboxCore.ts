@@ -142,8 +142,9 @@ export default abstract class DataboxCore extends Component {
      * In case of failure or denied, it will throw an error.
      * @param socket
      * @param request
+     * @param sendResponse
      */
-    abstract async _processConRequest(socket: Socket, request: DataboxConnectReq): Promise<DataboxConnectRes>;
+    abstract async _processConRequest(socket: Socket, request: DataboxConnectReq, sendResponse: (response: DataboxConnectRes) => void): Promise<void>;
 
     /**
      * @internal

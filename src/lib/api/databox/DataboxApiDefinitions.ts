@@ -58,15 +58,15 @@ export interface FetchRequest {
 }
 
 export interface DbInConnection {
-    socket: Socket,
-    options?: any,
+    readonly socket: Socket,
+    readonly options?: any,
     /**
      * @description
      * Timestamp that indicates the creation time of the connection.
      */
-    created: number
+    readonly created: number
 }
 
 export interface DbFamilyInConnection extends DbInConnection {
-    member: string
+    readonly member: string
 }
