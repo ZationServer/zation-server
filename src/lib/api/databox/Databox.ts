@@ -236,7 +236,7 @@ export default class Databox extends DataboxCore {
         const processedOptions = await this._consumeOptionsInput(dbToken.rawOptions);
         if(typeof processedOptions === 'object') ObjectUtils.deepFreeze(processedOptions);
 
-        const dbInConnection: DbInConnection = Object.freeze({socket,options: processedOptions,created: Date.now()});
+        const dbInConnection: DbInConnection = {socket,options: processedOptions,created: Date.now()};
         const keys: DbRegisterResult = await this._registerSocket(socket,dbToken,dbInConnection);
         const resp: DataboxConnectRes = {
             i: keys.inputCh,
