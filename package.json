@@ -62,7 +62,7 @@
     "validator": "13.1.1",
     "fast-stringify": "2.0.0",
     "stringify-object": "3.3.0",
-    "forint": "0.1.9",
+    "forint": "0.2.0",
     "ws": "7.2.1",
     "z-uws": "0.15.2",
     "eosjs-ecc": "4.0.4",
