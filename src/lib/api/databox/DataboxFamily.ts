@@ -354,7 +354,7 @@ export default class DataboxFamily extends DataboxCore {
         const clonedSessionData = CloneUtils.deepClone(session.d);
         const timestamp = Date.now();
         try {
-            const data = this._fetchImpl({
+            const data = await this._fetchImpl({
                 counter: currentCounter,
                 input: fetchInput,
                 reload: target === DBClientInputSessionTarget.reloadSession
