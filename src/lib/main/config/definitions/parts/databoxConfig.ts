@@ -53,7 +53,7 @@ export interface DataboxConfig extends AccessConfig<DbAccessFunction>
      *  age = Model({type: 'int', minValue: 14});
      *
      * }
-     * initInput: Person
+     * optionsInput: Person
      * //Client can send  ->
      * {name: 'Luca', age: 20}
      */
