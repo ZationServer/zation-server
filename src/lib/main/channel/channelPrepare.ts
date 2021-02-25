@@ -21,6 +21,7 @@ import {systemChannels}                    from './systemChannels/systemChannels
 import ObjectUtils                         from '../utils/objectUtils';
 import {Writable}                          from '../utils/typeUtils';
 import AccessUtils                         from '../access/accessUtils';
+import InputClosureCreator                 from '../input/inputClosureCreator';
 
 export class ChannelPrepare extends ComponentPrepare<ChannelCore,ChannelConfig>
 {
@@ -79,6 +80,7 @@ export class ChannelPrepare extends ComponentPrepare<ChannelCore,ChannelConfig>
         const chPreparedData: ChPreparedData = {
             checkAccess: AccessUtils.createAccessChecker<ChSubAccessFunction>
                 (config.access,`Channel: ${identifier}`),
+            consumeMemberInput: InputClosureCreator.createInputConsumer(config.memberInput || {type: 'string'}),
             unregisterDelay: config.unregisterDelay !== undefined ? config.unregisterDelay : 120000,
             maxSocketMembers: config.maxSocketMembers !== undefined ? config.maxSocketMembers : 20
         };

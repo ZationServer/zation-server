@@ -59,6 +59,28 @@ export interface DataboxConfig extends AccessConfig<DbAccessFunction>
      */
     optionsInput?: Input;
     /**
+     * This property defines the member input.
+     * This option allows you to define your custom composite members from different keys.
+     * The client sends the member when it builds the connection to a DataboxFamily.
+     * In a DataboxFamily, the member value is available in almost every function.
+     * By default, any string value is allowed.
+     * But you can use a model to define the member or allow any input with the 'any' literal.
+     * Notice, the member will only be validated with the model but not transformed to
+     * avoid member types' confusion and improve performance.
+     * So it is not possible to add functions to member value.
+     * @default value of type string
+     * @example
+     * @ObjectModel()
+     * class CompositeChatMember {
+     *  userId = Model({type: 'string'});
+     *  chatId = Model({type: 'string'});
+     * }
+     * memberInput: CompositeChatMember
+     * //Client can send  ->
+     * {userId: 'Luca', chatId: 'sf0ij23r'}
+     */
+    memberInput?: Input;
+    /**
      * This option can be activated when you have designed
      * this Databox in such a way that the fetching of data
      * is independent of the previous fetch.

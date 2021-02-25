@@ -4,8 +4,9 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ForintQuery} from "forint";
-import Socket        from '../../api/Socket';
+import {ForintQuery}  from "forint";
+import Socket         from '../../api/Socket';
+import {DeepReadonly} from '../utils/typeUtils';
 
 export interface DataboxConnectReq {
     /**
@@ -15,7 +16,7 @@ export interface DataboxConnectReq {
     /**
      * member
      */
-    m?: string,
+    m?: any,
     /**
      * apiLevel
      */
@@ -665,7 +666,18 @@ export type ChangeValue = (newData: any) => void;
  */
 export interface DataboxInfo {
     identifier: string,
+    /**
+     * Notice that the member is deep readonly and only given in Family components.
+     */
     member?: any
+}
+
+/**
+ * Internal member wrapper interface.
+ */
+export interface DbMember<M> {
+    memberStr: string,
+    member: DeepReadonly<M>
 }
 
 /**

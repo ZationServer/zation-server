@@ -21,7 +21,7 @@ import {
     ChClientInputPackage,
     ChClientOutputClosePackage,
     ChClientOutputKickOutPackage,
-    ChClientOutputPublishPackage,
+    ChClientOutputPublishPackage, ChMember,
     ChWorkerAction,
     ChWorkerClosePackage,
     ChWorkerPackage,
@@ -35,6 +35,10 @@ import {familyTypeSymbol}                       from '../../main/component/compo
 import ChannelUtils                             from '../../main/channel/channelUtils';
 import {isDefaultImpl, markAsDefaultImpl}       from '../../main/utils/defaultImplUtils';
 import MiddlewaresPreparer, {MiddlewareInvoker} from '../../main/middlewares/middlewaresPreparer';
+import {stringifyMember}                        from '../../main/utils/memberParser';
+import CloneUtils                               from '../../main/utils/cloneUtils';
+import ObjectUtils                              from '../../main/utils/objectUtils';
+import {DeepReadonly}                           from '../../main/utils/typeUtils';
 import Timeout = NodeJS.Timeout;
 
 /**
@@ -60,7 +64,7 @@ import Timeout = NodeJS.Timeout;
  * middleware methods:
  * - memberMiddleware
  */
-export default class ChannelFamily extends ChannelCore {
+export default class ChannelFamily<M = string> extends ChannelCore {
 
     /**
      * Maps the member to the sockets and kick out function.
@@ -69,16 +73,16 @@ export default class ChannelFamily extends ChannelCore {
     /**
      * Maps the sockets to the members.
      */
-    private readonly _socketMembers: Map<Socket,Set<string>> = new Map<Socket, Set<string>>();
+    private readonly _socketMembers: Map<Socket,Map<string,DeepReadonly<M>>> = new Map<Socket, Map<string,DeepReadonly<M>>>();
     private readonly _unregisterMemberTimeoutMap: Map<string,Timeout> = new Map();
     private readonly _maxSocketMembers: number;
 
     private readonly _chId: string;
     private readonly _chEventPreFix: string;
 
-    private readonly _onPublish: (member: string,event: string, data: any) => Promise<void> | void;
-    private readonly _onSubscription: (member: string,socket: Socket) => Promise<void> | void;
-    private readonly _onUnsubscription: (member: string, socket: Socket, trigger: UnsubscribeTrigger) => Promise<void> | void;
+    private readonly _onPublish: (member: DeepReadonly<M>,event: string, data: any) => Promise<void> | void;
+    private readonly _onSubscription: (member: DeepReadonly<M>,socket: Socket) => Promise<void> | void;
+    private readonly _onUnsubscription: (member: DeepReadonly<M>, socket: Socket, trigger: UnsubscribeTrigger) => Promise<void> | void;
     private readonly _memberMiddleware: MiddlewareInvoker<typeof ChannelFamily['prototype']['memberMiddleware']>;
 
     constructor(identifier: string, bag: Bag, chPreparedData: ChPreparedData, apiLevel: number | undefined)
@@ -108,16 +112,22 @@ export default class ChannelFamily extends ChannelCore {
      * **Not override this method.**
      * Used internally.
      */
-    async _subscribeSocket(socket: Socket, member?: string): Promise<string>{
-        if(member == undefined){
+    async _subscribeSocket(socket: Socket, member?: any): Promise<string>{
+        if(member == null){
             const err: any = new Error('The family member is required to subscribe to a channel family.');
             err.name = ClientErrorName.MemberMissing;
             throw err;
         }
 
-        const chEvent = this._chEventPreFix + member;
+        //validate member
+        await this._consumeMemberInput(CloneUtils.deepClone(member));
 
-        const memberMap = this._regMembers.get(member);
+        if(typeof member === 'object') ObjectUtils.deepFreeze(member);
+        const memberStr = stringifyMember(member);
+
+        const chEvent = this._chEventPreFix + memberStr;
+
+        const memberMap = this._regMembers.get(memberStr);
         if(memberMap && memberMap.has(socket)){
             //already subscribed
             return chEvent;
@@ -129,20 +139,20 @@ export default class ChannelFamily extends ChannelCore {
 
         await this._checkSubscribeAccess(socket,{identifier: this.identifier,member});
 
-        const memberSet = this._socketMembers.get(socket);
-        ChannelUtils.maxMembersCheck(memberSet ? memberSet.size : 0,this._maxSocketMembers);
+        const socketMembers = this._socketMembers.get(socket);
+        ChannelUtils.maxMembersCheck(socketMembers ? socketMembers.size : 0,this._maxSocketMembers);
 
-        this._addSocket(member,socket);
+        this._addSocket({memberStr,member},socket);
         this._onSubscription(member,socket);
         return this._chId;
     }
 
-    private _addSocket(member: string,socket: Socket) {
+    private _addSocket(member: ChMember<M>,socket: Socket) {
         const memberMap = this._buildSocketFamilyMemberMap(member);
 
         const disconnectHandler = () => this._unsubscribeSocket(member,socket,disconnectHandler,UnsubscribeTrigger.Disconnect);
 
-        socket._on(this._chEventPreFix + member,(senderPackage: ChClientInputPackage, respond) => {
+        socket._on(this._chEventPreFix + member.memberStr,(senderPackage: ChClientInputPackage, respond) => {
             if(senderPackage[0] === ChClientInputAction.Unsubscribe) {
                 this._unsubscribeSocket(member,socket,disconnectHandler,UnsubscribeTrigger.Client);
                 respond(null);
@@ -157,12 +167,12 @@ export default class ChannelFamily extends ChannelCore {
         memberMap.set(socket,(trigger: UnsubscribeTrigger) => this._unsubscribeSocket(member,socket,disconnectHandler,trigger));
 
         //socket member map
-        let socketMemberSet = this._socketMembers.get(socket);
-        if(!socketMemberSet){
-            socketMemberSet = new Set<string>();
-            this._socketMembers.set(socket,socketMemberSet);
+        let socketMemberMap = this._socketMembers.get(socket);
+        if(!socketMemberMap){
+            socketMemberMap = new Map<string,DeepReadonly<M>>();
+            this._socketMembers.set(socket,socketMemberMap);
         }
-        socketMemberSet.add(member);
+        socketMemberMap.set(member.memberStr,member.member)
 
         socket.getChannels().push(this);
     }
@@ -172,10 +182,10 @@ export default class ChannelFamily extends ChannelCore {
      * @param member
      * @private
      */
-    private _buildSocketFamilyMemberMap(member: string): Map<Socket,UnsubscribeSocketFunction> {
-        let memberMap = this._regMembers.get(member);
+    private _buildSocketFamilyMemberMap(member: ChMember<M>): Map<Socket,UnsubscribeSocketFunction> {
+        let memberMap = this._regMembers.get(member.memberStr);
         if(!memberMap) memberMap = this._registerMember(member);
-        else this._clearUnregisterMemberTimeout(member);
+        else this._clearUnregisterMemberTimeout(member.memberStr);
         return memberMap;
     }
 
@@ -184,21 +194,22 @@ export default class ChannelFamily extends ChannelCore {
      * @param member
      * @private
      */
-    private _registerMember(member: string): Map<Socket,UnsubscribeSocketFunction> {
+    private _registerMember(member: ChMember<M>): Map<Socket,UnsubscribeSocketFunction> {
+        const memberStr = member.memberStr;
         const memberMap = new Map<Socket,UnsubscribeSocketFunction>();
-        this._regMembers.set(member,memberMap);
-        this._scExchange.subscribe(this._chEventPreFix + member)
+        this._regMembers.set(memberStr,memberMap);
+        this._scExchange.subscribe(this._chEventPreFix + memberStr)
             .watch(async (data: ChWorkerPackage) => {
                 if(data[0] !== this._workerFullId) {
                     switch (data[1]) {
                         case ChWorkerAction.publish:
-                            this._processPublish(member,(data as ChWorkerPublishPackage)[2]);
+                            this._processPublish(memberStr,(data as ChWorkerPublishPackage)[2]);
                             break;
                         case ChWorkerAction.recheckMemberAccess:
                             await this._recheckMemberAccess(member);
                             break;
                         case ChWorkerAction.close:
-                            this._close(member,(data as ChWorkerClosePackage)[2]);
+                            this._close(memberStr,(data as ChWorkerClosePackage)[2]);
                             break;
                         default:
                     }
@@ -209,65 +220,65 @@ export default class ChannelFamily extends ChannelCore {
 
     /**
      * Unregisters for listening to a family member.
-     * @param member
+     * @param memberStr
      * @private
      */
-    private _unregisterMember(member: string) {
-        this._regMembers.delete(member);
-        const channel = this._scExchange.channel(this._chEventPreFix+member);
+    private _unregisterMember(memberStr: string) {
+        this._regMembers.delete(memberStr);
+        const channel = this._scExchange.channel(this._chEventPreFix+memberStr);
         channel.unwatch();
         channel.destroy();
     }
 
-    private _unsubscribeSocket(member: string, socket: Socket, disconnectHandler: () => void, trigger: UnsubscribeTrigger) {
-        this._rmSocket(member,socket,disconnectHandler);
+    private _unsubscribeSocket({memberStr, member}: ChMember<M>, socket: Socket, disconnectHandler: () => void, trigger: UnsubscribeTrigger) {
+        this._rmSocket(memberStr,socket,disconnectHandler);
         this._onUnsubscription(member,socket,trigger);
     }
 
-    private _rmSocket(member: string, socket: Socket, disconnectHandler: () => void) {
+    private _rmSocket(memberStr: string, socket: Socket, disconnectHandler: () => void) {
         //main member socket map
-        const memberMap = this._regMembers.get(member);
+        const memberMap = this._regMembers.get(memberStr);
         if(memberMap){
             memberMap.delete(socket);
             if(memberMap.size === 0)
-                this._createUnregisterMemberTimeout(member);
+                this._createUnregisterMemberTimeout(memberStr);
         }
 
         //socket member map
-        const socketMemberSet = this._socketMembers.get(socket);
-        if(socketMemberSet){
-            socketMemberSet.delete(member);
-            if(socketMemberSet.size === 0)
+        const socketMemberMap = this._socketMembers.get(socket);
+        if(socketMemberMap){
+            socketMemberMap.delete(memberStr);
+            if(socketMemberMap.size === 0)
                 this._socketMembers.delete(socket);
         }
 
-        socket._off(this._chEventPreFix+member);
+        socket._off(this._chEventPreFix+memberStr);
         socket._off('disconnect',disconnectHandler);
         removeValueFromArray(socket.getChannels(),this);
     }
 
     /**
      * Clears the timeout to unregister the member.
-     * @param member
+     * @param memberStr
      * @private
      */
-    private _clearUnregisterMemberTimeout(member: string): void {
-        const timeout = this._unregisterMemberTimeoutMap.get(member);
+    private _clearUnregisterMemberTimeout(memberStr: string): void {
+        const timeout = this._unregisterMemberTimeoutMap.get(memberStr);
         if(timeout !== undefined) clearTimeout(timeout);
-        this._unregisterMemberTimeoutMap.delete(member);
+        this._unregisterMemberTimeoutMap.delete(memberStr);
     }
 
     /**
      * Creates (set or renew) the timeout to unregister a member.
-     * @param member
+     * @param memberStr
      * @private
      */
-    private _createUnregisterMemberTimeout(member: string): void {
-        const timeout = this._unregisterMemberTimeoutMap.get(member);
+    private _createUnregisterMemberTimeout(memberStr: string): void {
+        const timeout = this._unregisterMemberTimeoutMap.get(memberStr);
         if(timeout !== undefined) clearTimeout(timeout);
-        this._unregisterMemberTimeoutMap.set(member,setTimeout(() => {
-            this._unregisterMember(member);
-            this._unregisterMemberTimeoutMap.delete(member);
+        this._unregisterMemberTimeoutMap.set(memberStr,setTimeout(() => {
+            this._unregisterMember(memberStr);
+            this._unregisterMemberTimeoutMap.delete(memberStr);
         }, this._unregisterDelay));
     }
 
@@ -275,10 +286,10 @@ export default class ChannelFamily extends ChannelCore {
      * Processes an internal publish.
      * @private
      */
-    private _processPublish(member: string,publish: PublishPackage) {
-        const memberMap = this._regMembers.get(member);
+    private _processPublish(memberStr: string,publish: PublishPackage) {
+        const memberMap = this._regMembers.get(memberStr);
         if(memberMap){
-            const outputPackage = {i: this._chId,m: member,e: publish.e,d: publish.d} as ChClientOutputPublishPackage;
+            const outputPackage = {i: this._chId,m: memberStr,e: publish.e,d: publish.d} as ChClientOutputPublishPackage;
             if(publish.p === undefined){
                 for (const socket of memberMap.keys()){
                     socket._emit(CH_CLIENT_OUTPUT_PUBLISH,outputPackage);
@@ -300,29 +311,35 @@ export default class ChannelFamily extends ChannelCore {
      * @private
      */
     async _recheckSocketAccess(socket: Socket): Promise<void> {
-        const members = this.getSocketSubMembers(socket);
-        await Promise.all(members.map(async member => {
-            if(!(await this._preparedData.checkAccess(socket,
-                {identifier: this.identifier,member}))) {
-                this.kickOut(member,socket);
-            }
-        }));
+        const members = this._socketMembers.get(socket);
+        if(!members) return;
+        const promises: Promise<void>[] = [];
+        for(const [memberStr, member] of members.entries()) {
+            promises.push((async () => {
+                if(!(await this._preparedData.checkAccess(socket,
+                    {identifier: this.identifier,member}))) {
+                    this._kickOut(memberStr,socket);
+                }
+            })());
+        }
+        await Promise.all(promises);
     }
 
     /**
      * @internal
+     * @param memberStr
      * @param member
      * @private
      */
-    private async _recheckMemberAccess(member: string): Promise<void> {
-        const memberMem = this._regMembers.get(member);
+    private async _recheckMemberAccess({memberStr,member}: ChMember<M>): Promise<void> {
+        const memberMem = this._regMembers.get(memberStr);
         if(!memberMem) return;
         const promises: Promise<void>[] = [];
         for(const socket of memberMem.keys()) {
             promises.push((async () => {
                 if(!(await this._preparedData.checkAccess(socket,
                     {identifier: this.identifier,member}))) {
-                    this.kickOut(member,socket);
+                    this._kickOut(memberStr,socket);
                 }
             })())
         }
@@ -331,12 +348,12 @@ export default class ChannelFamily extends ChannelCore {
 
     /**
      * Close the family member of this Channel.
-     * @param member
+     * @param memberStr
      * @param closePackage
      * @private
      */
-    private _close(member: string,closePackage: ChClientOutputClosePackage) {
-        const memberMem = this._regMembers.get(member);
+    private _close(memberStr: string,closePackage: ChClientOutputClosePackage) {
+        const memberMem = this._regMembers.get(memberStr);
         if(memberMem){
             for(const [socket, unsubscribeSocketFunction] of memberMem.entries()) {
                 socket._emit(CH_CLIENT_OUTPUT_CLOSE,closePackage);
@@ -345,20 +362,40 @@ export default class ChannelFamily extends ChannelCore {
         }
     }
 
-    private _sendToWorkers(member: string,workerPackage: ChWorkerPackage) {
-        this._scExchange.publish(this._chEventPreFix+member,workerPackage);
+    private _sendToWorkers(memberStr: string,workerPackage: ChWorkerPackage) {
+        this._scExchange.publish(this._chEventPreFix+memberStr,workerPackage);
+    }
+
+    /**
+     * @internal
+     * **Not override this method.**
+     * With this function, you can kick out a socket from a family member of the Channel.
+     * This method is used internally.
+     * @param memberStr
+     * @param socket
+     * @param code
+     * @param data
+     */
+    _kickOut(memberStr: string, socket: Socket, code?: number | string, data?: any): void {
+        const memberMap = this._regMembers.get(memberStr);
+        if(memberMap){
+            const unsubscribeSocketFunction = memberMap.get(socket);
+            if(unsubscribeSocketFunction){
+                socket._emit(CH_CLIENT_OUTPUT_KICK_OUT,{i: this._chId,m: memberStr,c: code,d: data} as ChClientOutputKickOutPackage);
+                unsubscribeSocketFunction(UnsubscribeTrigger.KickOut);
+            }
+        }
     }
 
     /**
      * **Not override this method.**
-     * This method returns a string array
+     * This method returns an array
      * with all members that the socket has subscribed.
-     * This method is used internally.
      * @param socket
      */
-    getSocketSubMembers(socket: Socket): string[] {
+    getSocketSubMembers(socket: Socket): DeepReadonly<M>[] {
         const members = this._socketMembers.get(socket);
-        return members ? Array.from(members): [];
+        return members ? Array.from(members.values()): [];
     }
 
     /**
@@ -371,16 +408,16 @@ export default class ChannelFamily extends ChannelCore {
      * The publisher sid indicates the socket sid that publishes the data.
      * If you provide one the published data will not send to the publisher socket.
      */
-    publish(member: string | number,event: string, data: any, publisherSid?: string) {
-        member = typeof member === "string" ? member: member.toString();
+    publish(member: M,event: string, data: any, publisherSid?: string) {
+        const memberStr = stringifyMember(member);
         const publishPackage: PublishPackage = {
             e: event,
             ...(data !== undefined ? {d: data} : {}),
             ...(publisherSid !== undefined ? {p: publisherSid} : {})
         };
-        this._sendToWorkers(member, [this._workerFullId,ChWorkerAction.publish,publishPackage] as ChWorkerPublishPackage);
-        this._processPublish(member,publishPackage);
-        this._onPublish(member,event,data);
+        this._sendToWorkers(memberStr, [this._workerFullId,ChWorkerAction.publish,publishPackage] as ChWorkerPublishPackage);
+        this._processPublish(memberStr,publishPackage);
+        this._onPublish(member as DeepReadonly<M>,event,data);
     }
 
     /**
@@ -390,18 +427,16 @@ export default class ChannelFamily extends ChannelCore {
      * Usually, the close function is used when the data is completely deleted from the system.
      * For example, a chat that doesn't exist anymore.
      * @param member The member of the family you want to close.
-     * Numbers will be converted to a string.
      * @param code
      * @param data
      * @param forEveryWorker
      */
-    close(member: string | number,code?: number | string,data?: any,forEveryWorker: boolean = true){
-        member = typeof member === "string" ? member: member.toString();
-        const clientPackage: ChClientOutputClosePackage = {i: this._chId,m: member,c: code,d: data};
-        if(forEveryWorker){
-            this._sendToWorkers(member,[this._workerFullId,ChWorkerAction.close,clientPackage] as ChWorkerClosePackage)
-        }
-        this._close(member,clientPackage);
+    close(member: M,code?: number | string,data?: any,forEveryWorker: boolean = true){
+        const memberStr = stringifyMember(member);
+        const clientPackage: ChClientOutputClosePackage = {i: this._chId,m: memberStr,c: code,d: data};
+        if(forEveryWorker)
+            this._sendToWorkers(memberStr,[this._workerFullId,ChWorkerAction.close,clientPackage] as ChWorkerClosePackage)
+        this._close(memberStr,clientPackage);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -413,16 +448,8 @@ export default class ChannelFamily extends ChannelCore {
      * @param code
      * @param data
      */
-    kickOut(member: string | number, socket: Socket, code?: number | string, data?: any) {
-        member = typeof member === "string" ? member: member.toString();
-        const memberMap = this._regMembers.get(member);
-        if(memberMap){
-            const unsubscribeSocketFunction = memberMap.get(socket);
-            if(unsubscribeSocketFunction){
-                socket._emit(CH_CLIENT_OUTPUT_KICK_OUT,{i: this._chId,m: member,c: code,d: data} as ChClientOutputKickOutPackage);
-                unsubscribeSocketFunction(UnsubscribeTrigger.KickOut);
-            }
-        }
+    kickOut(member: M, socket: Socket, code?: number | string, data?: any) {
+        this._kickOut(stringifyMember(member),socket,code,data);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -435,12 +462,11 @@ export default class ChannelFamily extends ChannelCore {
      * @param member
      * @param forEveryWorker
      */
-    async recheckMemberAccess(member: string | number, forEveryWorker: boolean = true): Promise<void> {
-        member = typeof member === "string" ? member: member.toString();
-        if(forEveryWorker){
-            this._sendToWorkers(member, [this._workerFullId,ChWorkerAction.recheckMemberAccess] as ChWorkerRecheckMemberAccessPackage);
-        }
-        await this._recheckMemberAccess(member);
+    async recheckMemberAccess(member: M, forEveryWorker: boolean = true): Promise<void> {
+        const memberStr = stringifyMember(member);
+        if(forEveryWorker)
+            this._sendToWorkers(memberStr, [this._workerFullId,ChWorkerAction.recheckMemberAccess] as ChWorkerRecheckMemberAccessPackage);
+        await this._recheckMemberAccess({memberStr,member: member as DeepReadonly<M>});
     }
 
     /**
@@ -453,7 +479,7 @@ export default class ChannelFamily extends ChannelCore {
      * The Bag instance can be securely accessed with the variable 'bag'.
      * @param member
      */
-    public memberMiddleware(member: string): Promise<boolean | object | any> | boolean | object | any {
+    public memberMiddleware(member: DeepReadonly<M>): Promise<boolean | object | any> | boolean | object | any {
     }
 
     /**
@@ -462,7 +488,7 @@ export default class ChannelFamily extends ChannelCore {
      * @param member
      * @param socket
      */
-    protected onSubscription(member: string,socket: Socket): Promise<void> | void {
+    protected onSubscription(member: DeepReadonly<M>,socket: Socket): Promise<void> | void {
     }
 
     /**
@@ -472,7 +498,7 @@ export default class ChannelFamily extends ChannelCore {
      * @param socket
      * @param trigger
      */
-    protected onUnsubscription(member: string, socket: Socket, trigger: UnsubscribeTrigger): Promise<void> | void {
+    protected onUnsubscription(member: DeepReadonly<M>, socket: Socket, trigger: UnsubscribeTrigger): Promise<void> | void {
     }
 
     /**
@@ -482,7 +508,7 @@ export default class ChannelFamily extends ChannelCore {
      * @param event
      * @param data
      */
-    protected onPublish(member: string,event: string, data: any): Promise<void> | void {
+    protected onPublish(member: DeepReadonly<M>,event: string, data: any): Promise<void> | void {
     }
 }
 

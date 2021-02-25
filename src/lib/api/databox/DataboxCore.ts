@@ -57,6 +57,7 @@ export default abstract class DataboxCore extends Component {
     private readonly _parallelFetch: boolean;
     private readonly _optionsInputConsumer: ConsumeInputFunction;
     private readonly _fetchInputConsumer: ConsumeInputFunction;
+    private readonly _memberInputConsumer: ConsumeInputFunction;
 
     /**
      * @internal
@@ -71,6 +72,7 @@ export default abstract class DataboxCore extends Component {
         this._parallelFetch = preparedData.parallelFetch;
         this._optionsInputConsumer = preparedData.consumeOptionsInput;
         this._fetchInputConsumer = preparedData.consumeFetchInput;
+        this._memberInputConsumer = preparedData.consumeMemberInput;
         this._unregisterDelay = preparedData.unregisterDelay;
         this._initialData = preparedData.initialData;
         if(preparedData.reloadStrategy) {
@@ -118,15 +120,31 @@ export default abstract class DataboxCore extends Component {
     /**
      * @internal
      * **Not override this method.**
+     * A function to consume the member input.
+     * @param member
+     * @private
+     */
+    async _consumeMemberInput(member: any): Promise<any>
+    {
+        try {return await this._memberInputConsumer(member);}
+        catch (inputError) {
+            const err: any = new Error('Invalid member input.');
+            err.name = ClientErrorName.InvalidInput;
+            err.backErrors = ErrorUtils.dehydrate(inputError,this._sendErrorDescription);
+            throw err;
+        }
+    }
+
+    /**
+     * @internal
+     * **Not override this method.**
      * A function to consume the options input.
      * @param options
      * @private
      */
     async _consumeOptionsInput(options: any): Promise<any>
     {
-        try {
-            return await this._optionsInputConsumer(options);
-        }
+        try {return await this._optionsInputConsumer(options);}
         catch (inputError) {
             const err: any = new Error('Invalid options input.');
             err.name = ClientErrorName.InvalidInput;
@@ -309,6 +327,7 @@ export interface DbPreparedData {
     checkAccess: DbAccessFunction,
     consumeOptionsInput: ConsumeInputFunction,
     consumeFetchInput: ConsumeInputFunction,
+    consumeMemberInput: ConsumeInputFunction,
     parallelFetch: boolean,
     maxBackpressure: number,
     maxSocketInputChannels: number,

@@ -43,7 +43,6 @@ export default class ChannelHandler {
         const channel = this.channelPrepare.get(request.c,
             (ApiLevelUtils.parsePacketApiLevel(request.a) || socket.connectionApiLevel || this.defaultApiLevel));
 
-        return await channel._subscribeSocket(socket,
-            typeof request.m === 'string' ? request.m : undefined);
+        return await channel._subscribeSocket(socket, request.m);
     }
 }

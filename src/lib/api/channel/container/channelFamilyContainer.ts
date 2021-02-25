@@ -7,17 +7,17 @@ Copyright(c) Luca Scaringella
 import ChannelFamily  from '../ChannelFamily';
 import Socket         from '../../Socket';
 
-export default class ChannelFamilyContainer {
+export default class ChannelFamilyContainer<M = string> {
 
-    private readonly _channels: ChannelFamily[];
+    private readonly _channels: ChannelFamily<M>[];
     private readonly _count: number;
 
-    constructor(channels: ChannelFamily[]) {
+    constructor(channels: ChannelFamily<M>[]) {
         this._channels = channels;
         this._count = channels.length;
     }
 
-    get channels(): ChannelFamily[] {
+    get channels(): ChannelFamily<M>[] {
         return [...this._channels];
     }
 
@@ -31,7 +31,7 @@ export default class ChannelFamilyContainer {
      * The publisher sid indicates the socket sid that publishes the data.
      * If you provide one the published data will not send to the publisher socket.
      */
-    publish(member: string | number,event: string, data: any, publisherSid?: string) {
+    publish(member: M,event: string, data: any, publisherSid?: string) {
         for(let i = 0; i < this._count; i++) {
             this._channels[i].publish(member,event,data,publisherSid);
         }
@@ -43,12 +43,11 @@ export default class ChannelFamilyContainer {
      * Usually, the close function is used when the data is completely deleted from the system.
      * For example, a chat that doesn't exist anymore.
      * @param member The member of the family you want to close.
-     * Numbers will be converted to a string.
      * @param code
      * @param data
      * @param forEveryWorker
      */
-    close(member: string | number,code?: number | string, data?: any,forEveryWorker: boolean = true): void {
+    close(member: M,code?: number | string, data?: any,forEveryWorker: boolean = true): void {
         for(let i = 0; i < this._count; i++) {
             this._channels[i].close(member,code,data,forEveryWorker);
         }
@@ -63,7 +62,7 @@ export default class ChannelFamilyContainer {
      * @param code
      * @param data
      */
-    kickOut(member: string | number, socket: Socket, code?: number | string, data?: any) {
+    kickOut(member: M, socket: Socket, code?: number | string, data?: any) {
         for(let i = 0; i < this._count; i++) {
             this._channels[i].kickOut(member,socket,code,data);
         }
@@ -79,7 +78,7 @@ export default class ChannelFamilyContainer {
      * @param member
      * @param forEveryWorker
      */
-    async recheckMemberAccess(member: string | number, forEveryWorker: boolean = true): Promise<void> {
+    async recheckMemberAccess(member: M, forEveryWorker: boolean = true): Promise<void> {
         const promises: Promise<void>[] = [];
         for(let i = 0; i < this._count;i++) {
             promises.push(this._channels[i].recheckMemberAccess(member,forEveryWorker));
@@ -89,12 +88,12 @@ export default class ChannelFamilyContainer {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * This method returns a string array
+     * This method returns an array
      * with all members that the socket has subscribed.
      * @param socket
      */
-    getSocketSubMembers(socket: Socket): string[] {
-        const members: string[] = [];
+    getSocketSubMembers(socket: Socket): M[] {
+        const members: M[] = [];
         for(let i = 0; i < this._count;i++) {
             members.push(...this._channels[i].getSocketSubMembers(socket))
         }

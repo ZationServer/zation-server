@@ -4,6 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
+import {DeepReadonly} from '../utils/typeUtils';
+
 /**
  * Channel subscribe request element.
  */
@@ -15,7 +17,7 @@ export interface ChannelSubscribeRequest {
     /**
      * member
      */
-    m?: string;
+    m?: any;
     /**
      * apiLevel
      */
@@ -213,7 +215,18 @@ export enum UnsubscribeTrigger {
  */
 export interface ChannelInfo {
     identifier: string,
-    member?: string
+    /**
+     * Notice that the member is deep readonly and only given in Family components.
+     */
+    member?: any
+}
+
+/**
+ * Internal member wrapper interface.
+ */
+export interface ChMember<M> {
+    memberStr: string,
+    member: DeepReadonly<M>
 }
 
 export const CHANNEL_START_INDICATOR = 'C>';

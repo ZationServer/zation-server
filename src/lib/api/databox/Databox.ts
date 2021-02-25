@@ -69,7 +69,7 @@ import ObjectUtils                                from '../../main/utils/objectU
 import FuncUtils                                  from '../../main/utils/funcUtils';
 import {isDefaultImpl, markAsDefaultImpl}         from '../../main/utils/defaultImplUtils';
 import NoDataError                                from '../../main/databox/noDataError';
-import {Writeable}                                from '../../../../../zation-js-client/src/lib/main/utils/typeUtils';
+import {Writable}                                 from '../../main/utils/typeUtils';
 
 /**
  * If you always want to present the most recent data on the client,
@@ -249,7 +249,7 @@ export default class Databox extends DataboxCore {
         sendResponse(resp);
 
         //update connection created timestamp
-        (dbInConnection as Writeable<DbInConnection>).created = Date.now();
+        (dbInConnection as Writable<DbInConnection>).created = Date.now();
         Object.freeze(dbInConnection);
     }
 

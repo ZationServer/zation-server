@@ -6,6 +6,7 @@ Copyright(c) Luca Scaringella
 
 import {ChangeValue, DbProcessedSelector} from '../../main/databox/dbDefinitions';
 import Socket                             from '../Socket';
+import {DeepReadonly}                     from '../../main/utils/typeUtils';
 
 export interface InsertAction {
     selector: DbProcessedSelector,
@@ -67,6 +68,9 @@ export interface DbInConnection {
     readonly created: number
 }
 
-export interface DbFamilyInConnection extends DbInConnection {
-    readonly member: string
+export interface DbFamilyInConnection<M = string> extends DbInConnection {
+    /**
+     * Notice that the member is deep readonly.
+     */
+    readonly member: DeepReadonly<M>
 }

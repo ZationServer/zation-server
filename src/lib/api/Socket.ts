@@ -36,7 +36,7 @@ export default class Socket<A extends object = any, TP extends object = any>
 {
     private readonly _rawSocket: RawSocket;
 
-    private readonly _databoxes: (Databox | DataboxFamily)[] = [];
+    private readonly _databoxes: (Databox | DataboxFamily<any>)[] = [];
     private readonly _channels: (Channel | ChannelFamily)[] = [];
 
     private _attachment: Partial<A> = {};
@@ -780,7 +780,7 @@ export default class Socket<A extends object = any, TP extends object = any>
     /**
      * Returns the Databoxes where this socket is connected to.
      */
-    getDataboxes(): (DataboxFamily | Databox)[] {
+    getDataboxes(): (DataboxFamily<any> | Databox)[] {
         return this._databoxes;
     }
 
@@ -788,7 +788,7 @@ export default class Socket<A extends object = any, TP extends object = any>
     /**
      * Returns the Channels that this socket has subscribed.
      */
-    getChannels(): (ChannelFamily | Channel)[] {
+    getChannels(): (ChannelFamily<any> | Channel)[] {
         return this._channels;
     }
 
