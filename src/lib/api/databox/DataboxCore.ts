@@ -13,7 +13,7 @@ import {JwtSignFunction, JwtVerifyFunction, JwtVerifyOptions} from "../../main/d
 // noinspection ES6PreferShortImport
 import {buildKeyArray}                    from "../../main/databox/keyArrayUtils.js";
 import {DataboxConnectReq, DataboxConnectRes, DataboxInfo, DbToken} from '../../main/databox/dbDefinitions';
-import {ConsumeInputFunction}             from "../../main/input/inputClosureCreator";
+import {ConsumeInputFunction, ValidateInputFunction}                from '../../main/input/inputClosureCreator';
 import ErrorUtils                         from "../../main/utils/errorUtils";
 import Component                          from '../component/Component';
 import {AnyDataboxClass}                  from './AnyDataboxClass';
@@ -57,7 +57,7 @@ export default abstract class DataboxCore extends Component {
     private readonly _parallelFetch: boolean;
     private readonly _optionsInputConsumer: ConsumeInputFunction;
     private readonly _fetchInputConsumer: ConsumeInputFunction;
-    private readonly _memberInputConsumer: ConsumeInputFunction;
+    private readonly _memberInputValidator: ValidateInputFunction;
 
     /**
      * @internal
@@ -72,7 +72,7 @@ export default abstract class DataboxCore extends Component {
         this._parallelFetch = preparedData.parallelFetch;
         this._optionsInputConsumer = preparedData.consumeOptionsInput;
         this._fetchInputConsumer = preparedData.consumeFetchInput;
-        this._memberInputConsumer = preparedData.consumeMemberInput;
+        this._memberInputValidator = preparedData.validateMemberInput;
         this._unregisterDelay = preparedData.unregisterDelay;
         this._initialData = preparedData.initialData;
         if(preparedData.reloadStrategy) {
@@ -120,13 +120,13 @@ export default abstract class DataboxCore extends Component {
     /**
      * @internal
      * **Not override this method.**
-     * A function to consume the member input.
+     * A function to validate the member input.
      * @param member
      * @private
      */
-    async _consumeMemberInput(member: any): Promise<any>
+    async _validateMemberInput(member: any): Promise<void>
     {
-        try {return await this._memberInputConsumer(member);}
+        try {await this._memberInputValidator(member);}
         catch (inputError) {
             const err: any = new Error('Invalid member input.');
             err.name = ClientErrorName.InvalidInput;
@@ -327,7 +327,7 @@ export interface DbPreparedData {
     checkAccess: DbAccessFunction,
     consumeOptionsInput: ConsumeInputFunction,
     consumeFetchInput: ConsumeInputFunction,
-    consumeMemberInput: ConsumeInputFunction,
+    validateMemberInput: ValidateInputFunction,
     parallelFetch: boolean,
     maxBackpressure: number,
     maxSocketInputChannels: number,

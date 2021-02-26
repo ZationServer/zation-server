@@ -81,7 +81,7 @@ export default class DataboxPrepare extends ComponentPrepare<DataboxCore,Databox
             checkAccess: AccessUtils.createAccessChecker<DbAccessFunction>(config.access,`Databox: ${identifier}`),
             consumeOptionsInput: InputClosureCreator.createInputConsumer(config.optionsInput),
             consumeFetchInput: InputClosureCreator.createInputConsumer(config.fetchInput),
-            consumeMemberInput: InputClosureCreator.createInputConsumer(config.memberInput || {type: 'string'}),
+            validateMemberInput: InputClosureCreator.createInputConsumer(config.memberInput || {type: 'string'}),
             parallelFetch: false,
             maxBackpressure: 30,
             maxSocketInputChannels: 10,

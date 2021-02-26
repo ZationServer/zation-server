@@ -222,7 +222,7 @@ export default class DataboxFamily<M = string> extends DataboxCore {
         }
 
         //validate member
-        await this._consumeMemberInput(CloneUtils.deepClone(member));
+        await this._validateMemberInput(CloneUtils.deepClone(member));
 
         if(typeof member === 'object') ObjectUtils.deepFreeze(member);
 

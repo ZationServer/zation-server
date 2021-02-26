@@ -120,7 +120,7 @@ export default class ChannelFamily<M = string> extends ChannelCore {
         }
 
         //validate member
-        await this._consumeMemberInput(CloneUtils.deepClone(member));
+        await this._validateMemberInput(CloneUtils.deepClone(member));
 
         if(typeof member === 'object') ObjectUtils.deepFreeze(member);
         const memberStr = stringifyMember(member);

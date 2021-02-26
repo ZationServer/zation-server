@@ -17,6 +17,7 @@ import CloneUtils                       from '../utils/cloneUtils';
 import {ModelCompiler, CompiledModel}   from '../models/modelCompiler';
 
 export type ConsumeInputFunction = (input: any) => Promise<any>;
+export type ValidateInputFunction = (input: any) => Promise<void>;
 export type InputValidationCheckFunction = (checkData: ValidationCheckPair[]) => Promise<void>;
 
 /**
@@ -61,6 +62,40 @@ export default class InputClosureCreator
                     const {defaultValue,optional} = (inputDefinition as CompiledModel)._optionalInfo;
                     if(!optional) throw new BackError(ValidationBackErrors.inputRequired);
                     else return CloneUtils.deepClone(defaultValue);
+                }
+            }
+        }
+    }
+
+    /**
+     * Creates a closure to validate the input.
+     * @param inputDefinition
+     */
+    static createInputValidator(inputDefinition?: Input): ValidateInputFunction {
+        if(inputDefinition === 'any') return async () => {};
+        else if(inputDefinition == null || inputDefinition === 'nothing') {
+            return async (input) => {
+                if(input !== undefined) throw new BackError(ValidationBackErrors.inputNotAllowed);
+            }
+        }
+        else {
+            inputDefinition = ModelCompiler.compileModelDeep(inputDefinition);
+            return async (input) => {
+                if(input !== undefined) {
+                    const backErrorBag: BackErrorBag = new BackErrorBag();
+
+                    await (inputDefinition as CompiledModel)._process({i: input},'i','',{
+                        processTaskList: [],
+                        errorBag: backErrorBag,
+                        createProcessTaskList: false
+                    });
+
+                    //throw errors if any there
+                    backErrorBag.throwIfHasError();
+                }
+                else {
+                    const {optional} = (inputDefinition as CompiledModel)._optionalInfo;
+                    if(!optional) throw new BackError(ValidationBackErrors.inputRequired);
                 }
             }
         }

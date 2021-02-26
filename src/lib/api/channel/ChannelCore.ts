@@ -17,7 +17,7 @@ import {ChannelConfig, ChSubAccessFunction}                       from '../../ma
 import {ScExchange}                                               from '../../main/sc/scServer';
 import {AnyChannelClass}                                          from './AnyChannelClass';
 import {componentTypeSymbol}                                      from '../../main/component/componentUtils';
-import {ConsumeInputFunction}                                     from '../../main/input/inputClosureCreator';
+import {ValidateInputFunction}                                    from '../../main/input/inputClosureCreator';
 import ErrorUtils                                                 from '../../main/utils/errorUtils';
 
 export default abstract class ChannelCore extends Component {
@@ -28,7 +28,7 @@ export default abstract class ChannelCore extends Component {
     private readonly _sendErrorDescription: boolean;
     protected readonly _unregisterDelay: number;
 
-    private readonly _memberInputConsumer: ConsumeInputFunction;
+    private readonly _memberInputValidator: ValidateInputFunction;
 
     protected constructor(identifier: string, bag: Bag, preparedData: ChPreparedData, apiLevel: number | undefined) {
         super(identifier,apiLevel);
@@ -37,7 +37,7 @@ export default abstract class ChannelCore extends Component {
         this._workerFullId = bag.getWorker().getFullWorkerId();
         this._preparedData = preparedData;
         this._sendErrorDescription = bag.getMainConfig().sendErrorDescription;
-        this._memberInputConsumer = preparedData.consumeMemberInput;
+        this._memberInputValidator = preparedData.validateMemberInput;
         this._unregisterDelay = preparedData.unregisterDelay;
     }
 
@@ -60,13 +60,13 @@ export default abstract class ChannelCore extends Component {
     /**
      * @internal
      * **Not override this method.**
-     * A function to consume the member input.
+     * A function to validate the member input.
      * @param member
      * @private
      */
-    async _consumeMemberInput(member: any): Promise<any>
+    async _validateMemberInput(member: any): Promise<void>
     {
-        try {return await this._memberInputConsumer(member);}
+        try {await this._memberInputValidator(member);}
         catch (inputError) {
             const err: any = new Error('Invalid member input.');
             err.name = ClientErrorName.InvalidInput;
@@ -132,7 +132,7 @@ export default abstract class ChannelCore extends Component {
 ChannelCore.prototype[componentTypeSymbol] = 'Channel';
 
 export interface ChPreparedData {
-    consumeMemberInput: ConsumeInputFunction,
+    validateMemberInput: ValidateInputFunction,
     checkAccess: ChSubAccessFunction,
     unregisterDelay: number,
     maxSocketMembers: number
