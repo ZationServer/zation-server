@@ -215,7 +215,7 @@ export default class DataboxFamily<M = string> extends DataboxCore {
     //Core
     async _processConRequest(socket: Socket, request: DataboxConnectReq, sendResponse: (response: DataboxConnectRes) => void): Promise<void> {
         const member = request.m;
-        if(member == null){
+        if(member === undefined){
             const err: any = new Error(`The family member is required to request a DataboxFamily.`);
             err.name = ClientErrorName.MemberMissing;
             throw err;

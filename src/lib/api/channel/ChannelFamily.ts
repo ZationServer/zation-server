@@ -113,7 +113,7 @@ export default class ChannelFamily<M = string> extends ChannelCore {
      * Used internally.
      */
     async _subscribeSocket(socket: Socket, member?: any): Promise<string>{
-        if(member == null){
+        if(member === undefined){
             const err: any = new Error('The family member is required to subscribe to a channel family.');
             err.name = ClientErrorName.MemberMissing;
             throw err;
