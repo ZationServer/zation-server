@@ -68,7 +68,6 @@ import DataboxFetchManager, {FetchManagerBuilder} from "../../main/databox/datab
 import Socket                                     from "../Socket";
 import {removeValueFromArray}                     from '../../main/utils/arrayUtils';
 import {familyTypeSymbol}                         from '../../main/component/componentUtils';
-import ObjectUtils                                from '../../main/utils/objectUtils';
 import FuncUtils                                  from '../../main/utils/funcUtils';
 import {isDefaultImpl, markAsDefaultImpl}         from '../../main/utils/defaultImplUtils';
 import Timeout                                    = NodeJS.Timeout;
@@ -77,6 +76,7 @@ import MiddlewaresPreparer, {MiddlewareInvoker}   from '../../main/middlewares/m
 import {stringifyMember}                          from '../../main/utils/memberParser';
 import CloneUtils                                 from '../../main/utils/cloneUtils';
 import {DeepReadonly, Writable}                   from '../../main/utils/typeUtils';
+import {deepFreeze}                               from '../../main/utils/deepFreeze';
 
 /**
  * If you always want to present the most recent data on the client,
@@ -223,8 +223,7 @@ export default class DataboxFamily<M = string> extends DataboxCore {
 
         //validate member
         await this._validateMemberInput(CloneUtils.deepClone(member));
-
-        if(typeof member === 'object') ObjectUtils.deepFreeze(member);
+        deepFreeze(member);
 
         const memberMidRes = await this._memberMiddleware(member);
         if(memberMidRes) throw memberMidRes;
@@ -240,7 +239,7 @@ export default class DataboxFamily<M = string> extends DataboxCore {
             await this._processDbToken(request.t,memberStr) : DataboxUtils.createDbToken(request.o);
 
         const processedOptions = await this._consumeOptionsInput(dbToken.rawOptions);
-        if(typeof processedOptions === 'object') ObjectUtils.deepFreeze(processedOptions);
+        deepFreeze(processedOptions);
 
         const dbInConnection: DbFamilyInConnection<M> = {member,socket,options: processedOptions,created: Date.now()};
         const keys: DbRegisterResult = await this._registerSocket(socket,{memberStr, member},dbToken,dbInConnection);

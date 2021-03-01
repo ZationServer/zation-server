@@ -6,6 +6,7 @@ Copyright(c) Luca Scaringella
 
 import ChannelFamily  from '../ChannelFamily';
 import Socket         from '../../Socket';
+import {DeepReadonly} from '../../../main/utils/typeUtils';
 
 export default class ChannelFamilyContainer<M = string> {
 
@@ -92,8 +93,8 @@ export default class ChannelFamilyContainer<M = string> {
      * with all members that the socket has subscribed.
      * @param socket
      */
-    getSocketSubMembers(socket: Socket): M[] {
-        const members: M[] = [];
+    getSocketSubMembers(socket: Socket): DeepReadonly<M>[] {
+        const members: DeepReadonly<M>[] = [];
         for(let i = 0; i < this._count;i++) {
             members.push(...this._channels[i].getSocketSubMembers(socket))
         }

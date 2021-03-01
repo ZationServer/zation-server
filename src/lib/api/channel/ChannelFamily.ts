@@ -37,8 +37,8 @@ import {isDefaultImpl, markAsDefaultImpl}       from '../../main/utils/defaultIm
 import MiddlewaresPreparer, {MiddlewareInvoker} from '../../main/middlewares/middlewaresPreparer';
 import {stringifyMember}                        from '../../main/utils/memberParser';
 import CloneUtils                               from '../../main/utils/cloneUtils';
-import ObjectUtils                              from '../../main/utils/objectUtils';
 import {DeepReadonly}                           from '../../main/utils/typeUtils';
+import {deepFreeze}                             from '../../main/utils/deepFreeze';
 import Timeout = NodeJS.Timeout;
 
 /**
@@ -121,8 +121,8 @@ export default class ChannelFamily<M = string> extends ChannelCore {
 
         //validate member
         await this._validateMemberInput(CloneUtils.deepClone(member));
+        deepFreeze(member);
 
-        if(typeof member === 'object') ObjectUtils.deepFreeze(member);
         const memberStr = stringifyMember(member);
 
         const chEvent = this._chEventPreFix + memberStr;

@@ -158,24 +158,6 @@ export default class ObjectUtils
     }
 
     /**
-     * Freeze the object deep.
-     * @param obj
-     */
-    static deepFreeze(obj: object): object
-    {
-        Object.freeze(obj);
-        Object.getOwnPropertyNames(obj).forEach(function (prop) {
-            if (obj.hasOwnProperty(prop)
-                && obj[prop] !== null
-                && (typeof obj[prop] === "object" || typeof obj[prop] === "function")
-                && !Object.isFrozen(obj[prop])) {
-                ObjectUtils.deepFreeze(obj[prop]);
-            }
-        });
-        return obj;
-    }
-
-    /**
      * Adds props to the prototype of the class.
      * Note that symbols and not enumerable properties are ignored.
      * @param classValue

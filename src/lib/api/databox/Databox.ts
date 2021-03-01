@@ -65,11 +65,11 @@ import DataboxFetchManager, {FetchManagerBuilder} from '../../main/databox/datab
 import Socket                                     from '../Socket';
 import CloneUtils                                 from '../../main/utils/cloneUtils';
 import {removeValueFromArray}                     from '../../main/utils/arrayUtils';
-import ObjectUtils                                from '../../main/utils/objectUtils';
 import FuncUtils                                  from '../../main/utils/funcUtils';
 import {isDefaultImpl, markAsDefaultImpl}         from '../../main/utils/defaultImplUtils';
 import NoDataError                                from '../../main/databox/noDataError';
 import {Writable}                                 from '../../main/utils/typeUtils';
+import {deepFreeze}                               from '../../main/utils/deepFreeze';
 
 /**
  * If you always want to present the most recent data on the client,
@@ -234,7 +234,7 @@ export default class Databox extends DataboxCore {
             await this._processDbToken(request.t) : DataboxUtils.createDbToken(request.o);
 
         const processedOptions = await this._consumeOptionsInput(dbToken.rawOptions);
-        if(typeof processedOptions === 'object') ObjectUtils.deepFreeze(processedOptions);
+        deepFreeze(processedOptions);
 
         const dbInConnection: DbInConnection = {socket,options: processedOptions,created: Date.now()};
         const keys: DbRegisterResult = await this._registerSocket(socket,dbToken,dbInConnection);

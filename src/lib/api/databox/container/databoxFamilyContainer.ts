@@ -7,6 +7,7 @@ Copyright(c) Luca Scaringella
 import DbCudOperationSequence  from "../../../main/databox/dbCudOperationSequence";
 import DataboxFamily           from "../DataboxFamily";
 import Socket                  from '../../Socket';
+import {DeepReadonly}          from '../../../main/utils/typeUtils';
 import DataboxUtils            from "../../../main/databox/databoxUtils";
 import {
     InfoOption,
@@ -179,7 +180,7 @@ export default class DataboxFamilyContainer<M = string> {
             const promises: Promise<void>[] = [];
             for(let i = 0; i < this._count;i++) {
                 promises.push(this._databoxes[i]._emitCudPackage(
-                    DataboxUtils.buildPreCudPackage(...operations), member, timestamp));
+                    DataboxUtils.buildPreCudPackage(...operations), member as DeepReadonly<M>, timestamp));
             }
             await Promise.all(promises);
         })
@@ -271,8 +272,8 @@ export default class DataboxFamilyContainer<M = string> {
      * members where the socket is registered.
      * @param socket
      */
-    getSocketRegMembers(socket: Socket): M[] {
-        const members: M[] = [];
+    getSocketRegMembers(socket: Socket): DeepReadonly<M>[] {
+        const members: DeepReadonly<M>[] = [];
         for(let i = 0; i < this._count;i++) {
             members.push(...this._databoxes[i].getSocketRegMembers(socket))
         }
