@@ -36,7 +36,7 @@ export default abstract class ChannelCore extends Component {
         this._scExchange = bag.getWorker().scServer.exchange;
         this._workerFullId = bag.getWorker().getFullWorkerId();
         this._preparedData = preparedData;
-        this._sendErrorDescription = bag.getMainConfig().sendErrorDescription;
+        this._sendErrorDescription = bag.getMainConfig().sendErrorDescription || bag.isDebug();
         this._memberInputValidator = preparedData.validateMemberInput;
         this._unregisterDelay = preparedData.unregisterDelay;
     }

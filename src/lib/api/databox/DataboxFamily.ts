@@ -395,6 +395,7 @@ export default class DataboxFamily<M = string> extends DataboxCore {
             };
         }
         catch (e) {
+            e = this._handleFetchErr(e);
             e['counter'] = currentCounter;
             throw e;
         }

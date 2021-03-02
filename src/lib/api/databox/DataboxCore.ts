@@ -22,6 +22,9 @@ import Socket                             from '../Socket';
 import Logger                             from '../../main/log/logger';
 import {ErrorEventHolder}                 from '../../main/error/errorEventHolder';
 import {PreparedEvents}                   from '../../main/config/definitions/parts/events';
+import NoDataError                        from '../../main/databox/noDataError';
+import BackError                          from '../BackError';
+import BackErrorBag                       from '../BackErrorBag';
 
 /**
  * If you always want to present the most recent data on the client,
@@ -67,7 +70,7 @@ export default abstract class DataboxCore extends Component {
     protected constructor(identifier: string, bag: Bag, preparedData: DbPreparedData, apiLevel: number | undefined) {
         super(identifier,apiLevel);
         this._preparedData = preparedData;
-        this._sendErrorDescription = bag.getMainConfig().sendErrorDescription;
+        this._sendErrorDescription = bag.getMainConfig().sendErrorDescription || bag.isDebug();
 
         this._parallelFetch = preparedData.parallelFetch;
         this._optionsInputConsumer = preparedData.consumeOptionsInput;
@@ -252,6 +255,25 @@ export default abstract class DataboxCore extends Component {
     protected _handleUnexpectedMiddlewareError(err: Error, midName: string) {
         Logger.log.error(`${this.toString()} error was thrown in the middleware ${midName}`,err);
         this._errorEvent(err);
+    }
+
+    /**
+     * **Not override this method.**
+     * @internal
+     * @private
+     */
+    protected _handleFetchErr(err: any) {
+        if(err instanceof NoDataError) return err;
+
+        if(!(err instanceof BackError || err instanceof BackErrorBag)) {
+            Logger.log.error(`Unknown error while processing a databox fetch request:`,err);
+            this._errorEvent(err);
+        }
+
+        const errWrapper: any = new Error();
+        errWrapper.name = ClientErrorName.FetchProcessError;
+        errWrapper.backErrors = ErrorUtils.dehydrate(err,this._sendErrorDescription);
+        return errWrapper;
     }
 
     // noinspection JSUnusedGlobalSymbols
