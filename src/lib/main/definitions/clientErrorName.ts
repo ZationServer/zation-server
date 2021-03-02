@@ -23,6 +23,7 @@ export enum ClientErrorName {
     MaxBackpressureReached       = 'MaxBackpressureReached',
     InvalidInput                 = 'InvalidInput',
     FetchProcessError            = 'FetchProcessError',
+    RequestProcessError          = 'RequestProcessError',
     MaxInputChannelsReached      = 'MaxInputChannelsReached',
     MaxMembersReached            = 'MaxMembersReached'
 }

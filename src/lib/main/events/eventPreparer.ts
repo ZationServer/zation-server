@@ -24,7 +24,6 @@ export default class EventPreparer {
             wsServerStarted: defaultFunc,
             started: defaultFunc,
             error: defaultFunc,
-            backErrors: defaultFunc,
             codeError: defaultFunc,
             workerMessage: defaultFunc,
             socketInit: defaultFunc,

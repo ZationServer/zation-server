@@ -9,7 +9,6 @@ import Express                       = require('express');
 import ZationWorker                  = require("../../../../core/zationWorker");
 import ScServer                        from "../../../sc/scServer";
 import {RawZationToken}                from "../../../definitions/internal";
-import BackError                       from "../../../../api/BackError";
 import ServerInfo                      from "../../../internalApi/serverInfo";
 import Socket                          from "../../../../api/Socket";
 import CodeError                       from "../../../error/codeError";
@@ -25,7 +24,6 @@ export type HttpServerStartedFunction = (info: ServerInfo) => Promise<void> | vo
 export type WsServerStartedFunction = (info: ServerInfo) => Promise<void> | void;
 export type StartedFunction = (info: ServerInfo) => Promise<void> | void;
 export type ErrorFunction = (error: Error) => Promise<void> | void;
-export type BackErrorsFunction = (backErrors: BackError[]) => Promise<void> | void;
 export type CodeErrorFunction = (codeError: CodeError) => Promise<void> | void;
 export type WorkerMessageFunction = (data: any) => Promise<void> | void;
 
@@ -131,14 +129,7 @@ export interface Events
      */
     error?: Event<ErrorFunction>;
     /**
-     * An event that gets invoked when at least one BackError is thrown in a Receiver or Controller.
-     * Runs on a worker process.
-     * The Bag instance can be securely accessed with the variable 'bag'.
-     * @example (backError) => {}
-     */
-    backErrors?: Event<BackErrorsFunction>;
-    /**
-     * An event that gets invoked when a CodeError is thrown in a Receiver or Controller.
+     * An event that gets invoked when a CodeError is created.
      * Runs on a worker process.
      * The Bag instance can be securely accessed with the variable 'bag'.
      * @example (codeError) => {}
@@ -242,7 +233,6 @@ export interface PreparedEvents extends Events {
     wsServerStarted: WsServerStartedFunction;
     started: StartedFunction;
     error: ErrorFunction;
-    backErrors: BackErrorsFunction;
     codeError: CodeErrorFunction;
     workerMessage: WorkerMessageFunction;
 

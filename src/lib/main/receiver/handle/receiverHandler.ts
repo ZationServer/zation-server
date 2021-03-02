@@ -14,7 +14,6 @@ import ApiLevelUtils               from '../../apiLevel/apiLevelUtils';
 import ReceiverPrepare             from '../receiverPrepare';
 import {ReceiverPackage}           from '../receiverDefinitions';
 import {checkValidReceiverPackage} from './receiverPackageUtils';
-import {handleError}               from '../../error/errorHandlerUtils';
 import Socket                      from '../../../api/Socket';
 import Packet                      from '../../../api/Packet';
 
@@ -39,13 +38,14 @@ export default class ReceiverHandler
     {
         try {
             await this._processPackage(pack,socket);
+            if(this.debug) Logger.log.debug(`Socket Receiver package -> `,pack, ` processed successfully.`);
         }
         catch (err) {
-            await handleError(err,this.zc.event);
-        }
-
-        if(this.debug) {
-            Logger.log.debug(`Socket Receiver package -> `,pack);
+            if(!(err instanceof BackError || err instanceof BackErrorBag)) {
+                Logger.log.error(`Unknown error while processing a receiver package:`,err);
+                this.zc.event.error(err);
+            }
+            if(this.debug) Logger.log.debug(`Socket Receiver package -> `,pack, ` processed not successfully with error -> `, err);
         }
     }
 

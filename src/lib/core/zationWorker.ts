@@ -85,6 +85,7 @@ import ComponentUtils                   from '../main/component/componentUtils';
 import Socket                           from '../api/Socket';
 import {Writable}                       from '../main/utils/typeUtils';
 import Process, {ProcessType}           from '../api/Process';
+import CodeError                        from '../main/error/codeError';
 
 const  SCWorker: any        = require('socketcluster/scworker');
 
@@ -194,6 +195,9 @@ class ZationWorker extends SCWorker
 
         //Set error event
         ErrorEventHolder.set(this.zc.event.error);
+
+        //Set code error event
+        CodeError.setCodeErrorEvent(this.zc.event.codeError);
 
         //Origins checker
         debugStopwatch.start();

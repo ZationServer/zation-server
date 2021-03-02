@@ -4,8 +4,6 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {DryBackError} from '../../api/BackError';
-
 export const enum SpecialController {
     AuthController
 }
@@ -45,19 +43,5 @@ export interface ValidationCheckPair {
      */
     1: any
 }
-
-/**
- * Successful = errors.length === 0 or undefined
- */
-export type ControllerRes = {
-    /**
-     * Errors
-     */
-    0: DryBackError[],
-    /**
-     * Result
-     */
-    1?: any
-} | undefined;
 
 export const CONTROLLER_EVENT = '>';

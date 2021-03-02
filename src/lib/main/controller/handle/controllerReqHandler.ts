@@ -13,10 +13,10 @@ import {MainBackErrors}            from '../../systemBackErrors/mainBackErrors';
 import ControllerPrepare           from '../controllerPrepare';
 import ErrorUtils                  from '../../utils/errorUtils';
 import ApiLevelUtils               from '../../apiLevel/apiLevelUtils';
-import {handleError}               from '../../error/errorHandlerUtils';
 import Packet                      from '../../../api/Packet';
 import Socket                      from '../../../api/Socket';
-import {ControllerBaseReq, ControllerRes, ControllerStandardReq, SpecialController} from '../controllerDefinitions';
+import {ClientErrorName}           from '../../definitions/clientErrorName';
+import {ControllerBaseReq, ControllerStandardReq, SpecialController}                from '../controllerDefinitions';
 import {checkValidControllerBaseRequest, isValidationCheckRequest}                  from './controllerReqUtils';
 
 export default class ControllerReqHandler
@@ -44,24 +44,25 @@ export default class ControllerReqHandler
 
     async processRequest(request: ControllerBaseReq, socket: Socket, respond: RespondFunction)
     {
-        let response: ControllerRes
         try {
             const result = await this._processRequest(request,socket);
-            if(result !== undefined){
-                response = ([[],result] as ControllerRes);
-            }
-            respond(null,response);
+            respond(null,result);
+            if(this.debug)
+                Logger.log.debug(`Socket Controller request -> `,request,
+                    ' processed successfully with result -> ',result);
         }
         catch (err) {
-            response = [ErrorUtils.dehydrate(err,this.sendErrDescription)];
-            respond(null,response);
+            if(!(err instanceof BackError || err instanceof BackErrorBag)) {
+                Logger.log.error(`Unknown error while processing a controller request:`,err);
+                this.zc.event.error(err);
+            }
 
-            await handleError(err,this.zc.event);
-        }
+            const errWrapper: any = new Error();
+            errWrapper.name = ClientErrorName.RequestProcessError;
+            errWrapper.backErrors = ErrorUtils.dehydrate(err,this.sendErrDescription);
+            respond(errWrapper);
 
-        if(this.debug) {
-            Logger.log.debug(`Socket Controller request -> `,request,
-                ' processed to response -> ',response !== undefined ? response : 'Successful without result');
+            if(this.debug) Logger.log.debug(`Socket Controller request -> `,request, ` processed not successfully with error -> `, err);
         }
     }
 

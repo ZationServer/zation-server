@@ -4,21 +4,23 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-/*
-This Marks error in code
-Example try to set custom auth token, but sc is not authenticated.
- */
-
 import BackErrorConstruct from "../definitions/backErrorConstruct";
 import BackError          from "./../../api/BackError";
 
 const codeErrorSymbol = Symbol();
 
 export default class CodeError extends BackError {
+
+    private static codeErrorEvent: (err: CodeError) => void;
+    public static setCodeErrorEvent(event: (err: CodeError) => void) {
+        this.codeErrorEvent = event;
+    }
+
+    [codeErrorSymbol] = true;
     constructor(errorConstruct: BackErrorConstruct = {}, info?: object | string, message?: string) {
         super(errorConstruct,info,message);
+        if(CodeError.codeErrorEvent) CodeError.codeErrorEvent(this);
     }
-    [codeErrorSymbol] = true;
 }
 
 export function isCodeError(value: any): value is CodeError {
