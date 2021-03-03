@@ -209,7 +209,7 @@ export default class ChannelFamily<M = string> extends ChannelCore {
                             await this._recheckMemberAccess(member);
                             break;
                         case ChWorkerAction.close:
-                            this._close(memberStr,(data as ChWorkerClosePackage)[2]);
+                            await this._close(memberStr,(data as ChWorkerClosePackage)[2]);
                             break;
                         default:
                     }
@@ -352,7 +352,11 @@ export default class ChannelFamily<M = string> extends ChannelCore {
      * @param closePackage
      * @private
      */
-    private _close(memberStr: string,closePackage: ChClientOutputClosePackage) {
+    private async _close(memberStr: string,closePackage: ChClientOutputClosePackage) {
+        await this._subProcessMidTaskScheduler.
+            scheduleMidTask(async () => this._internalClose(memberStr,closePackage));
+    }
+    private _internalClose(memberStr: string,closePackage: ChClientOutputClosePackage) {
         const memberMem = this._regMembers.get(memberStr);
         if(memberMem){
             for(const [socket, unsubscribeSocketFunction] of memberMem.entries()) {
@@ -430,13 +434,15 @@ export default class ChannelFamily<M = string> extends ChannelCore {
      * @param code
      * @param data
      * @param forEveryWorker
+     * @return The returned promise is resolved when
+     * the close is fully processed on the current worker.
      */
-    close(member: M,code?: number | string,data?: any,forEveryWorker: boolean = true){
+    async close(member: M,code?: number | string,data?: any,forEveryWorker: boolean = true){
         const memberStr = stringifyMember(member);
         const clientPackage: ChClientOutputClosePackage = {i: this._chId,m: memberStr,c: code,d: data};
         if(forEveryWorker)
             this._sendToWorkers(memberStr,[this._workerFullId,ChWorkerAction.close,clientPackage] as ChWorkerClosePackage)
-        this._close(memberStr,clientPackage);
+        await this._close(memberStr,clientPackage);
     }
 
     // noinspection JSUnusedGlobalSymbols

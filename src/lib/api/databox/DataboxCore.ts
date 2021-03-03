@@ -62,6 +62,8 @@ export default abstract class DataboxCore extends Component {
     private readonly _fetchInputConsumer: ConsumeInputFunction;
     private readonly _memberInputValidator: ValidateInputFunction;
 
+    protected readonly _connectionProcessMidTaskScheduler = new MidTaskScheduler();
+
     /**
      * @internal
      */
@@ -165,7 +167,17 @@ export default abstract class DataboxCore extends Component {
      * @param request
      * @param sendResponse
      */
-    abstract async _processConRequest(socket: Socket, request: DataboxConnectReq, sendResponse: (response: DataboxConnectRes) => void): Promise<void>;
+    protected abstract async _processConRequest(socket: Socket, request: DataboxConnectReq, sendResponse: (response: DataboxConnectRes) => void): Promise<void>;
+
+    /**
+     * @internal
+     * @param socket
+     * @param request
+     * @param sendResponse
+     */
+    public async _handleConRequest(socket: Socket, request: DataboxConnectReq, sendResponse: (response: DataboxConnectRes) => void) {
+        await this._connectionProcessMidTaskScheduler.scheduleTask(() => this._processConRequest(socket,request,sendResponse))
+    }
 
     /**
      * @internal

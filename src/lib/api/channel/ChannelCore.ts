@@ -30,6 +30,8 @@ export default abstract class ChannelCore extends Component {
 
     private readonly _memberInputValidator: ValidateInputFunction;
 
+    protected readonly _subProcessMidTaskScheduler = new MidTaskScheduler();
+
     protected constructor(identifier: string, bag: Bag, preparedData: ChPreparedData, apiLevel: number | undefined) {
         super(identifier,apiLevel);
 
@@ -55,7 +57,16 @@ export default abstract class ChannelCore extends Component {
      * @param socket
      * @param member
      */
-    abstract async _subscribeSocket(socket: Socket, member?: any): Promise<string>;
+    protected abstract async _subscribeSocket(socket: Socket, member?: any): Promise<string>;
+
+    /**
+     * @internal
+     * @param socket
+     * @param member
+     */
+    public async _handleSubRequest(socket: Socket, member?: any) {
+        return await this._subProcessMidTaskScheduler.scheduleTask(() => this._subscribeSocket(socket,member));
+    }
 
     /**
      * @internal

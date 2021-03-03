@@ -60,7 +60,7 @@ export default class DataboxHandler
             Logger.log.debug(`Databox Connection Request -> `,request);
         }
 
-        await db._processConRequest(socket,request,sendResponse);
+        await db._handleConRequest(socket,request,sendResponse);
     }
 
 }

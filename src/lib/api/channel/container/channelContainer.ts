@@ -44,11 +44,15 @@ export default class ChannelContainer {
      * @param code
      * @param data
      * @param forEveryWorker
+     * @return The returned promise is resolved when
+     * the close is fully processed on the current worker.
      */
-    close(code?: number | string, data?: any,forEveryWorker: boolean = true): void {
+    async close(code?: number | string, data?: any,forEveryWorker: boolean = true): Promise<void> {
+        const promises: Promise<void>[] = [];
         for(let i = 0; i < this._count; i++) {
-            this._channels[i].close(code,data,forEveryWorker);
+            promises.push(this._channels[i].close(code,data,forEveryWorker));
         }
+        await Promise.all(promises);
     }
 
     // noinspection JSUnusedGlobalSymbols

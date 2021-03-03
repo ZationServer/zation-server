@@ -588,7 +588,7 @@ export default class DataboxFamily<M = string> extends DataboxCore {
                             await this._sendSignalToSockets(member,(data as DbWorkerSignalPackage)[2]);
                             break;
                         case DbWorkerAction.close:
-                            this._close(memberStr,(data as DbWorkerClosePackage)[2]);
+                            await this._close(memberStr,(data as DbWorkerClosePackage)[2]);
                             break;
                         case DbWorkerAction.broadcast:
                             this._sendToSockets(memberStr,(data as DbWorkerBroadcastPackage)[2]);
@@ -851,7 +851,11 @@ export default class DataboxFamily<M = string> extends DataboxCore {
      * @param closePackage
      * @private
      */
-    private _close(memberStr: string,closePackage: DbClientOutputClosePackage) {
+    private async _close(memberStr: string,closePackage: DbClientOutputClosePackage) {
+        await this._connectionProcessMidTaskScheduler.
+            scheduleMidTask(async () => this._internalClose(memberStr,closePackage));
+    }
+    private _internalClose(memberStr: string,closePackage: DbClientOutputClosePackage) {
         const memberMem = this._regMembers.get(memberStr);
         if(memberMem){
             const outputCh = this._dbEventPreFix+memberStr;
@@ -1094,13 +1098,15 @@ export default class DataboxFamily<M = string> extends DataboxCore {
      * @param code
      * @param data
      * @param forEveryWorker
+     * @return The returned promise is resolved when
+     * the close is fully processed on the current worker.
      */
-    close(member: M,code?: number | string,data?: any,forEveryWorker: boolean = true){
+    async close(member: M,code?: number | string,data?: any,forEveryWorker: boolean = true){
         const memberStr = stringifyMember(member);
         const clientPackage = DataboxUtils.buildClientClosePackage(code,data);
         if(forEveryWorker)
             this._sendToWorkers(memberStr,[this._workerFullId,DbWorkerAction.close,clientPackage] as DbWorkerClosePackage);
-        this._close(memberStr,clientPackage);
+        await this._close(memberStr,clientPackage);
     }
 
     /**

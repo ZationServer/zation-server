@@ -195,11 +195,15 @@ export default class DataboxFamilyContainer<M = string> {
      * @param code
      * @param data
      * @param forEveryWorker
+     * @return The returned promise is resolved when
+     * the close is fully processed on the current worker.
      */
-    close(member: M,code?: number | string, data?: any,forEveryWorker: boolean = true): void {
+    async close(member: M,code?: number | string, data?: any,forEveryWorker: boolean = true): Promise<void> {
+        const promises: Promise<void>[] = [];
         for(let i = 0; i < this._count;i++) {
-            this._databoxes[i].close(member,code,data,forEveryWorker);
+            promises.push(this._databoxes[i].close(member,code,data,forEveryWorker));
         }
+        await Promise.all(promises);
     }
 
     // noinspection JSUnusedGlobalSymbols

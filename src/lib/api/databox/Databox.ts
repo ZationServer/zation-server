@@ -495,7 +495,7 @@ export default class Databox extends DataboxCore {
                             await this._sendSignalToSockets((data as DbWorkerSignalPackage)[2]);
                             break;
                         case DbWorkerAction.close:
-                            this._close((data as DbWorkerClosePackage)[2]);
+                            await this._close((data as DbWorkerClosePackage)[2]);
                             break;
                         case DbWorkerAction.broadcast:
                             this._sendToSockets((data as DbWorkerBroadcastPackage)[2]);
@@ -722,7 +722,11 @@ export default class Databox extends DataboxCore {
      * @param closePackage
      * @private
      */
-    private _close(closePackage: DbClientOutputClosePackage) {
+    private async _close(closePackage: DbClientOutputClosePackage) {
+        await this._connectionProcessMidTaskScheduler.
+            scheduleMidTask(async () => this._internalClose(closePackage));
+    }
+    private _internalClose(closePackage: DbClientOutputClosePackage) {
         for(let [socket, socketMemory] of this._regSockets.entries()) {
             socket._emit(this._dbEvent,closePackage);
             socketMemory.unregisterSocket();
@@ -906,13 +910,15 @@ export default class Databox extends DataboxCore {
      * @param code
      * @param data
      * @param forEveryWorker
+     * @return The returned promise is resolved when
+     * the close is fully processed on the current worker.
      */
-    close(code?: number | string,data?: any,forEveryWorker: boolean = true){
+    async close(code?: number | string,data?: any,forEveryWorker: boolean = true){
         const clientPackage = DataboxUtils.buildClientClosePackage(code,data);
         if(forEveryWorker){
             this._sendToWorkers([this._workerFullId,DbWorkerAction.close,clientPackage] as DbWorkerClosePackage);
         }
-        this._close(clientPackage);
+        await this._close(clientPackage);
     }
 
     /**

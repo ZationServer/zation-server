@@ -196,7 +196,7 @@ export default class Channel extends ChannelCore {
                             this._processPublish((data as ChWorkerPublishPackage)[2]);
                             break;
                         case ChWorkerAction.close:
-                            this._close((data as ChWorkerClosePackage)[2]);
+                            await this._close((data as ChWorkerClosePackage)[2]);
                             break;
                         default:
                     }
@@ -236,7 +236,11 @@ export default class Channel extends ChannelCore {
      * @param closePackage
      * @private
      */
-    private _close(closePackage: ChClientOutputClosePackage) {
+    private async _close(closePackage: ChClientOutputClosePackage) {
+        await this._subProcessMidTaskScheduler.
+            scheduleMidTask(async () => this._internalClose(closePackage));
+    }
+    private _internalClose(closePackage: ChClientOutputClosePackage) {
         for(const [socket, unsubscribeSocketFunction] of this._subSockets.entries()) {
             socket._emit(CH_CLIENT_OUTPUT_CLOSE,closePackage);
             unsubscribeSocketFunction(UnsubscribeTrigger.Close);
@@ -272,13 +276,15 @@ export default class Channel extends ChannelCore {
      * @param code
      * @param data
      * @param forEveryWorker
+     * @return The returned promise is resolved when
+     * the close is fully processed on the current worker.
      */
-    close(code?: number | string,data?: any,forEveryWorker: boolean = true){
+    async close(code?: number | string,data?: any,forEveryWorker: boolean = true){
         const clientPackage: ChClientOutputClosePackage = {i: this._chEvent,c: code,d: data};
         if(forEveryWorker){
             this._sendToWorkers([this._workerFullId,ChWorkerAction.close,clientPackage] as ChWorkerClosePackage);
         }
-        this._close(clientPackage);
+        await this._close(clientPackage);
     }
 
     // noinspection JSUnusedGlobalSymbols
