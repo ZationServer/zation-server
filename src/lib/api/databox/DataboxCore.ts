@@ -25,6 +25,7 @@ import {PreparedEvents}                   from '../../main/config/definitions/pa
 import NoDataError                        from '../../main/databox/noDataError';
 import BackError                          from '../BackError';
 import BackErrorBag                       from '../BackErrorBag';
+import {AnyDataboxClass}                  from './AnyDataboxClass';
 
 /**
  * If you always want to present the most recent data on the client,
@@ -350,7 +351,7 @@ export default abstract class DataboxCore extends Component {
      */
     public static Config(databoxConfig: DataboxConfig) {
         return (target: typeof DataboxCore) => {
-            (target as any)[nameof<typeof DataboxCore>(s => s.config)] = databoxConfig;
+            (target as any)[nameof<AnyDataboxClass>(s => s.config)] = databoxConfig;
         }
     }
 }

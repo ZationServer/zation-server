@@ -67,6 +67,7 @@ import CloneUtils                                 from '../../main/utils/cloneUt
 import {removeValueFromArray}                     from '../../main/utils/arrayUtils';
 import FuncUtils                                  from '../../main/utils/funcUtils';
 import {isDefaultImpl, markAsDefaultImpl}         from '../../main/utils/defaultImplUtils';
+import {DataboxConfig}                            from '../../main/config/definitions/parts/databoxConfig';
 import NoDataError                                from '../../main/databox/noDataError';
 import {Writable}                                 from '../../main/utils/typeUtils';
 import {deepFreeze}                               from '../../main/utils/deepFreeze';
@@ -1229,4 +1230,4 @@ markAsDefaultImpl(Databox.prototype['beforeDelete']);
 markAsDefaultImpl(Databox.prototype['fetch']);
 markAsDefaultImpl(Databox.prototype['singleFetch']);
 
-export type DataboxClass = new(...args) => Databox;
+export type DataboxClass = (new(...args) => Databox) & {config: DataboxConfig};

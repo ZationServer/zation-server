@@ -91,7 +91,7 @@
     "nyc": "^15.0.1",
     "sinon": "7.2.2",
     "terser": "4.6.4",
-    "ts-nameof": "3.0.3",
+    "ts-nameof": "5.0.0",
     "ts-transformer-keys": "0.4.1",
     "typescript": "^3.8.2"
   }

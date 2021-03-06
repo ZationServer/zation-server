@@ -76,6 +76,7 @@ import MiddlewaresPreparer, {MiddlewareInvoker}   from '../../main/middlewares/m
 import {stringifyMember}                          from '../../main/utils/memberParser';
 import CloneUtils                                 from '../../main/utils/cloneUtils';
 import {DeepReadonly, Writable}                   from '../../main/utils/typeUtils';
+import {DataboxConfig}                            from '../../main/config/definitions/parts/databoxConfig';
 import {deepFreeze}                               from '../../main/utils/deepFreeze';
 
 /**
@@ -1471,4 +1472,4 @@ markAsDefaultImpl(DataboxFamily.prototype['beforeDelete']);
 markAsDefaultImpl(DataboxFamily.prototype['fetch']);
 markAsDefaultImpl(DataboxFamily.prototype['singleFetch']);
 
-export type DataboxFamilyClass = new(...args) => DataboxFamily<any>;
+export type DataboxFamilyClass = (new(...args) => DataboxFamily<any>) & {config: DataboxConfig};

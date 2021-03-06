@@ -39,6 +39,7 @@ import {stringifyMember}                        from '../../main/utils/memberPar
 import CloneUtils                               from '../../main/utils/cloneUtils';
 import {DeepReadonly}                           from '../../main/utils/typeUtils';
 import {deepFreeze}                             from '../../main/utils/deepFreeze';
+import {ChannelConfig}                          from '../../main/config/definitions/parts/channelConfig';
 import Timeout = NodeJS.Timeout;
 
 /**
@@ -523,4 +524,4 @@ ChannelFamily.prototype[familyTypeSymbol] = true;
 
 markAsDefaultImpl(ChannelFamily.prototype['memberMiddleware']);
 
-export type ChannelFamilyClass = new(...args) => ChannelFamily<any>;
+export type ChannelFamilyClass = (new(...args) => ChannelFamily<any>) & {config: ChannelConfig};

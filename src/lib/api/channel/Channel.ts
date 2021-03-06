@@ -11,6 +11,7 @@ import Socket                        from '../Socket';
 import FuncUtils                     from '../../main/utils/funcUtils';
 import {ErrorEventHolder}            from '../../main/error/errorEventHolder';
 import {removeValueFromArray}        from '../../main/utils/arrayUtils';
+import {ChannelConfig}               from '../../main/config/definitions/parts/channelConfig';
 import {
     CH_CLIENT_OUTPUT_CLOSE,
     CH_CLIENT_OUTPUT_KICK_OUT,
@@ -330,4 +331,4 @@ export default class Channel extends ChannelCore {
     }
 }
 
-export type ChannelClass = new(...args) => Channel;
+export type ChannelClass = (new(...args) => Channel) & {config: ChannelConfig};

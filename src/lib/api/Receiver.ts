@@ -84,14 +84,14 @@ export default class Receiver<PA extends object = any> extends Component {
      */
     public static Config(receiverConfig: ReceiverConfig) {
         return (target: typeof Receiver) => {
-            (target as any)[nameof<typeof Receiver>(s => s.config)] = receiverConfig;
+            (target as any)[nameof<ReceiverClass>(s => s.config)] = receiverConfig;
         }
     }
 }
 
 Receiver.prototype[componentTypeSymbol] = 'Receiver';
 
-export type ReceiverClass = new(...args) => Receiver;
+export type ReceiverClass = (new(...args) => Receiver) & {config: ReceiverConfig};
 
 export interface ReceiverPreparedData {
     receiverConfig: ReceiverConfig,
