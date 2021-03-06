@@ -13,7 +13,7 @@ import Logger                           from '../log/logger';
 
 export type MiddlewareInvoker<T extends AnyFunction> = (...args: Parameters<T>) => Promise<Error | void> | Error | void;
 
-const DEFAULT_ALLOW: Record<keyof Middleware,boolean> = {
+const MIDDLEWARE_DEFAULTS: Record<keyof Middleware,boolean> = {
     authenticate: true,
     socket: true,
     panelAuth: false
@@ -23,10 +23,10 @@ export default class MiddlewaresPreparer {
 
     static prepare(middlewares: Middleware = {}, errorEvent: PreparedEvents['error']): PreparedMiddleware {
         const res = {};
-        for(const k in middlewares) {
-            if(middlewares.hasOwnProperty(k)){
+        for(const k in MIDDLEWARE_DEFAULTS) {
+            if(MIDDLEWARE_DEFAULTS.hasOwnProperty(k)){
                 res[k] = MiddlewaresPreparer.createMiddlewareAsyncSafeInvoker
-                    (middlewares[k], DEFAULT_ALLOW[k],`An error was thrown in the middleware: '${k}' :`, errorEvent);
+                    (middlewares[k], MIDDLEWARE_DEFAULTS[k],`An error was thrown in the middleware: '${k}' :`, errorEvent);
             }
         }
         return res as PreparedMiddleware;
