@@ -208,9 +208,9 @@ export default class ConfigChecker
     }
 
     private checkAccessControllerDefaultIsSet() {
-        const accessValue = getNotValue(ObjectPath.get(this.zcLoader.appConfig,
-            [nameof<AppConfig>(s => s.controllerDefaults), nameof<ControllerConfig>(s => s.access)]));
-        if (accessValue === undefined) {
+        const accessValue = ObjectPath.get(this.zcLoader.appConfig,
+            [nameof<AppConfig>(s => s.controllerDefaults), nameof<ControllerConfig>(s => s.access)]);
+        if ((isNot(accessValue) ? getNotValue(accessValue) : accessValue) == null) {
             Logger.consoleLogConfigWarning(ConfigNames.App, 'It is recommended to set a controller default value for access or notAccess.');
         }
     }
@@ -870,7 +870,7 @@ export default class ConfigChecker
     }
 
     private checkAccessConfig(config: AccessConfig<any>, target) {
-        this.checkAccessKeyDependency(getNotValue(config.access),target.addPath(nameof<ControllerConfig>(s => s.access)));
+        this.checkAccessKeyDependency(config.access,target.addPath(nameof<ControllerConfig>(s => s.access)));
     }
 
     private checkAccessKeyDependency(value, target) {
