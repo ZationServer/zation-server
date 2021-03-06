@@ -19,6 +19,7 @@ import Component                          from '../component/Component';
 import {AnyDataboxClass}                  from './AnyDataboxClass';
 import {componentTypeSymbol}              from '../../main/component/componentUtils';
 import Socket                             from '../Socket';
+import MidTaskScheduler                   from './../../main/utils/midTaskScheduler';
 import Logger                             from '../../main/log/logger';
 import {ErrorEventHolder}                 from '../../main/error/errorEventHolder';
 import {PreparedEvents}                   from '../../main/config/definitions/parts/events';

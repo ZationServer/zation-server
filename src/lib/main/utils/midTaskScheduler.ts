@@ -11,7 +11,7 @@ interface PendingTask<T> {
     reject: (err: any) => void;
 }
 
-class MidTaskScheduler {
+export default class MidTaskScheduler {
 
     private pendingTasks: PendingTask<any>[] = [];
     private runningTasksCount: number = 0;

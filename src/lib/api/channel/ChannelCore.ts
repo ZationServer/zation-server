@@ -16,6 +16,7 @@ import {ChannelInfo}                                              from '../../ma
 import {ChannelConfig, ChSubAccessFunction}                       from '../../main/config/definitions/parts/channelConfig';
 import {ScExchange}                                               from '../../main/sc/scServer';
 import {AnyChannelClass}                                          from './AnyChannelClass';
+import MidTaskScheduler                                           from './../../main/utils/midTaskScheduler';
 import {componentTypeSymbol}                                      from '../../main/component/componentUtils';
 import {ValidateInputFunction}                                    from '../../main/input/inputClosureCreator';
 import ErrorUtils                                                 from '../../main/utils/errorUtils';
