@@ -103,7 +103,8 @@ export default class Controller<PA extends object = any> extends Component {
 
 Controller.prototype[componentTypeSymbol] = 'Controller';
 
-export type ControllerClass = (new(...args) => Controller) & {config: ControllerConfig};
+export type ControllerClass = (new(...args) => Controller) &
+    {config: ControllerConfig, prototype: Controller};
 
 export interface ControllerPreparedData {
     controllerConfig: ControllerConfig,

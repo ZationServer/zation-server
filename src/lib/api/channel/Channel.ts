@@ -331,4 +331,5 @@ export default class Channel extends ChannelCore {
     }
 }
 
-export type ChannelClass = (new(...args) => Channel) & {config: ChannelConfig};
+export type ChannelClass = (new(...args) => Channel) &
+    {config: ChannelConfig, prototype: Channel};

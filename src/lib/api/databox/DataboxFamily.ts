@@ -1472,4 +1472,5 @@ markAsDefaultImpl(DataboxFamily.prototype['beforeDelete']);
 markAsDefaultImpl(DataboxFamily.prototype['fetch']);
 markAsDefaultImpl(DataboxFamily.prototype['singleFetch']);
 
-export type DataboxFamilyClass = (new(...args) => DataboxFamily<any>) & {config: DataboxConfig};
+export type DataboxFamilyClass = (new(...args) => DataboxFamily<any>) &
+    {config: DataboxConfig, prototype: DataboxFamily<any>};

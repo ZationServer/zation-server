@@ -91,7 +91,8 @@ export default class Receiver<PA extends object = any> extends Component {
 
 Receiver.prototype[componentTypeSymbol] = 'Receiver';
 
-export type ReceiverClass = (new(...args) => Receiver) & {config: ReceiverConfig};
+export type ReceiverClass = (new(...args) => Receiver) &
+    {config: ReceiverConfig, prototype: Receiver};
 
 export interface ReceiverPreparedData {
     receiverConfig: ReceiverConfig,
