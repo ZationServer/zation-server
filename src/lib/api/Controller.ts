@@ -96,14 +96,14 @@ export default class Controller<PA extends object = any> extends Component {
      */
     public static Config(controllerConfig: ControllerConfig) {
         return (target: typeof Controller) => {
-            (target as any)[nameof<ControllerClass>(s => s.config)] = controllerConfig;
+            (target as any)[nameof<typeof Controller>(s => s.config)] = controllerConfig;
         }
     }
 }
 
 Controller.prototype[componentTypeSymbol] = 'Controller';
 
-export type ControllerClass = typeof Controller;
+export type ControllerClass = new(...args) => Controller;
 
 export interface ControllerPreparedData {
     controllerConfig: ControllerConfig,

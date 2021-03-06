@@ -523,4 +523,4 @@ ChannelFamily.prototype[familyTypeSymbol] = true;
 
 markAsDefaultImpl(ChannelFamily.prototype['memberMiddleware']);
 
-export type ChannelFamilyClass = typeof ChannelFamily;
+export type ChannelFamilyClass = new(...args) => ChannelFamily<any>;

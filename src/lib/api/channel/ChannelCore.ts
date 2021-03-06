@@ -15,7 +15,6 @@ import {ChannelInfo}                                              from '../../ma
 // noinspection ES6PreferShortImport
 import {ChannelConfig, ChSubAccessFunction}                       from '../../main/config/definitions/parts/channelConfig';
 import {ScExchange}                                               from '../../main/sc/scServer';
-import {AnyChannelClass}                                          from './AnyChannelClass';
 import MidTaskScheduler                                           from './../../main/utils/midTaskScheduler';
 import {componentTypeSymbol}                                      from '../../main/component/componentUtils';
 import {ValidateInputFunction}                                    from '../../main/input/inputClosureCreator';
@@ -132,7 +131,7 @@ export default abstract class ChannelCore extends Component {
     public static Config(channelConfig: ChannelConfig) {
         return (target: ComponentClass) => {
             if(target.prototype instanceof ChannelCore) {
-                (target as any)[nameof<AnyChannelClass>(s => s.config)] = channelConfig;
+                (target as any)[nameof<typeof ChannelCore>(s => s.config)] = channelConfig;
             }
             else {
                 throw new ConfigBuildError(`The Channel config decorator can only be used on a class that extends the ChannelCore (Channel or ChannelFamily class).`);

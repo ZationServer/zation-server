@@ -1471,4 +1471,4 @@ markAsDefaultImpl(DataboxFamily.prototype['beforeDelete']);
 markAsDefaultImpl(DataboxFamily.prototype['fetch']);
 markAsDefaultImpl(DataboxFamily.prototype['singleFetch']);
 
-export type DataboxFamilyClass = typeof DataboxFamily;
+export type DataboxFamilyClass = new(...args) => DataboxFamily<any>;

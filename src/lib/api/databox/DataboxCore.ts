@@ -16,7 +16,6 @@ import {DataboxConnectReq, DataboxConnectRes, DataboxInfo, DbToken} from '../../
 import {ConsumeInputFunction, ValidateInputFunction}                from '../../main/input/inputClosureCreator';
 import ErrorUtils                         from "../../main/utils/errorUtils";
 import Component                          from '../component/Component';
-import {AnyDataboxClass}                  from './AnyDataboxClass';
 import {componentTypeSymbol}              from '../../main/component/componentUtils';
 import Socket                             from '../Socket';
 import MidTaskScheduler                   from './../../main/utils/midTaskScheduler';
@@ -351,7 +350,7 @@ export default abstract class DataboxCore extends Component {
      */
     public static Config(databoxConfig: DataboxConfig) {
         return (target: typeof DataboxCore) => {
-            (target as any)[nameof<AnyDataboxClass>(s => s.config)] = databoxConfig;
+            (target as any)[nameof<typeof DataboxCore>(s => s.config)] = databoxConfig;
         }
     }
 }

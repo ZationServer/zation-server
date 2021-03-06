@@ -330,4 +330,4 @@ export default class Channel extends ChannelCore {
     }
 }
 
-export type ChannelClass = typeof Channel;
+export type ChannelClass = new(...args) => Channel;

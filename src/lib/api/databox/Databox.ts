@@ -1229,4 +1229,4 @@ markAsDefaultImpl(Databox.prototype['beforeDelete']);
 markAsDefaultImpl(Databox.prototype['fetch']);
 markAsDefaultImpl(Databox.prototype['singleFetch']);
 
-export type DataboxClass = typeof Databox;
+export type DataboxClass = new(...args) => Databox;
