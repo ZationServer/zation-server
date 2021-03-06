@@ -108,6 +108,6 @@ export const ObjectModel = (name?: string) => {
             $extends(objectModel,resolveIfModelTranslatable(proto));
         }
 
-        target[modelTranslateSymbol] = objectModel;
+        target[modelTranslateSymbol] = () => objectModel;
     }
 };
