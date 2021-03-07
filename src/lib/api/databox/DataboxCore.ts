@@ -51,7 +51,7 @@ export default abstract class DataboxCore extends Component {
      */
     protected readonly dbTokenVersion: number = 0;
 
-    protected readonly _parsedReloadStrategy?: [string,any];
+    protected readonly _parsedReloadStrategy?: [string,any?];
     protected readonly _initialData: any;
     protected readonly _unregisterDelay: number;
     protected readonly _preparedData: DbPreparedData;
@@ -82,8 +82,10 @@ export default abstract class DataboxCore extends Component {
         this._unregisterDelay = preparedData.unregisterDelay;
         this._initialData = preparedData.initialData;
         if(preparedData.reloadStrategy) {
-            this._parsedReloadStrategy = [preparedData.reloadStrategy.name,
-                preparedData.reloadStrategy.options];
+            const parsedStrategy: [string,any?] = [preparedData.reloadStrategy.name];
+            if(preparedData.reloadStrategy.options !== undefined)
+                parsedStrategy[1] = preparedData.reloadStrategy.options;
+            this._parsedReloadStrategy = parsedStrategy;
         }
 
         this._preparedTokenSessionKey =
