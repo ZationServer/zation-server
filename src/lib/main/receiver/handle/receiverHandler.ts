@@ -105,7 +105,6 @@ export default class ReceiverHandler
                     throw err;
                 }
 
-                //process the receiver handle, before handle events and finally handle.
                 let result;
                 try {
                     await handleMiddlewareInvoke(rInstance,socket,packet);

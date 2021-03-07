@@ -4,6 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
+import afterPromise from './promiseUtils';
+
 type TaskRunner<T> = () => Promise<T>;
 interface PendingTask<T> {
     runner: TaskRunner<T>,
@@ -43,7 +45,8 @@ export default class MidTaskScheduler {
         if(this.allowToRunTask()) {
             this.runningTasksCount++;
             const promise = task();
-            promise.finally(this._taskFinishBound)
+            // noinspection ES6MissingAwait
+            afterPromise(promise,this._taskFinishBound);
             return promise;
         }
         else {
@@ -61,7 +64,8 @@ export default class MidTaskScheduler {
         if(this.allowToRunMidTask()) {
             this.runningMidTasksCount++;
             const promise = task();
-            promise.finally(this._midTaskFinishBound)
+            // noinspection ES6MissingAwait
+            afterPromise(promise,this._midTaskFinishBound);
             return promise;
         }
         else {
@@ -78,7 +82,8 @@ export default class MidTaskScheduler {
     private run(pendingTasks: PendingTask<any>[], taskFinishHandler: () => void) {
         pendingTasks.map(task => {
             const p = task.runner();
-            p.finally(taskFinishHandler);
+            // noinspection JSIgnoredPromiseFromCall
+            afterPromise(p,taskFinishHandler);
             p.then(task.resolve,task.reject);
         });
     }

@@ -5,7 +5,8 @@ Copyright(c) Luca Scaringella
  */
 
 /**
- * Promise util function that works like finally.
+ * Promise util function that works like finally
+ * with the difference that the promise error is caught.
  * It calls the function after the promise is fulfilled or rejected
  * and returns a new promise.
  * @param promise
