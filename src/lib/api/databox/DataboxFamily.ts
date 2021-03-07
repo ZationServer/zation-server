@@ -73,7 +73,7 @@ import {isDefaultImpl, markAsDefaultImpl}         from '../../main/utils/default
 import Timeout                                    = NodeJS.Timeout;
 import NoDataError                                from '../../main/databox/noDataError';
 import MiddlewaresPreparer, {MiddlewareInvoker}   from '../../main/middlewares/middlewaresPreparer';
-import {stringifyMember}                          from '../../main/utils/memberParser';
+import {stringifyMember}                          from '../../main/utils/memberStringify';
 import CloneUtils                                 from '../../main/utils/cloneUtils';
 import {DeepReadonly, Writable}                   from '../../main/utils/typeUtils';
 import {DataboxConfig}                            from '../../main/config/definitions/parts/databoxConfig';

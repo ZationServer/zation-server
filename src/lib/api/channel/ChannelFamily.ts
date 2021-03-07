@@ -35,7 +35,7 @@ import {familyTypeSymbol}                       from '../../main/component/compo
 import ChannelUtils                             from '../../main/channel/channelUtils';
 import {isDefaultImpl, markAsDefaultImpl}       from '../../main/utils/defaultImplUtils';
 import MiddlewaresPreparer, {MiddlewareInvoker} from '../../main/middlewares/middlewaresPreparer';
-import {stringifyMember}                        from '../../main/utils/memberParser';
+import {stringifyMember}                        from '../../main/utils/memberStringify';
 import CloneUtils                               from '../../main/utils/cloneUtils';
 import {DeepReadonly}                           from '../../main/utils/typeUtils';
 import {deepFreeze}                             from '../../main/utils/deepFreeze';
