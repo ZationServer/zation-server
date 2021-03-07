@@ -105,7 +105,7 @@ export default class ModelProcessCreator
         const arrayValidate = ValidatorCreator.createArrayValidator(arraySettings);
         const canBeNull = meta.canBeNull === true;
 
-        const expected = canBeNull ? ['array','null'] : 'null';
+        const expected = canBeNull ? ['array','null'] : 'array';
 
         return async (srcObj, srcKey, currentPath, processInfo) => {
             const input = srcObj[srcKey];
@@ -230,7 +230,7 @@ export default class ModelProcessCreator
 
         const hasProcessTask = (processBaseConstruct || processConstruct || processConvert || processPrototype);
 
-        const expected = canBeNull ? ['array','null'] : 'null';
+        const expected = canBeNull ? ['object','null'] : 'object';
 
         return async (srcObj, srcKey, currentPath, processInfo) => {
 
