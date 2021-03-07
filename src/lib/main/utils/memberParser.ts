@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 function sortByKeys(value: any) {
-    return (typeof value === 'object') ?
+    return (typeof value === 'object' && value) ?
         (Array.isArray(value) ?
                 value.map(sortByKeys) :
                 Object.keys(value).sort().reduce(
@@ -18,9 +18,6 @@ function sortByKeys(value: any) {
 
 export function stringifyMember(member: any): string {
     if(typeof member === 'string') return `"${member}"`;
-    else return JSON.stringify(member,sortByKeys)
-}
-
-export function parseMember(member: string): any {
-    return JSON.parse(member);
+    else if(member !== undefined) return JSON.stringify(sortByKeys(member))
+    else return 'undefined';
 }
