@@ -57,7 +57,7 @@ export interface DataboxConnectRes {
     /**
      * Reload strategy
      */
-    rs?: [string,any]
+    rs?: [string,any?]
 }
 
 export type UnregisterSocketFunction = (inputChannelId?: string) => void;
