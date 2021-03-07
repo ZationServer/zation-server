@@ -174,8 +174,8 @@ interface TimeBasedListReloadStrategy {
          */
         maxFetchTries?: number
         /**
-         * Time delta of disconnected timestamp.
-         * @default 5000
+         * Time delta in milliseconds of disconnected timestamp.
+         * @default 5000ms
          */
         disconnectTimeDelta?: number
     }
