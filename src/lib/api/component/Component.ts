@@ -52,9 +52,10 @@ export default class Component {
     }
 }
 
+Component[componentSymbol] = true;
 Component[familyTypeSymbol] = false;
-Component.prototype[familyTypeSymbol] = false;
 Component.prototype[componentSymbol] = true;
+Component.prototype[familyTypeSymbol] = false;
 Component.prototype[componentTypeSymbol] = 'Unknown';
 
 export type ComponentClass = ControllerClass | ReceiverClass | AnyDataboxClass | AnyChannelClass;
