@@ -17,9 +17,9 @@ import {bag}                from './Bag';
  * Property decorator that can be used to inject an instance in a property.
  * The decorator is compatible with databoxes, channels or singletons.
  * The injections will be processed before the initialization of the components.
- * If you provide more Databox or channel classes there will be combined in the corresponding container.
+ * If you provide more Databox or channel classes, they will be combined in the corresponding container.
  * In the case of singletons, all instances will be resolved in an array.
- * It is also possible to provide an async function then the return value will be injected.
+ * It is also possible to provide an async function, then the return value of this function will be injected.
  * If you want to inject services you should look at Inject.Service.
  * @param inject
  * @example
