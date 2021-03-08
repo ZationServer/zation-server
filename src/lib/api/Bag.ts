@@ -65,6 +65,8 @@ import AuthConfig                                              from '../main/aut
 import ZationToken                                             from '../main/internalApi/zationToken';
 import {AppConfig}                                             from '../main/config/definitions/main/appConfig';
 import {ServiceConfig}                                         from '../main/config/definitions/main/serviceConfig';
+import {deepEqual}                                             from '../main/utils/deepEqual';
+import {deepFreeze}                                            from '../main/utils/deepFreeze';
 
 /**
  * The bag instance of this process.
@@ -541,6 +543,17 @@ export default class Bag<WA extends object = any> {
      */
     generateRandomBoolean(chanceForTrue: number = 0.5): boolean {
         return Math.random() <= chanceForTrue;
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns a random item of the given array.
+     * If the array is empty, it returns undefined.
+     * @param array
+     */
+    getRandomArrayItem<T>(array: T[]): T | undefined {
+        return array[Math.floor(Math.random() * array.length)];
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -1796,17 +1809,39 @@ export default class Bag<WA extends object = any> {
         (WorkerChSpecialTaskAction.Message, data);
     }
 
-    //Part clone utils
+    //Part utils
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Deep clone any value.
+     * @description
+     * Deep clones any value.
      * Notice that it only clones
      * enumerable properties of an object.
      * @param value
      */
-    deepClone<T extends any = any>(value: T): T {
+    deepClone<T>(value: T): T {
         return CloneUtils.deepClone(value);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns if the two given values are deeply equal.
+     * @param v1
+     * @param v2
+     */
+    deepEqual(v1: any,v2: any): boolean {
+        return deepEqual(v1,v2)
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Deep freezes object/functions deep and safe.
+     * @param value
+     */
+    deepFreeze<T>(value: T): T {
+        return deepFreeze(value);
     }
 
     //Part get
