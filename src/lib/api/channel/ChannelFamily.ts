@@ -126,12 +126,10 @@ export default class ChannelFamily<M = string> extends ChannelCore {
 
         const memberStr = stringifyMember(member);
 
-        const chEvent = this._chEventPreFix + memberStr;
-
         const memberMap = this._regMembers.get(memberStr);
         if(memberMap && memberMap.has(socket)){
             //already subscribed
-            return chEvent;
+            return this._chId;
         }
 
         //new subscription
