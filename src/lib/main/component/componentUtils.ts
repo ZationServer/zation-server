@@ -15,7 +15,7 @@ export const familyTypeSymbol = Symbol();
 
 export default class ComponentUtils {
 
-    static getComponentType(component: ComponentClass): string {
+    static getComponentType(component: Component): string {
         return component[componentTypeSymbol];
     }
 

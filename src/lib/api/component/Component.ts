@@ -38,7 +38,7 @@ export default class Component {
     }
 
     toString(): string   {
-        return `${ComponentUtils.getComponentType(Object.getPrototypeOf(this))}: '${
+        return `${ComponentUtils.getComponentType(this)}: '${
             this.identifier}'${this.apiLevel !== undefined ? ` with API level: '${this.apiLevel}'` : ''}`;
     }
 
