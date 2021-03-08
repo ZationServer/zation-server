@@ -89,9 +89,7 @@ export default class Channel extends ChannelCore {
             err.name = ClientErrorName.UnnecessaryMember;
             throw err;
         }
-        if(this._subSockets.has(socket)){
-            return this._chEvent;
-        }
+        if(this._subSockets.has(socket)) return this._chEvent;
 
         //new subscription
         await this._checkSubscribeAccess(socket,{identifier: this.identifier,member});

@@ -129,7 +129,7 @@ export default class ChannelFamily<M = string> extends ChannelCore {
         const memberMap = this._regMembers.get(memberStr);
         if(memberMap && memberMap.has(socket)){
             //already subscribed
-            return this._chId;
+            return this._chEventPreFix + member.memberStr;
         }
 
         //new subscription
@@ -143,7 +143,7 @@ export default class ChannelFamily<M = string> extends ChannelCore {
 
         this._addSocket({memberStr,member},socket);
         this._onSubscription(member,socket);
-        return this._chId;
+        return this._chEventPreFix + member.memberStr;
     }
 
     private _addSocket(member: ChMember<M>,socket: Socket) {
@@ -288,7 +288,8 @@ export default class ChannelFamily<M = string> extends ChannelCore {
     private _processPublish(memberStr: string,publish: PublishPackage) {
         const memberMap = this._regMembers.get(memberStr);
         if(memberMap){
-            const outputPackage = {i: this._chId,m: memberStr,e: publish.e,d: publish.d} as ChClientOutputPublishPackage;
+            const outputPackage = {i: this._chEventPreFix + memberStr,
+                e: publish.e,d: publish.d} as ChClientOutputPublishPackage;
             if(publish.p === undefined){
                 for (const socket of memberMap.keys()){
                     socket._emit(CH_CLIENT_OUTPUT_PUBLISH,outputPackage);
@@ -384,7 +385,8 @@ export default class ChannelFamily<M = string> extends ChannelCore {
         if(memberMap){
             const unsubscribeSocketFunction = memberMap.get(socket);
             if(unsubscribeSocketFunction){
-                socket._emit(CH_CLIENT_OUTPUT_KICK_OUT,{i: this._chId,m: memberStr,c: code,d: data} as ChClientOutputKickOutPackage);
+                socket._emit(CH_CLIENT_OUTPUT_KICK_OUT,{i: this._chEventPreFix + memberStr,
+                    c: code,d: data} as ChClientOutputKickOutPackage);
                 unsubscribeSocketFunction(UnsubscribeTrigger.KickOut);
             }
         }
@@ -438,7 +440,7 @@ export default class ChannelFamily<M = string> extends ChannelCore {
      */
     async close(member: M,code?: number | string,data?: any,forEveryWorker: boolean = true){
         const memberStr = stringifyMember(member);
-        const clientPackage: ChClientOutputClosePackage = {i: this._chId,m: memberStr,c: code,d: data};
+        const clientPackage: ChClientOutputClosePackage = {i: this._chEventPreFix + memberStr, c: code,d: data};
         if(forEveryWorker)
             this._sendToWorkers(memberStr,[this._workerFullId,ChWorkerAction.close,clientPackage] as ChWorkerClosePackage)
         await this._close(memberStr,clientPackage);
