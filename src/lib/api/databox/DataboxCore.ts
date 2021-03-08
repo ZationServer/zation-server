@@ -137,7 +137,7 @@ export default abstract class DataboxCore extends Component {
         try {await this._memberInputValidator(member);}
         catch (inputError) {
             const err: any = new Error('Invalid member input.');
-            err.name = ClientErrorName.InvalidInput;
+            err.name = ClientErrorName.InvalidMember;
             err.backErrors = ErrorUtils.dehydrate(inputError,this._sendErrorDescription);
             throw err;
         }
