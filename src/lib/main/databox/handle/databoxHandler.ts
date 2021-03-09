@@ -46,6 +46,8 @@ export default class DataboxHandler
             throw err;
         }
 
+        if(this.debug) Logger.log.debug(`Databox Connection Request -> `,request);
+
         //throws if not exists or api level is incompatible
         const db: DataboxCore = this.dbPrepare.get((request.d as string),
             (ApiLevelUtils.parsePacketApiLevel(request.a) || socket.connectionApiLevel || this.defaultApiLevel));
@@ -54,10 +56,6 @@ export default class DataboxHandler
             const err: any = new Error(`Limit of Databoxes for this socket is reached.`);
             err.name = ClientErrorName.DataboxLimitReached;
             throw err;
-        }
-
-        if(this.debug){
-            Logger.log.debug(`Databox Connection Request -> `,request);
         }
 
         await db._handleConRequest(socket,request,sendResponse);

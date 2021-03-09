@@ -30,7 +30,7 @@ export function formatArgs(args: any[]): string[] {
             }
         }
         else {
-            strings.push(value.toString());
+            strings.push(String(value));
         }
     }
     return strings;

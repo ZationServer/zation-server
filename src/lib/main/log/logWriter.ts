@@ -17,7 +17,7 @@ export interface LogWriter {
 export function createConsoleLogWriter(logLevel): LogWriter {
     return {
         write: (msg, {level,color,name}) => {
-            if(logLevel >= level) console.log(`\x1b[3${color}m   [${name}]\x1b[0m`,msg.join('\n'));
+            if(logLevel >= level) console.log(`\x1b[3${color}m   [${name}]\x1b[0m`,msg.join(''));
         }
     }
 }
