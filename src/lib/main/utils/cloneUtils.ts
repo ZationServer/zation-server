@@ -24,7 +24,7 @@ export default class CloneUtils
         }
         // handle case: object
         newO = {};
-        for (i in v) if ((v as object).hasOwnProperty(i)) newO[i] = CloneUtils.deepClone(v[i]);
+        for (i in v) if ((v as any).hasOwnProperty(i)) newO[i] = CloneUtils.deepClone(v[i]);
         return newO;
     }
 }
