@@ -129,7 +129,7 @@ export default class ChannelFamily<M = string> extends ChannelCore {
         const memberMap = this._regMembers.get(memberStr);
         if(memberMap && memberMap.has(socket)){
             //already subscribed
-            return this._chEventPreFix + member.memberStr;
+            return this._chEventPreFix + memberStr;
         }
 
         //new subscription
@@ -143,7 +143,7 @@ export default class ChannelFamily<M = string> extends ChannelCore {
 
         this._addSocket({memberStr,member},socket);
         this._onSubscription(member,socket);
-        return this._chEventPreFix + member.memberStr;
+        return this._chEventPreFix + memberStr;
     }
 
     private _addSocket(member: ChMember<M>,socket: Socket) {
