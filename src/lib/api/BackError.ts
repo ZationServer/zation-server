@@ -136,8 +136,8 @@ export default class BackError extends Error
      * the info object could include what the length of the input is and
      * what the minimum length is.
      */
-    constructor(backErrorConstruct: BackErrorConstruct, info?: Record<string,any>)
-    constructor(value: BackErrorConstruct | string, info?: Record<string,any>) {
+    constructor(backErrorConstruct?: BackErrorConstruct, info?: Record<string,any>)
+    constructor(value: BackErrorConstruct | string = {}, info?: Record<string,any>) {
         super((typeof value === 'object') ? value.description : undefined);
 
         if(typeof value === 'string') value = {name: value} as BackErrorConstruct;
