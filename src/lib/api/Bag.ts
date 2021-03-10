@@ -527,12 +527,23 @@ export default class Bag<WA extends object = any> {
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Returns an random number in a range.
-     * @param min
-     * @param max
+     * Returns a random int in a range.
+     * @param min (inclusive)
+     * @param max (inclusive)
      */
-    generateRangeRandomNumber(min: number = 0, max: number = 10): number {
+    generateRandomIntInRange(min: number = 0, max: number = 10): number {
         return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns an random float in range.
+     * @param min (inclusive)
+     * @param max (exclusive)
+     */
+    generateRandomFloatInRange(min: number = 0, max: number = 10): number {
+        return Math.random() * (max - min) + min;
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
