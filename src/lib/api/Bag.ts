@@ -1530,9 +1530,9 @@ export default class Bag<WA extends object = any> {
      *     8: 'apiLevel8',
      *     2: 'apiLevel2'
      * });
-     * console.log(switch(7)); // apiLevel5
-     * console.log(switch(20)); // apiLevel8
-     * console.log(switch(1)); // apiLevel1
+     * switch(7); // apiLevel 5
+     * switch(20); // apiLevel 8
+     * switch(1); // apiLevel 1
      */
     createApiLevelSwitcher<T>(apiLevelSwitch: ApiLevelSwitch<T>): ApiLevelSwitchFunction<T> {
         return ApiLevelUtils.createApiLevelSwitcher<T>(apiLevelSwitch);
