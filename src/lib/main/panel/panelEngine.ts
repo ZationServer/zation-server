@@ -110,10 +110,8 @@ export default class PanelEngine
     }
 
     private async sendFirstPong(): Promise<void> {
-        try {
-            this.pubInPanel('firstPong',(await this.zw.getFirstPanelInfo()));
-        }
-        catch (e) {console.log(e);}
+        try {this.pubInPanel('firstPong',(await this.zw.getFirstPanelInfo()));}
+        catch (_) {}
     }
 
     updateLeaderInfo(data: object) {
