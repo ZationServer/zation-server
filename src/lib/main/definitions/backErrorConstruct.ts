@@ -32,8 +32,7 @@ export default interface BackErrorConstruct
      * The type of the BackError.
      * The error type is a very abstract topic name.
      * Like validation error, database error, input error.
-     * There some default types,
-     * you can see them in the BackErrorBuilder.
+     * Some default types can be found in the Enum: ErrorType.
      * @default ErrorType.NormalError
      */
     type?: string;
