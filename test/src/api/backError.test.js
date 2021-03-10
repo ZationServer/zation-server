@@ -14,31 +14,25 @@ describe('Api.BackError',() => {
 
         it('Default',() => {
             const be = new BackError();
-            assert.equal(be.getName(),'BackError');
+            assert.equal(be.name,'BackError');
         });
 
         it('Overloaded',() => {
             const be = new BackError({name: 'error1'});
-            assert.equal(be.getName(),'error1');
+            assert.equal(be.name,'error1');
         });
 
         it('Overloaded-2',() => {
             const be = new BackError({name: 'error1',group : 'group2', type : 'type1'});
-            assert.equal(be.getName(),'error1');
-            assert.equal(be.getGroup(),'group2');
-            assert.equal(be.getType(),'type1');
+            assert.equal(be.name,'error1');
+            assert.equal(be.group,'group2');
+            assert.equal(be.type,'type1');
         });
 
         it('Overloaded-3',() => {
-            const be = new BackError({name: 'error1'},'info2');
-            assert.equal(be.getName(),'error1');
-            assert.equal(be.getInfo().main,'info2');
-        });
-
-        it('Overloaded-4',() => {
             const be = new BackError({name: 'error1'},{length : 2});
-            assert.equal(be.getName(),'error1');
-            assert.deepEqual(be.getInfo(),{length : 2})
+            assert.equal(be.name,'error1');
+            assert.deepEqual(be.info,{length : 2})
         });
     });
 
@@ -53,7 +47,7 @@ describe('Api.BackError',() => {
                     t: 'NormalError',
                     c: 1,
                     i: {},
-                    d: 'No Description defined in Error' });
+                    d: undefined });
 
                 assert.deepEqual(be._dehydrate(),{ n: 'error1',
                     g: undefined,
@@ -70,54 +64,6 @@ describe('Api.BackError',() => {
 
         });
 
-        it('setName',() => {
-            const be = new BackError({name: 'error1'});
-            be.setName('error2');
-            assert.equal(be.getName(),'error2');
-        });
-
-        it('setGroup',() => {
-            const be = new BackError({group : 'g1'});
-            be.setGroup('g2');
-            assert.equal(be.getGroup(),'g2');
-        });
-
-        it('setDescription',() => {
-            const be = new BackError({description : 'desc'});
-            be.setDescription('desc2');
-            assert.equal(be.getDescription(),'desc2');
-        });
-
-        it('setType',() => {
-            const be = new BackError({type : 't1'});
-            be.setType('t2');
-            assert.equal(be.getType(),'t2');
-        });
-
-        it('setPrivate',() => {
-            const be = new BackError({private: false});
-            be.setPrivate(true);
-            assert(be.isPrivate());
-        });
-
-        it('setSendInfo',() => {
-            const be = new BackError({sendInfo: false});
-            be.setSendInfo(true);
-            assert(be.isSendInfo());
-        });
-
-        it('setIsCustom',() => {
-            const be = new BackError({custom: true});
-            be.setCustom(false);
-            assert(!be.isCustom());
-        });
-
-        it('setInfo',() => {
-            const be = new BackError({},{length : 1});
-            be.setInfo({length : 5});
-            assert.deepEqual(be.getInfo(),{length : 5});
-        });
-
         it('throw',() => {
             const be = new BackError({},{length : 1});
             expect(() => {
@@ -127,7 +73,7 @@ describe('Api.BackError',() => {
 
         it('toString',() => {
             const eb = new BackError({name : 'error1'});
-            assert.equal(eb.toString(),'BackError  Name: error1 Group: undefined  Description: No Description defined in Error  Type: NormalError  Info: {}  Private: false  Custom: true');
+            assert.equal(eb.toString(),'BackError -> Name: "error1" Group: "undefined" Description: "undefined" Type: "NormalError" Info: "{}" Private: "false" Custom: "true"');
         });
     });
 

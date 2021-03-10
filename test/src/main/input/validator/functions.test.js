@@ -57,7 +57,7 @@ describe('Function Validation',() => {
             const eb = new BackErrorBag;
             await ValidatorFunctions.in(['m','w'])('c',eb,{});
             assert(!eb.isEmpty());
-            assert(eb.getBackErrors()[0].getInfo().values !== undefined);
+            assert(eb.getBackErrors()[0].info.values !== undefined);
         });
 
         it('Matching should produce no error',async () => {
@@ -74,7 +74,7 @@ describe('Function Validation',() => {
             const eb = new BackErrorBag;
             await ValidatorFunctions.privateIn(['m','w'])('c',eb,{});
             assert(!eb.isEmpty());
-            assert(eb.getBackErrors()[0].getInfo().values === undefined);
+            assert(eb.getBackErrors()[0].info.values === undefined);
         });
 
         it('Matching should produce no error',async () => {

@@ -48,13 +48,13 @@ describe('Api.BackErrorBag',() => {
 
         it('AddNewBackError',() => {
             const eb = new BackErrorBag();
-            eb.addNewBackError({name : 'error1'});
+            eb.add(new BackError({name : 'error1'}));
             assert.equal(eb.getBackErrors()[0].name,'error1');
         });
 
         it('dehydrate',() => {
             const eb = new BackErrorBag();
-            eb.addNewBackError({name : 'error1'});
+            eb.add(new BackError({name : 'error1'}));
             const json = eb._dehydrate(true);
             // noinspection JSCheckFunctionSignatures
             assert.sameDeepMembers(json, [ { n: 'error1',
@@ -62,7 +62,7 @@ describe('Api.BackErrorBag',() => {
                 t: 'NormalError',
                 c: 1,
                 i: {},
-                d: 'No Description defined in Error' } ]
+                d: undefined } ]
             );
         });
 
@@ -85,8 +85,8 @@ describe('Api.BackErrorBag',() => {
             assert.equal(eb.count,0);
             eb.add(new BackError({name : 'test1'}));
             assert.equal(eb.count,1);
-            eb.addNewBackError({});
-            eb.addNewBackError({});
+            eb.add(new BackError({}));
+            eb.add(new BackError({}));
             assert.equal(eb.count,3);
             eb.empty();
             assert.equal(eb.count,0);
@@ -104,7 +104,7 @@ describe('Api.BackErrorBag',() => {
             expect(()=> {
                 eb.throwIfHasError();
             }).not.throw();
-            eb.addNewBackError({});
+            eb.add(new BackError({}));
             expect(()=> {
                 eb.throwIfHasError();
             }).to.throw();
@@ -112,7 +112,7 @@ describe('Api.BackErrorBag',() => {
 
         it('toString',() => {
             const eb = new BackErrorBag(new BackError({name : 'test1'}));
-            assert.equal(eb.toString(),'BackErrorBag-> 1 BackErrors  ->\n     0: BackError  Name: test1 Group: undefined  Description: No Description defined in Error  Type: NormalError  Info: {}  Private: false  Custom: true \n');
+            assert.equal(eb.toString(),'BackErrorBag -> 1 BackErrors ->\n     0: BackError -> Name: "test1" Group: "undefined" Description: "undefined" Type: "NormalError" Info: "{}" Private: "false" Custom: "true" \n');
         });
 
     });
