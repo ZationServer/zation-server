@@ -17,8 +17,8 @@ export default class CodeError extends BackError {
     }
 
     [codeErrorSymbol] = true;
-    constructor(errorConstruct: BackErrorConstruct = {}, info?: object | string, message?: string) {
-        super(errorConstruct,info,message);
+    constructor(errorConstruct: BackErrorConstruct = {}, info?: object) {
+        super(errorConstruct,info);
         if(CodeError.codeErrorEvent) CodeError.codeErrorEvent(this);
     }
 }

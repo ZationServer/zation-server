@@ -4,7 +4,6 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import BackErrorConstruct        from "../main/definitions/backErrorConstruct";
 import BackError, {DryBackError} from './BackError';
 
 export default class BackErrorBag
@@ -28,26 +27,7 @@ export default class BackErrorBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Adds a new BackError to the bag.
-     * By using the constructor of the BackError class.
-     * @example
-     * addNewBackError({name: 'valueNotMatchesWithMinLength'},{minLength: 5, inputLength: 3});
-     * @param backErrorConstruct
-     * Create a new BackError construct.
-     * @param info
-     * The BackError info is a dynamic object which contains more detailed information.
-     * For example, with an valueNotMatchesWithMinLength error,
-     * the info object could include what the length of the input is and
-     * what the minimum length is.
-     */
-    addNewBackError(backErrorConstruct: BackErrorConstruct = {}, info?: object | string): void {
-        this.add(new BackError(backErrorConstruct,info));
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Returns all BackErrors of the bag as a BackError array.
+     * Returns all BackErrors of the bag.
      */
     getBackErrors(): BackError[] {
         return this.backErrors;
@@ -56,11 +36,11 @@ export default class BackErrorBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Adds all BackErrors of BackErrorBags to this bag.
+     * Adds all BackErrors of a BackErrorBags to this bag.
      * @param backErrorBags
      */
     addFromBackErrorBag(...backErrorBags: BackErrorBag[]): void {
-        for(let j = 0;  j < backErrorBags.length; j++) {
+        for(let j = 0; j < backErrorBags.length; j++) {
             this.add(...backErrorBags[j].getBackErrors());
         }
     }
@@ -69,7 +49,7 @@ export default class BackErrorBag
     /**
      * @internal
      * @description
-     * This method is used internal.
+     * This method is used internally.
      * @param withDesc
      */
     _dehydrate(withDesc: boolean): DryBackError[] {
@@ -105,9 +85,7 @@ export default class BackErrorBag
      * Throw this bag if it has at least one BackError.
      */
     throwIfHasError(): void {
-        if(this.isNotEmpty()) {
-            throw this;
-        }
+        if(this.isNotEmpty()) throw this;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -131,7 +109,7 @@ export default class BackErrorBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns if the BackErrorBag is not empty.
+     * Returns if this bag is not empty.
      * It means that the bag has at least one BackError.
      */
     isNotEmpty(): boolean {
@@ -153,7 +131,7 @@ export default class BackErrorBag
      * Returns the complete information as a string.
      */
     toString(): string {
-        let text = `BackErrorBag-> ${this.backErrors.length} BackErrors  ->\n`;
+        let text = `BackErrorBag -> ${this.backErrors.length} BackErrors ->\n`;
         for(let i = 0; i < this.backErrors.length; i++)
         {
             text += `     ${i}: ${this.backErrors[i]} \n`;

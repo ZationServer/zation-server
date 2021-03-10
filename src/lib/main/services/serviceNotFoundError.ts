@@ -14,8 +14,7 @@ export default class ServiceNotFoundError extends CodeError
 
     constructor(serviceName: string, instanceName: string) {
         super(MainBackErrors.serviceNotFound,
-            {serviceName: serviceName,instanceName: instanceName},
-            `Service instance: '${serviceName}'.'${instanceName}' not found.`);
+            {serviceName: serviceName,instanceName: instanceName});
     }
 
     // noinspection JSUnusedGlobalSymbols

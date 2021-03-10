@@ -10,7 +10,6 @@ import Bag, {bag}                   from './lib/api/Bag';
 import AuthController               from './lib/api/AuthController';
 import Controller                   from './lib/api/Controller';
 import Config                       from './lib/api/Config';
-import BackErrorBuilder             from "./lib/main/builder/backErrorBuilder";
 import ServiceNotFoundError         from './lib/main/services/serviceNotFoundError';
 import AuthenticationRequiredError  from './lib/main/error/authenticationRequiredError';
 import UndefinedUserIdError         from './lib/main/error/undefinedUserIdError';
@@ -148,7 +147,6 @@ export {
     Receiver,
     ReceiverConfig,
     BackError,
-    BackErrorBuilder,
     BackErrorBag,
     BackErrorConstruct,
     ErrorType,
