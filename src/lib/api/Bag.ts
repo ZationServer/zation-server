@@ -65,7 +65,7 @@ import AuthConfig                                              from '../main/aut
 import ZationToken                                             from '../main/internalApi/zationToken';
 import {AppConfig}                                             from '../main/config/definitions/main/appConfig';
 import {ServiceConfig}                                         from '../main/config/definitions/main/serviceConfig';
-import {deepEqual}                                             from '../main/utils/deepEqual';
+import {deepEqual}                                             from 'forint';
 import {deepFreeze}                                            from '../main/utils/deepFreeze';
 
 /**
