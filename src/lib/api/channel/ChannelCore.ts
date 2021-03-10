@@ -58,7 +58,7 @@ export default abstract class ChannelCore extends Component {
      * @param socket
      * @param member
      */
-    protected abstract async _subscribeSocket(socket: Socket, member?: any): Promise<string>;
+    protected abstract _subscribeSocket(socket: Socket, member?: any): Promise<string>;
 
     /**
      * @internal
@@ -94,7 +94,7 @@ export default abstract class ChannelCore extends Component {
      * Otherwise, the socket will be kicked out.
      * @private
      */
-    abstract async _recheckSocketAccess(socket: Socket): Promise<void>;
+    abstract _recheckSocketAccess(socket: Socket): Promise<void>;
 
     /**
      * @internal

@@ -170,7 +170,7 @@ export default abstract class DataboxCore extends Component {
      * @param request
      * @param sendResponse
      */
-    protected abstract async _processConRequest(socket: Socket, request: DataboxConnectReq, sendResponse: (response: DataboxConnectRes) => void): Promise<void>;
+    protected abstract _processConRequest(socket: Socket, request: DataboxConnectReq, sendResponse: (response: DataboxConnectRes) => void): Promise<void>;
 
     /**
      * @internal
@@ -189,7 +189,7 @@ export default abstract class DataboxCore extends Component {
      * Otherwise, the socket will be kicked out.
      * @private
      */
-    abstract async _recheckSocketAccess(socket: Socket): Promise<void>;
+    abstract _recheckSocketAccess(socket: Socket): Promise<void>;
 
     /**
      * @internal
