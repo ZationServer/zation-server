@@ -21,7 +21,7 @@ export function createIntervalAsyncIterator(milliseconds: number): { [Symbol.asy
     let currentPromise;
     let currentPromiseResolve;
     let createPromiseHandler = () => {
-        currentPromise = new Promise(resolve => {
+        currentPromise = new Promise<void>(resolve => {
             currentPromiseResolve = () => {
                 resolve();
                 createPromiseHandler();

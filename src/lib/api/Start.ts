@@ -22,7 +22,7 @@ import ZationMaster    from '../core/zationMaster';
  * @throws Error with the property: name of type StartErrorName.
  */
 export function start(options: StarterConfig,startMode: StartMode | any = StartMode.Development) {
-    return new Promise((resolve,reject) => {
+    return new Promise<void>((resolve,reject) => {
         new ZationMaster(options,resolve,reject,startMode);
     });
 }

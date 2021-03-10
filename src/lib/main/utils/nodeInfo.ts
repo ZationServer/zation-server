@@ -14,7 +14,7 @@ export default class NodeInfo {
         let brokerInfo = {};
         let cBrokerInfo = {};
         let firstBroker = true;
-        await (new Promise((resolve) => {
+        await (new Promise<void>((resolve) => {
             worker.exchange.send({action: BrokerMessageAction.Info}, null , (err, data) => {
                 if (err) {
                     resolve();
@@ -35,7 +35,7 @@ export default class NodeInfo {
 
     static async getMasterInfo(worker: ZationWorker): Promise<object> {
         let info = {};
-        await (new Promise((resolve) => {
+        await (new Promise<void>((resolve) => {
             worker.sendToMaster({action: WorkerMessageAction.Info},(err, data) => {
                 if (err) {
                     resolve();

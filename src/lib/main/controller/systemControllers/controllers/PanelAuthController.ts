@@ -37,7 +37,7 @@ export default class PanelAuthController extends Controller
         if(bag.getZationConfig().mainConfig.panel.active) {
 
             //wait 1.5 seconds for avoiding brute force attacks
-            await new Promise((resolve) => {setTimeout(() => resolve(),1500)});
+            await new Promise<void>((resolve) => {setTimeout(() => resolve(),1500)});
 
             if(!(await bag.getWorker().getPanelEngine().isPanelLoginDataValid(username,password))) {
                 throw new BackError(MainBackErrors.invalidPanelAuthData);

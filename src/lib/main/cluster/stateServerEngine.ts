@@ -299,7 +299,7 @@ export default class StateServerEngine
      */
     private registerMaster()
     {
-        return new Promise((resolve,reject) =>
+        return new Promise<void>((resolve,reject) =>
         {
             this.stateSocket.emit
             ('zMasterRegister', {
@@ -346,7 +346,7 @@ export default class StateServerEngine
                 Logger.log.startDebug
                 (`Zation-cluster-state server is in ${data['mode']} reconnectMode! Master is try again to connect in ${ms} ms.`);
 
-                await new Promise((resolve,reject) => {
+                await new Promise<void>((resolve,reject) => {
                     setTimeout(async () => {
                         try {
                             await this.registerMaster();
@@ -380,7 +380,7 @@ export default class StateServerEngine
      */
     private async joinCluster()
     {
-        await new Promise((resolve)=> {
+        await new Promise<void>((resolve)=> {
             this.stateSocket.emit('zMasterJoin',{},(err) => {
                 err ?
                     this.zm.killServer(`Error by trying to join the cluster. Error -> ${err.toString()}`) :
@@ -414,7 +414,7 @@ export default class StateServerEngine
     {
         const tryRec = async () =>
         {
-            await new Promise(async (resolve) => {
+            await new Promise<void>(async (resolve) => {
                 if(this.stateSocket.getState() === this.stateSocket.OPEN) {
                     Logger.log.debug('Try to reconnect to the state server.');
 
