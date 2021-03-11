@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 import BackErrorConstruct   from "../main/definitions/backErrorConstruct";
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ErrorType}          from "../main/definitions/errorType";
-import {safeJsonStringify}  from '../main/utils/jsonSafeStringify';
+import {jsonStringifySafe}  from '../main/utils/jsonStringifySafe';
 
 export interface DryBackError {
     /**
@@ -157,7 +157,7 @@ export default class BackError extends Error
      * Returns the complete information as a string.
      */
     toString(): string {
-        return `BackError -> Name: "${this.name}" Group: "${this.group}" Description: "${this.description}" Type: "${this.type}" Info: "${safeJsonStringify(this.info)}" Private: "${this.private}" Custom: "${this.custom}"`;
+        return `BackError -> Name: "${this.name}" Group: "${this.group}" Description: "${this.description}" Type: "${this.type}" Info: "${jsonStringifySafe(this.info)}" Private: "${this.private}" Custom: "${this.custom}"`;
     }
 
     // noinspection JSUnusedGlobalSymbols

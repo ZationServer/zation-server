@@ -67,6 +67,7 @@ import {AppConfig}                                             from '../main/con
 import {ServiceConfig}                                         from '../main/config/definitions/main/serviceConfig';
 import {deepEqual}                                             from 'forint';
 import {deepFreeze}                                            from '../main/utils/deepFreeze';
+import {jsonStringifySafe}                                     from '../main/utils/jsonStringifySafe';
 
 /**
  * The bag instance of this process.
@@ -1853,6 +1854,16 @@ export default class Bag<WA extends object = any> {
      */
     deepFreeze<T>(value: T): T {
         return deepFreeze(value);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * This method will create a JSON string from a value.
+     * It can also handle circular dependencies.
+     * @param value
+     */
+    jsonStringifySafe(value: any): string {
+        return jsonStringifySafe(value)
     }
 
     //Part get

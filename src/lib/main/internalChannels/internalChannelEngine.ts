@@ -14,7 +14,7 @@ import ScServer             from "../sc/scServer";
 import {ObjectEditAction}   from "../definitions/objectEditAction";
 import Logger               from "../log/logger";
 import {EditTokenPayloadDescription} from '../definitions/editTokenPayloadDescription';
-import {safeJsonStringify}           from '../utils/jsonSafeStringify';
+import {jsonStringifySafe}           from '../utils/jsonStringifySafe';
 
 export const INTERNAL_WORKER_CH = 'W>';
 export const INTERNAL_PANEL_CH = 'P>';
@@ -49,7 +49,7 @@ export default class InternalChannelEngine
         try {
             await this.publishAsync(INTERNAL_WORKER_CH, data);
         } catch (e) {
-            Logger.log.warn(`Failed to publish data: '${safeJsonStringify(data)}' in worker channel.`);
+            Logger.log.warn(`Failed to publish data: '${jsonStringifySafe(data)}' in worker channel.`);
             throw e;
         }
     }
