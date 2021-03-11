@@ -168,15 +168,6 @@ export const MainBackErrors = {
         custom: false
     } as BackErrorConstruct,
 
-    JSONParseSyntaxError: {
-        name         : 'JSONParseSyntaxError ',
-        description  : 'Error by parse json.',
-        type         : ErrorType.InputError,
-        private      : false,
-        sendInfo     : false,
-        custom: false
-    } as BackErrorConstruct,
-
     invalidValidationCheckStructure: {
         name         : 'InvalidValidationCheckStructure',
         description  : 'Invalid validation check structure.',
