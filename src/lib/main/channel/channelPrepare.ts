@@ -80,7 +80,7 @@ export class ChannelPrepare extends ComponentPrepare<ChannelCore,ChannelConfig>
         const chPreparedData: ChPreparedData = {
             checkAccess: AccessUtils.createAccessChecker<ChSubAccessFunction>
                 (config.access,`Channel: ${identifier}`),
-            validateMemberInput: InputClosureCreator.createInputConsumer(config.memberInput || {type: 'string'}),
+            validateMemberInput: InputClosureCreator.createInputValidator(config.memberInput || {type: 'string'}),
             unregisterDelay: config.unregisterDelay !== undefined ? config.unregisterDelay : 120000,
             maxSocketMembers: config.maxSocketMembers !== undefined ? config.maxSocketMembers : 20
         };
