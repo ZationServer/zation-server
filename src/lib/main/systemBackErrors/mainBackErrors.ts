@@ -209,7 +209,7 @@ export const MainBackErrors = {
         type         : ErrorType.SystemError,
         sendInfo     : true,
         //INFO
-        // info (the Exception only available when server runs in debug.)
+        // info (The Exception only available when server runs in debug mode.)
         custom: false
     } as BackErrorConstruct,
 };
