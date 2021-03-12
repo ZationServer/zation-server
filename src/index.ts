@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import BackError                    from "./lib/api/BackError";
 import BackErrorBag                 from "./lib/api/BackErrorBag";
-import Bag, {bag}                   from './lib/api/Bag';
+import Bag, {bag as _bag}           from './lib/api/Bag';
 import AuthController               from './lib/api/AuthController';
 import Controller                   from './lib/api/Controller';
 import Config                       from './lib/api/Config';
@@ -85,14 +85,15 @@ import {block}                      from './lib/main/middlewares/block';
 import {TypeofModel}                from './lib/main/models/typeofModel';
 import InvalidMemberError           from './lib/main/databox/invalidMemberError';
 
-//Refresh bag instance export
-Bag._addReadyRefresher((bag) => exports.bag = bag);
+//Create a flexible bag exported variable and link it.
+export let bag: typeof _bag = _bag;
+Bag._addReadyRefresher((_bag) => bag = _bag);
+
 export {
     start,
     StartMode,
     StartErrorName,
     Bag,
-    bag,
     Router,
     Initializer,
     Singleton,
