@@ -70,7 +70,7 @@
     "z-uws": "0.15.2",
     "zation-bag-extension": "1.4.0",
     "zation-client": "^1.6.2",
-    "zation-panel": "0.7.3",
+    "zation-panel": "0.7.4",
     "zation-service": "0.4.3"
   },
   "devDependencies": {
