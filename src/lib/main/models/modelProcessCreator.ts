@@ -160,10 +160,10 @@ export default class ModelProcessCreator
         const breakIterator = Iterator.createBreakIterator(anyOf);
         const canBeNull = meta.canBeNull === true;
 
-        const preparedNames: Record<string,string> = {};
+        const preparedEscapedNames: Record<string,string> = {};
         const isArray = Array.isArray(anyOf);
         Iterator.iterateSync((key,value) => {
-            preparedNames[key] = processAnyOfKey(key,value,isArray);
+            preparedEscapedNames[key] = processAnyOfKey(key,value,isArray).replace(/\./g, '\\.');
         },anyOf);
 
         return async (srcObj, srcKey, currentPath, processInfo) => {
@@ -174,7 +174,7 @@ export default class ModelProcessCreator
             const tmpBackErrorBags: BackErrorBag[] = [];
             await breakIterator(async (key, value: CompiledModel) =>
             {
-                key = preparedNames[key];
+                key = preparedEscapedNames[key];
 
                 tmpBackErrorBag = new BackErrorBag();
                 tmpBackErrorBags.push(tmpBackErrorBag);
@@ -220,6 +220,7 @@ export default class ModelProcessCreator
         const props = objectModel.properties;
         const morePropsAllowed = objectModel.morePropsAllowed;
         const propKeys = Object.keys(props);
+        const escapedPropKeys = propKeys.map(key => key.replace(/\./g, '\\.'));
         const propKeysLength = propKeys.length;
         const canBeNull = meta.canBeNull === true;
 
@@ -244,9 +245,10 @@ export default class ModelProcessCreator
                         // noinspection JSUnfilteredForInLoop
                         if(input[k] !== undefined && props[k] === undefined) {
                             //ups unknown key
+                            const escapedKey = k.replace(/\./g, '\\.');
                             errorBag.add(new BackError
                                 (ValidationBackErrors.unknownObjectProperty, {
-                                    path: currentPath === '' ? k: `${currentPath}.${k}`,
+                                    path: currentPath === '' ? escapedKey: `${currentPath}.${escapedKey}`,
                                     propertyName: k
                                 })
                             );
@@ -262,7 +264,7 @@ export default class ModelProcessCreator
                     const propName = propKeys[i];
 
                     const currentPathNew = currentPath === '' ?
-                        propName: `${currentPath}.${propName}`;
+                        escapedPropKeys[i] : `${currentPath}.${escapedPropKeys[i]}`;
 
                     if(input[propName] !== undefined) {
                         promises.push((props[propName] as CompiledModel)._process
