@@ -42,7 +42,7 @@ const  SocketCluster: any = require('socketcluster');
 
 export default class ZationMaster {
     private static instance: ZationMaster | null = null;
-    private static readonly version: string = '2.2.1';
+    private static readonly version: string = '2.2.2';
     static readonly minLicenseVersionRequired: number = 1;
 
     private readonly serverStartedTimeStamp: number;
