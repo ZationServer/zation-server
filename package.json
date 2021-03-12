@@ -69,7 +69,7 @@
     "ws": "7.2.1",
     "z-uws": "0.15.2",
     "zation-bag-extension": "1.4.0",
-    "zation-client": "^1.6.2",
+    "zation-client": "^1.6.3",
     "zation-panel": "0.7.5",
     "zation-service": "0.4.3"
   },
